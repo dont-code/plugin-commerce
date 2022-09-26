@@ -1,0 +1,79 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        browser: [chromium, chrome]
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: main
+          token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
+      - name: Use Node.js 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install
+        run: |
+          npm install -g nx
+          npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest --no-optional
+          npm install
+      - name: Version the plugin library
+        if: ${{ matrix.browser == 'chromium' }}
+        run: npm version patch
+        working-directory: libs/commerce
+      - name: Build
+        run: |
+          nx run commerce:build:production
+      - name: Unit tests
+        run: |
+          nx run commerce:test
+          nx run commerce-tester:test
+      - name: E2E Tests on ${{matrix.browser}}
+        run: |
+          nx run commerce-tester-e2e:e2e --browser ${{matrix.browser}}
+      - uses: actions/upload-artifact@v3
+        # Test run screenshots only on failure
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: dist/cypress/apps/commerce-tester-e2e/screenshots
+        # Test run video was always captured, so this action uses "always()" condition
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: cypress-videos
+          path: dist/cypress/apps/commerce-tester-e2e/videos
+      - name: Get the plugin version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+        with:
+          path: libs/commerce
+      - name: Deploy the tester application in github pages
+        if: ${{ success() && matrix.browser == 'chromium'}}
+        run: |
+          nx run commerce-tester:build:production --base-href "https://dont-code.net/plugin-commerce/"
+      - if: ${{ success() && matrix.browser == 'chromium'}}
+        uses: crazy-max/ghaction-github-pages@v3.0.0
+        with:
+          repo: dont-code/plugin-commerce
+          target_branch: gh-pages # The branch the action should deploy to.
+          build_dir: dist/apps/commerce-tester
+          jekyll: false
+        env:
+          GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
+
