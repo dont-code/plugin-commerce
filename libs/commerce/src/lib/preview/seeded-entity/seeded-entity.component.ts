@@ -4,8 +4,8 @@ import {Change} from "@dontcode/core";
 
 @Component({
   selector: 'dontcode-commerceed-entity',
-  templateUrl: './commerceed-entity.component.html',
-  styleUrls: ['./commerceed-entity.component.scss']
+  templateUrl: './seeded-entity.component.html',
+  styleUrls: ['./seeded-entity.component.scss']
 })
 export class SeededEntityComponent extends PluginBaseComponent {
 

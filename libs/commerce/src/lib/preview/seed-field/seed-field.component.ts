@@ -3,8 +3,8 @@ import { AbstractDynamicComponent, ComponentLoaderService, PossibleTemplateList,
 
 @Component({
   selector: 'dontcode-commerce-field',
-  templateUrl: './commerce-field.component.html',
-  styleUrls: ['./commerce-field.component.scss']
+  templateUrl: './seed-field.component.html',
+  styleUrls: ['./seed-field.component.scss']
 })
 export class SeedFieldComponent extends AbstractDynamicComponent {
 

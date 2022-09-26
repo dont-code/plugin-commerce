@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SeedFieldComponent } from './commerce-field.component';
+import { SeedFieldComponent } from './seed-field.component';
 import {PluginCommonModule} from "@dontcode/plugin-common";
 
 describe('SeedFieldComponent', () => {

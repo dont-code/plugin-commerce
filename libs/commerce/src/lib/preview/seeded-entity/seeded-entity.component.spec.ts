@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SeededEntityComponent } from './commerceed-entity.component';
+import { SeededEntityComponent } from './seeded-entity.component';
 import {PluginCommonModule} from "@dontcode/plugin-common";
 
 describe('SeededEntityComponent', () => {

@@ -93,8 +93,8 @@
       },
       "defaultConfiguration": "development",
       "options": {
-        "port": 4200,
-        "publicHost": "http://localhost:4200"
+        "port": 3003,
+        "publicHost": "http://localhost:3003"
       }
     },
     "extract-i18n": {

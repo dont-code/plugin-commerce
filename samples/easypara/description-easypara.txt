@@ -1,0 +1,9 @@
+Query: https://www.easypara.fr/catalogsearch/result/?q=chardon%20marie
+
+Search:     var ecommerceObjects = {"currencyCode":"EUR","impressions":[...,{"name":"Extrait de plante fra\u00eeche Chardon Marie 50ml A.Vogel France","id":"3035620435212","price":"10.33","brand":"A.Vogel France","category":"MenuV3","list":"Search Result","position":6},...]};
+
+Product: get https://www.easypara.fr/extrait-de-plante-fraiche-chardon-marie-50ml-a-vogel-france.html
+
+    Then get <span class="price-container price-final_price tax weee">
+        <span id="product-price-97485" data-price-amount="10.898151" data-price-type="finalPrice" class="price-wrapper " data-test="product-price-finalPrice"><span class="price">10,90&nbsp;€</span></span>
+      </span>

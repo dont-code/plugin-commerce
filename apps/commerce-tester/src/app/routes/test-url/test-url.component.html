@@ -1,0 +1,14 @@
+<h1>Price Check url tester</h1>
+<span class="p-float-label">
+      <input id="url-to-try" type="text" [(ngModel)]="testUrl" pInputText size="60" />
+      <label for="url-to-try">Url of the search query:</label>
+    </span>
+<button pButton type="button" label="Try" (click)="tryUrl ()"></button>
+<p>Result:</p>
+<div *ngIf="testResponse">
+  <p>Status: {{testResponse.status}}</p>
+  <p>Size: {{testResponse.body?.length}}</p>
+</div>
+<div *ngIf="testError">
+  <p>Error: ${{testError}}</p>
+</div>

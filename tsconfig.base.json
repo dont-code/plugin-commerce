@@ -16,8 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@dontcode/core": ["node_modules/@dontcode/core"],
-      "@dontcode/plugin-common": ["node_modules/@dontcode/plugin-common"],
       "@dontcode/plugin-commerce": ["libs/commerce/src/index.ts"],
+      "@dontcode/plugin-common": ["node_modules/@dontcode/plugin-common"],
       "@dontcode/sanbox": ["node_modules/@dontcode/sandbox"]
     }
   },
