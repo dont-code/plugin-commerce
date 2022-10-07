@@ -10,49 +10,25 @@ export class CommercePlugin implements Plugin {
     return {
       plugin: {
         id: 'CommercePlugin',
-        'display-name': 'An starter project for development of Dont-code plugins.',
+        'display-name': 'Commerce Plugin for anything related to products, prices, shops.',
         version: '1.0.0'
       },
       'schema-updates': [{
-        id: 'commerce-field',
-        description: 'Add a new type of field to Dont-code: the SeedField',
+        id: 'price-field',
+        description: 'A price of a product in a shop',
         changes: [{
           location: {
             parent: '#/$defs/field',
             id: 'type'
           },
           update: {
-            enum: [
-              'Seed Field'
-            ]
-          },
-          replace: false
-        }]
-      }, {
-        id: "commerceed-entity",
-        description: "Adds 'commerce' attribute to any entity and display the entity if commerce is Maybe or Yes",
-        changes: [{
-          location: {
-            parent: '#/$defs/entity',
-            id: 'commerce',
-            after: 'name'
-          },
-          update: {
-            enum: [
-              'Yes',
-              'Maybe'
-            ]
-          },
-          replace: true
-        }, {
-          location: {
-            parent: '/$defs/entity',
-            id: 'commerce',
-            after: 'name'
-          },
-          update: {
-            enum: [
-              'No'
+            enum: [{
+              Commerce: {
+                enum: [
+                  'Price',
+                  'Price Comparison'
+                ]}
+              }
             ]
           },
           replace: false
@@ -64,29 +40,31 @@ export class CommercePlugin implements Plugin {
             parent: DontCodeModel.APP_FIELDS,
             id: 'type',
             values: [{
-              Seed: {
-                enum: [
-                  'Seed Field'
-                ]
-              }
+                Commerce: {
+                  enum: [
+                    'Price'
+                  ]}
             }]
           },
           class: {
-            name: 'SeedFieldComponent',
+            name: 'PriceComponent',
             source: 'commerce'
           }
         },
         {
           location: {
-            parent: DontCodeModel.APP_ENTITIES,
-            id: "commerce",
-            values: [
-              "Yes", "Maybe"
-            ]
+            parent: DontCodeModel.APP_FIELDS,
+            id: 'type',
+            values: [{
+              Commerce: {
+                enum: [
+                  'Price Comparison'
+                ]}
+            }]
           },
           class: {
-            name: "SeededEntityComponent",
-            source: "commerce"
+            name: 'PriceCompareComponent',
+            source: 'commerce'
           }
         }
       ]

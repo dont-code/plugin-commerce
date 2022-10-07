@@ -1,0 +1,14 @@
+<dtcde-dynamic></dtcde-dynamic>
+<ng-template #inlineView >{{value}}</ng-template>
+<ng-template #fullEditView>
+  <ng-container *ngIf="form" [formGroup]="form">
+    <div class="grid">
+      <div class="col-12 md:col-6">
+        <ng-container *ngTemplateOutlet="subFieldFullEditTemplate('price')"></ng-container>
+      </div>
+      <div class="col-12 md:col-6">
+        <input name="shop" formControlName="shop" pInputText />
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

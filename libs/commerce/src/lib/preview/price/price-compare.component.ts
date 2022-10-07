@@ -1,17 +1,17 @@
-import {Component, Injector} from '@angular/core';
+import {ChangeDetectorRef, Component, Injector} from '@angular/core';
 import {ComponentLoaderService, PluginBaseComponent, PossibleTemplateList, TemplateList} from '@dontcode/plugin-common';
 import {Change} from "@dontcode/core";
 
 @Component({
-  selector: 'dontcode-commerceed-entity',
-  templateUrl: './seeded-entity.component.html',
-  styleUrls: ['./seeded-entity.component.scss']
+  selector: 'dontcode-commerce-price-compare',
+  templateUrl: './price-compare.component.html',
+  styleUrls: ['./price-compare.component.scss']
 })
-export class SeededEntityComponent extends PluginBaseComponent {
+export class PriceCompareComponent extends PluginBaseComponent {
 
   constructor(loader: ComponentLoaderService,
-              injector: Injector) {
-    super (loader, injector);
+              injector: Injector,ref: ChangeDetectorRef) {
+    super (loader, injector, ref);
   }
 
   providesTemplates(key?: string): TemplateList {

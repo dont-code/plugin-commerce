@@ -20,7 +20,7 @@ To develop your own plugins using this seed repository, simply:
 1. Fork this repository in github.
 2. Install it, run some tests and the tester application to make sure it is working.
 3. If you want to create a plugin for a new Field, rename and modify the [SeedField component](libs/commerce/src/lib/preview/seed-field).
-4. If you want to create any other plugin types, rename and modify the [SeedEntity component](libs/commerce/src/lib/preview/seeded-entity).
+4. If you want to create any other plugin types, rename and modify the [SeedEntity component](libs/commerce/src/lib/preview/price).
 5. Updates the configuration to be injected to the Dont-code platform here [SeedPlugin](libs/commerce/src/lib/declaration/commerce-plugin.ts)
 6. Ensure the plugin tester adds the updated module name of your plugin [AppModule](apps/plugin-tester/src/app/app.module.ts)
 7. Modify the templates loaded by the plugin tester to ease usage of your plugin [templates.json](apps/plugin-tester/src/assets/dev/templates.json)

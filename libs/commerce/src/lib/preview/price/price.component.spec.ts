@@ -1,22 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SeededEntityComponent } from './seeded-entity.component';
+import { PriceComponent } from './price.component';
 import {PluginCommonModule} from "@dontcode/plugin-common";
 
 describe('SeededEntityComponent', () => {
-  let component: SeededEntityComponent;
-  let fixture: ComponentFixture<SeededEntityComponent>;
+  let component: PriceComponent;
+  let fixture: ComponentFixture<PriceComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SeededEntityComponent ],
+      declarations: [ PriceComponent ],
       imports: [PluginCommonModule.forRoot()]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SeededEntityComponent);
+    fixture = TestBed.createComponent(PriceComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

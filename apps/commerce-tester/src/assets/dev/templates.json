@@ -1,12 +1,12 @@
 [
   {
-    "name": "Test Seed Field",
+    "name": "Test Price",
     "sequence": [
       {
         "position": "creation/entities/a",
         "type": "ADD",
         "value": {
-          "name": "Seed Field"
+          "name": "Product"
         }
       },
       {
@@ -14,53 +14,39 @@
         "type": "ADD",
         "value": {
           "aa": {
-            "name": "Test",
-            "type": "Seed Field"
+            "name": "Name",
+            "type": "string"
+          },
+          "ab": {
+            "name": "Price",
+            "type": "Price"
           }
         }
       }
     ]
   },
   {
-    "name": "Test Seeded Entity",
-    "type": "ADD",
-    "position": "creation/entities/b",
-    "value": {
-      "name": "Seeded",
-      "commerce": "Maybe"
-    }
-  },
-  {
-    "name": "Test Other Entity",
+    "name": "Test Price Comparison",
     "sequence": [
       {
-        "position": "creation/entities/c/name",
-        "type": "ADD",
-        "value": "Not Seeded",
-        "commerce": "No"
-      },
-      {
-        "position": "creation/entities/c/fields/a",
+        "position": "creation/entities/b",
         "type": "ADD",
         "value": {
-          "name": "id",
-          "type": "Text"
+          "name": "Comparison"
         }
       },
       {
-        "position": "creation/entities/c/fields/b",
+        "position": "creation/entities/b/fields",
         "type": "ADD",
         "value": {
-          "name": "check",
-          "type": "Boolean"
-        }
-      },
-      {
-        "position": "creation/entities/c/fields/c",
-        "type": "ADD",
-        "value": {
-          "name": "count",
-          "type": "Number"
+          "ba": {
+            "name": "Product Name",
+            "type": "string"
+          },
+          "bb": {
+            "name": "Price",
+            "type": "Price Comparison"
+          }
         }
       }
     ]

@@ -55,7 +55,7 @@ export class CustomMenu implements MenuUpdater {
       theme: 'orange',
       templateFileUrl: 'assets/dev/templates.json',
     }),
-    CommerceModule,
+    CommerceModule
   ],
   providers: [ {
     provide: SANDBOX_MENUS, useClass: CustomMenu
