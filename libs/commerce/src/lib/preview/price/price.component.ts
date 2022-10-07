@@ -1,6 +1,11 @@
 import {ChangeDetectorRef, Component, Injector, TemplateRef, ViewChild} from '@angular/core';
-import {ComponentLoaderService, PossibleTemplateList, SubFieldInfo, TemplateList} from '@dontcode/plugin-common';
-import {AbstractDynamicLoaderComponent} from "@dontcode/plugin-common";
+import {
+  AbstractDynamicComponent,
+  AbstractDynamicLoaderComponent,
+  ComponentLoaderService,
+  PossibleTemplateList,
+  TemplateList
+} from '@dontcode/plugin-common';
 import {FormControl} from "@angular/forms";
 
 @Component({
@@ -20,6 +25,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
               injector: Injector, ref: ChangeDetectorRef) {
     super (loader, injector, ref);
     this.defineSubField ('price', 'Other currency');
+    this.value={};
   }
 
   override createAndRegisterFormControls (): void {
@@ -33,4 +39,9 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     return new PossibleTemplateList(true, false, true);
   }
 
+  displayableValue():string {
+    const ret= AbstractDynamicComponent.toBeautifyString (this.value);
+    if (ret==null)  return "";
+    else return ret;
+  }
 }

@@ -1,5 +1,5 @@
 <dtcde-dynamic></dtcde-dynamic>
-<ng-template #inlineView >{{value}}</ng-template>
+<ng-template #inlineView >{{displayableValue()}}</ng-template>
 <ng-template #fullEditView>
   <ng-container *ngIf="form" [formGroup]="form">
     <div class="grid">
