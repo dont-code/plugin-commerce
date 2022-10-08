@@ -24,6 +24,25 @@
         }
       }
     ]
+  }, {
+  "name": "Shops",
+  "sequence": [{
+      "position": "creation/entities/shops",
+        "type": "ADD",
+        "value": {
+          "name": "Shop",
+          "fields": {
+            "aa": {
+              "name": "Name",
+              "type": "Text"
+            },
+            "ab": {
+              "name": "Type",
+              "type": "Shop type"
+            }
+          }
+        }
+      }]
   },
   {
     "name": "Test Price Comparison",

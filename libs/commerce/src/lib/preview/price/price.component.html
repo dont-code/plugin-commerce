@@ -7,10 +7,7 @@
         <ng-container *ngTemplateOutlet="subFieldFullEditTemplate('price')"></ng-container>
       </div>
       <div class="col-12 md:col-6">
-        <span class="p-float-label">
-          <input [id]="name+'-shop'" name="shop" formControlName="shop" pInputText />
-          <label [for]="name+'-shop'">Shop</label>
-        </span>
+        <ng-container *ngTemplateOutlet="subFieldFullEditTemplate('shop')"></ng-container>
       </div>
     </div>
   </ng-container>

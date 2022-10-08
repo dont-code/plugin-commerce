@@ -8,12 +8,14 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {PriceCompareComponent} from "./preview/price/price-compare.component";
 import {InputTextModule} from "primeng/inputtext";
 import {FieldsModule} from "@dontcode/plugin-fields";
+import {ShopHandlerComponent} from "./preview/shop/shop-handler.component";
 
 @NgModule({
   imports: [CommonModule, PluginCommonModule.forRoot(), FieldsModule, ReactiveFormsModule, InputTextModule, FormsModule],
   declarations: [
     PriceCompareComponent,
-    PriceComponent
+    PriceComponent,
+    ShopHandlerComponent
   ],
   id:'dontcode-plugin/commerce' // A module containing previewer components must have an id to be found by the dont-code platform.
 })
@@ -27,10 +29,12 @@ export class CommerceModule {
   exposedPreviewHandlers(): Map<string, any> {
     return new Map<string, any> ([
       ['PriceComponent', PriceComponent],
-      ['PriceCompareComponent', PriceCompareComponent]
+      ['PriceCompareComponent', PriceCompareComponent],
+      ['ShopHandlerComponent', ShopHandlerComponent]
     ]);
   }
 }
 
 export * from './preview/price/price.component';
+export * from './preview/shop/shop-handler.component';
 export * from './preview/price/price-compare.component';

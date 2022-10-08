@@ -26,7 +26,8 @@ export class CommercePlugin implements Plugin {
               Commerce: {
                 enum: [
                   'Price',
-                  'Price Comparison'
+                  'Price Comparison',
+                  'Shop type'
                 ]}
               }
             ]
@@ -64,6 +65,22 @@ export class CommercePlugin implements Plugin {
           },
           class: {
             name: 'PriceCompareComponent',
+            source: 'commerce'
+          }
+        },
+        {
+          location: {
+            parent: DontCodeModel.APP_FIELDS,
+            id: 'type',
+            values: [{
+              Commerce: {
+                enum: [
+                  'Shop type'
+                ]}
+            }]
+          },
+          class: {
+            name: 'ShopHandlerComponent',
             source: 'commerce'
           }
         }

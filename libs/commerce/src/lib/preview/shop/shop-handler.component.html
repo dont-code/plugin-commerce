@@ -1,0 +1,9 @@
+<ng-template #inlineView >{{displayableValue()}}</ng-template>
+<ng-template #fullEditView>
+  <ng-container *ngIf="form" [formGroup]="form">
+    <span class="p-float-label">
+      <input [id]="name+'-shop'" name="shop" [formControlName]="name" pInputText />
+      <label [for]="name+'-shop'">Shop</label>
+    </span>
+  </ng-container>
+</ng-template>

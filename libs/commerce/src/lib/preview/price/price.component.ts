@@ -25,11 +25,8 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
               injector: Injector, ref: ChangeDetectorRef) {
     super (loader, injector, ref);
     this.defineSubField ('price', 'Other currency');
+    this.defineSubField ('shop', 'Shop type');
     this.value={};
-  }
-
-  override createAndRegisterFormControls (): void {
-    this.form.registerControl('shop', new FormControl(null, {updateOn:"blur"}));
   }
 
   providesTemplates(key?: string): TemplateList {
