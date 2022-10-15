@@ -2,8 +2,7 @@
 <ng-template #fullEditView>
   <ng-container *ngIf="form" [formGroup]="form">
     <span class="p-float-label">
-      <input [id]="name+'-shop'" name="shop" [formControlName]="name" pInputText />
-      <label [for]="name+'-shop'">Shop</label>
+      <p-dropdown [options]="shopTypes" name="shop" [formControlName]="name" placeholder="Please select a Shop"></p-dropdown>
     </span>
   </ng-container>
 </ng-template>

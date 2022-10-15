@@ -9,6 +9,7 @@ export class ScrappedProduct {
   productId?: string;
   productName: string|null=null;
   productDescription?:string;
+  productUrl?:string;
   productImageUrl?:string;
   productPrice?: number;
   currencyCode?: string;
@@ -43,6 +44,20 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
   }
 
   /**
+   * Helper method to convert a scrappedProduct to a MoneyAmount.
+   * @param scrappedProduct
+   */
+  static toMoneyAmount(scrappedProduct: ScrappedProduct):MoneyAmount {
+    const ret = new MoneyAmount();
+    ret.amount=scrappedProduct.productPrice;
+    ret.currencyCode=scrappedProduct.currencyCode;
+    return ret;
+  }
+
+  getShopTypeName (): string {
+    return this.onlineShopName;
+  }
+  /**
    * Avoid Cors issue by running the url through a Cors manager proxy
    * @param url
    */
@@ -52,6 +67,19 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
 
   abstract searchProductsForName(name: string): Promise<Array<ScrappedProduct>>;
 
-  abstract updatePrice(productId: string): Promise<MoneyAmount>;
+  /**
+   * By default we do a search with the productId and returns the price
+   * @param productId
+   */
+  updatePrice(productId: string): Promise<MoneyAmount> {
+    return this.searchProductsForName(productId).then(listOfAllElements => {
+      for (const product of listOfAllElements) {
+        if (product.productId==productId) {
+          return AbstractOnlineShopScrapper.toMoneyAmount(product);
+        }
+      }
+      return Promise.reject("Product "+productId+" not found in shoptype "+this.onlineShopName);
+    });
+  }
 
 }

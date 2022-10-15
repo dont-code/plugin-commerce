@@ -1,6 +1,7 @@
 import {Component, TemplateRef, ViewChild} from '@angular/core';
 import {AbstractDynamicComponent, PossibleTemplateList, TemplateList} from '@dontcode/plugin-common';
 import {FormControl} from "@angular/forms";
+import {PriceFinderService} from "../../shared/services/price-finder.service";
 
 @Component({
   selector: 'dontcode-commerce-shop-type',
@@ -14,13 +15,15 @@ export class ShopHandlerComponent extends AbstractDynamicComponent {
 
   @ViewChild('fullEditView', { static: true })
   private fullEditView!: TemplateRef<any>;
+  shopTypes = new Array<string>();
 
-  constructor() {
+  constructor(protected priceFinder:PriceFinderService) {
     super ();
+    this.shopTypes=this.priceFinder.getListOfShopTypes();
   }
 
   override createAndRegisterFormControls (): void {
-    this.form.registerControl(this.name, new FormControl(null, {updateOn:"blur"}));
+    this.form.registerControl(this.name, new FormControl(null, {updateOn:"change"}));
   }
 
   providesTemplates(key?: string): TemplateList {

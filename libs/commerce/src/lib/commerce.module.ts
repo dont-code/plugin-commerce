@@ -9,13 +9,20 @@ import {PriceCompareComponent} from "./preview/price/price-compare.component";
 import {InputTextModule} from "primeng/inputtext";
 import {FieldsModule} from "@dontcode/plugin-fields";
 import {ShopHandlerComponent} from "./preview/shop/shop-handler.component";
+import {DropdownModule} from "primeng/dropdown";
+import {RippleModule} from "primeng/ripple";
+import {ButtonModule} from "primeng/button";
+import {ProductSelectionComponent} from "./shared/ui/product-selection.component";
+import {DataViewModule} from "primeng/dataview";
+import {CardModule} from "primeng/card";
 
 @NgModule({
-  imports: [CommonModule, PluginCommonModule.forRoot(), FieldsModule, ReactiveFormsModule, InputTextModule, FormsModule],
+  imports: [CommonModule, PluginCommonModule.forRoot(), FieldsModule, ReactiveFormsModule, InputTextModule, FormsModule, DropdownModule, RippleModule, ButtonModule, DataViewModule, CardModule],
   declarations: [
     PriceCompareComponent,
     PriceComponent,
-    ShopHandlerComponent
+    ShopHandlerComponent,
+    ProductSelectionComponent
   ],
   id:'dontcode-plugin/commerce' // A module containing previewer components must have an id to be found by the dont-code platform.
 })

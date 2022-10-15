@@ -36,7 +36,18 @@ describe('ShopHandlerComponent', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("easypara/chardon-marie-search.html", httpTestingController);
+    expectOneSampleFile("easypara/chardon-marie-search-result.json", httpTestingController);
+  });
+
+  it('should get price', (done) => {
+    expect(component).toBeTruthy();
+    component.updatePrice("3700026996703").then(value => {
+      expect(value.amount).toEqual(9.8);
+      done();
+    }).catch(error => {
+      done (error);
+    });
+    expectOneSampleFile("easypara/chardon-marie-search-result.json", httpTestingController);
   });
 });
 
@@ -51,3 +62,18 @@ export function expectOneSampleFile (sampleFileRelative:string, controller:HttpT
   searchCall.flush(responseRead);
   return searchCall;
 }
+
+export function expectMultipleSampleFile (sampleFileRelative:string, controller:HttpTestingController): number {
+  const searchCalls = controller.match(req => {
+    if (req.url.startsWith(AbstractOnlineShopScrapper.CORS_SERVER_URL))
+      return true;
+    else
+      return false;
+  });
+  const responseRead=fs.readFileSync(Path.join(__dirname,"../../../../../../samples/",sampleFileRelative), {encoding:'utf-8'});
+  for (const searchCall of searchCalls) {
+    searchCall.flush(responseRead);
+  }
+  return searchCalls.length;
+}
+

@@ -15,7 +15,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {CommerceModule} from '@dontcode/plugin-commerce';
 import {PluginCommonModule} from '@dontcode/plugin-common';
 import {TestUrlComponent} from './routes/test-url/test-url.component';
-import {MenuItem} from "primeng/api";
+import {MenuItem, PrimeIcons} from "primeng/api";
 import {FormsModule} from "@angular/forms";
 import {ButtonModule} from "primeng/button";
 import {InputTextModule} from "primeng/inputtext";
