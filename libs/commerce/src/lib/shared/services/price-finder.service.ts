@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
+import {Injectable, Optional} from '@angular/core';
 import {OnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapper";
 import {HttpClient} from "@angular/common/http";
 import {EasyParaScrapper} from "../scrappers/easy-para-scrapper";
-import {DontCodeEntityType, DontCodeModelManager, MoneyAmount} from "@dontcode/core";
+import {DontCodeEntityType, DontCodeModelManager, dtcde, MoneyAmount} from "@dontcode/core";
 import {PriceModel} from "../price-model";
 
 @Injectable({
@@ -13,7 +13,9 @@ export class PriceFinderService {
   protected listOfScrappers = new Map<string, OnlineShopScrapper> ();
   protected shopTypeNames = new Array<string>();
 
-  constructor(protected httpClient:HttpClient, protected modelMgr:DontCodeModelManager) {
+  constructor(protected httpClient:HttpClient, @Optional() protected modelMgr:DontCodeModelManager) {
+    if (this.modelMgr==null)  this.modelMgr=dtcde.getModelManager();
+
     const newScrapper = new EasyParaScrapper(httpClient);
     this.listOfScrappers.set(newScrapper.onlineShopName, newScrapper);
     this.shopTypeNames.push(newScrapper.onlineShopName);

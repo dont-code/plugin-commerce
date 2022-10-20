@@ -17,6 +17,7 @@ module.exports = {
       '@dontcode/core': { singleton: true, strictVersion: false },
       '@dontcode/plugin-common': { singleton: true, strictVersion: false },
       '@dontcode/sandbox': { singleton: true, strictVersion: false },
+      '@dontcode/plugin-fields': { singleton: true, strictVersion: false },
     }[name];
   },
 };

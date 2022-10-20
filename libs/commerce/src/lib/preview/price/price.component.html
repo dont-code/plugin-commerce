@@ -1,18 +1,20 @@
 <dtcde-dynamic></dtcde-dynamic>
-<ng-template #inlineView >{{displayableValue()}}</ng-template>
+<ng-template #inlineView >okok
+  <ng-container *ngTemplateOutlet="subFieldInlineViewTemplate('price')"></ng-container>
+</ng-template>
 <ng-template #fullEditView>
   <ng-container *ngIf="form" [formGroup]="form">
-    <div class="grid">
-      <div class="col-12 md:col-6">
+    <div class="formgrid grid">
+      <div class="field col-12 md:col-6">
         <span class="p-float-label">
-          <input [id]="name+'-name'" type="text" pInputText formControlName="productName">
+          <input [id]="name+'-name'" type="text" pInputText formControlName="productName" class="w-full">
           <label [for]="name+'-name'">Product Name</label>
         </span>
       </div>
-      <div class="col-12 md:col-6">
+      <div class="field col-12 md:col-6">
         <ng-container *ngTemplateOutlet="subFieldFullEditTemplate('shop')"></ng-container>
       </div>
-      <div class="col-12 md:col-6">
+      <div class="field col-12 md:col-6">
         <div class="flex">
           <button class="flex flex-initial" pButton pRipple type="button" icon="pi pi-sync" class="p-button-rounded p-button-text" [disabled]="cannotUpdatePrice ()" (click)="updatePrice()"></button>
           <div class="flex flex-1">
@@ -20,14 +22,14 @@
           </div>
         </div>
       </div>
-      <div class="col-12 md:col-6">
+      <div class="field col-12 md:col-6">
         <span class="p-float-label">
-          <input [id]="name+'-id'" type="text" readonly="true" pInputText formControlName="productId">
+          <input [id]="name+'-id'" type="text" readonly="true" pInputText formControlName="productId" class="w-full">
           <label [for]="name+'-id'">Product Id</label>
         </span>
       </div>
       <ng-container *ngIf="productSelectionMode">
-        <div class="col-12"><dontcode-commerce-product-selection [listOfProducts]="listOfSelectableProducts" (selected)="selectedProduct ($event)"></dontcode-commerce-product-selection>
+        <div class="field col-12"><dontcode-commerce-product-selection [listOfProducts]="listOfSelectableProducts" (selected)="selectedProduct ($event)"></dontcode-commerce-product-selection>
         </div>
       </ng-container>
     </div>
