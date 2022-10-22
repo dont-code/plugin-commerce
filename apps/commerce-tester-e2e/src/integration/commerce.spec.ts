@@ -23,11 +23,16 @@ describe('Commerce test', () => {
     getSubMenuWithText('Product').click();
 
     getInputWithName('Name').type("Product 1");
-    getInputWithName('Price').type("123");
+    getInputWithName('productName').type("Product 1 Name");
+    getDropdownWithName('shop').click();
+    getDropdownListItemWithName('EasyParapharmacie').click();
+    getInputWithName('price').type("123");
 
     getDropdownWithName('currencyCode').click();
-    getDropdownListItemWithName('Pound Sterling GBP').click();
+    getDropdownListItemWithName('Pound Sterling - GBP').click();
 
+    getContentArea().contains("Value of Name: Product 1");
+    getContentArea().contains("Value of Price: 123,00 €(EasyParapharmacie)");
   });
 
 });
