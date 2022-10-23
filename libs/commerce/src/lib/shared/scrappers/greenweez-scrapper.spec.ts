@@ -8,9 +8,11 @@ import {HttpClient} from "@angular/common/http";
 import {AbstractOnlineShopScrapper} from "../online-shop-scrapper";
 import * as fs from "fs";
 import * as Path from "path";
+import {GreenWeezScrapper} from "./greenweez-scrapper";
+import {expectOneSampleFile} from "./easy-para-scrapper.spec";
 
 describe('ShopHandlerComponent', () => {
-  let component: EasyParaScrapper;
+  let component: GreenWeezScrapper;
   let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
 
@@ -25,7 +27,7 @@ describe('ShopHandlerComponent', () => {
   beforeEach(() => {
     httpClient = TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);
-    component = new EasyParaScrapper(httpClient);
+    component = new GreenWeezScrapper(httpClient);
   });
 
   it('should search', (done) => {
@@ -36,44 +38,18 @@ describe('ShopHandlerComponent', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("easypara/chardon-marie-search-result.json", httpTestingController);
+    expectOneSampleFile("greenweez/chardon-marie-search-result.json", httpTestingController);
   });
 
   it('should get price', (done) => {
     expect(component).toBeTruthy();
-    component.updatePrice("3700026996703").then(value => {
-      expect(value.amount).toEqual(9.8);
+    component.updatePrice("1AVOG0069").then(value => {
+      expect(value.amount).toEqual(11.94);
       done();
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("easypara/chardon-marie-search-result.json", httpTestingController);
+    expectOneSampleFile("greenweez/chardon-marie-search-result.json", httpTestingController);
   });
 });
-
-export function expectOneSampleFile (sampleFileRelative:string, controller:HttpTestingController): TestRequest {
-  const searchCall = controller.expectOne(req => {
-    if (req.url.startsWith(AbstractOnlineShopScrapper.CORS_SERVER_URL))
-      return true;
-    else
-      return false;
-  });
-  const responseRead=fs.readFileSync(Path.join(__dirname,"../../../../../../samples/",sampleFileRelative), {encoding:'utf-8'});
-  searchCall.flush(responseRead);
-  return searchCall;
-}
-
-export function expectMultipleSampleFile (sampleFileRelative:string, controller:HttpTestingController): number {
-  const searchCalls = controller.match(req => {
-    if (req.url.startsWith(AbstractOnlineShopScrapper.CORS_SERVER_URL))
-      return true;
-    else
-      return false;
-  });
-  const responseRead=fs.readFileSync(Path.join(__dirname,"../../../../../../samples/",sampleFileRelative), {encoding:'utf-8'});
-  for (const searchCall of searchCalls) {
-    searchCall.flush(responseRead);
-  }
-  return searchCalls.length;
-}
 

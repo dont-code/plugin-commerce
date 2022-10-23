@@ -20,6 +20,7 @@ export class ScrappedProduct {
  */
 export interface OnlineShopScrapper {
 
+  getOnlineShopName ():string;
   /**
    * Given a name returns all products that the onlineshop found
    * @param name
@@ -41,6 +42,10 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
   protected onlineShopName="Unknown";
 
   constructor(protected http:HttpClient) {
+  }
+
+  getOnlineShopName(): string {
+    return this.onlineShopName;
   }
 
   /**
