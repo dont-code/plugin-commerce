@@ -2,13 +2,15 @@ import {ChangeDetectorRef, Component, Injector, TemplateRef, ViewChild} from '@a
 import {
   AbstractDynamicComponent,
   AbstractDynamicLoaderComponent,
-  ComponentLoaderService,
+  ComponentLoaderService, DynamicComponent,
+  DynamicEventType,
   PossibleTemplateList,
   TemplateList
 } from '@dontcode/plugin-common';
 import {FormControl} from "@angular/forms";
 import {PriceFinderService} from "../../shared/services/price-finder.service";
 import {AbstractOnlineShopScrapper, ScrappedProduct} from "../../shared/online-shop-scrapper";
+import {$v} from "codelyzer/angular/styles/chars";
 
 @Component({
   selector: 'dontcode-commerce-price',
@@ -97,6 +99,26 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     this.value.price=this.getSubFieldValue("price");
 /*    this.ref.markForCheck();
     this.ref.detectChanges();*/
+  }
+
+  override applyComponentToSubField(component: DynamicComponent, type: string, formName: string): boolean {
+    const ret = super.applyComponentToSubField(component, type, formName);
+    if (formName=='shop') {
+      const $valueChange = component.selectEventSourceFor(DynamicEventType.VALUE_CHANGE);
+      if ($valueChange!=null) {
+        this.subscriptions.add($valueChange.eventSource.subscribe({
+          next: (event) => {
+            this.clearProduct ();
+          }
+        }));
+      }
+    }
+    return ret;
+  }
+
+  clearProduct ():void {
+    delete this.value.productId;
+    this.hydrateValueToForm();
   }
 
 }

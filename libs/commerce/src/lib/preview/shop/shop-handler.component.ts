@@ -1,7 +1,14 @@
-import {Component, TemplateRef, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Output, TemplateRef, ViewChild} from '@angular/core';
 import {AbstractDynamicComponent, PossibleTemplateList, TemplateList} from '@dontcode/plugin-common';
 import {FormControl} from "@angular/forms";
 import {PriceFinderService} from "../../shared/services/price-finder.service";
+import {
+  BaseDynamicEvent,
+  BaseDynamicEventSource,
+  DynamicEvent,
+  DynamicEventSource,
+  DynamicEventType
+} from "@dontcode/plugin-common";
 
 @Component({
   selector: 'dontcode-commerce-shop-type',
@@ -16,6 +23,9 @@ export class ShopHandlerComponent extends AbstractDynamicComponent {
   @ViewChild('fullEditView', { static: true })
   private fullEditView!: TemplateRef<any>;
   shopTypes = new Array<string>();
+
+  @Output()
+  valueChange = new EventEmitter<DynamicEvent>();
 
   constructor(protected priceFinder:PriceFinderService) {
     super ();
@@ -40,12 +50,15 @@ export class ShopHandlerComponent extends AbstractDynamicComponent {
     else return ret;
   }
 
-  searchForComponent (name:string) {
-  /*.subscribe({
-      error: err => {
-        console.error("Cannot search in "+this.onlineShopName+" because of error ", err);
+  override listEventSources(): DynamicEventSource[] {
+    const ret= super.listEventSources();
+    ret.push(
+      new BaseDynamicEventSource ("Value", DynamicEventType.VALUE_CHANGE, this.valueChange.asObservable())
+    );
+    return ret;
+  }
 
-      }
-    });*/
+  valueChanged($event: any):void {
+    this.valueChange.emit(new BaseDynamicEvent("Value", DynamicEventType.VALUE_CHANGE, $event.value));
   }
 }
