@@ -84,6 +84,27 @@ export class CommercePlugin implements Plugin {
             source: 'commerce'
           }
         }
+      ],
+      'definition-updates': [
+        {
+          location: {
+            parent:'creation/entities',
+            id:'*'
+          },
+          update: {
+            name: 'Online Shop',
+            fields: {
+              'aa': {
+                name:"Shop",
+                type: 'Text'
+              },
+              'ab': {
+                name:"Type",
+                type:"Shop type"
+              }
+            }
+          }
+        }
       ]
     }
   }
