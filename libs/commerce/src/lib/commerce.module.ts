@@ -15,9 +15,10 @@ import {ButtonModule} from "primeng/button";
 import {ProductSelectionComponent} from "./shared/ui/product-selection.component";
 import {DataViewModule} from "primeng/dataview";
 import {CardModule} from "primeng/card";
+import {BasicModule} from "@dontcode/plugin-basic";
 
 @NgModule({
-  imports: [CommonModule, PluginCommonModule.forRoot(), FieldsModule, ReactiveFormsModule, InputTextModule, FormsModule, DropdownModule, RippleModule, ButtonModule, DataViewModule, CardModule],
+  imports: [CommonModule, PluginCommonModule.forRoot(), BasicModule, FieldsModule, ReactiveFormsModule, InputTextModule, FormsModule, DropdownModule, RippleModule, ButtonModule, DataViewModule, CardModule],
   declarations: [
     PriceCompareComponent,
     PriceComponent,
