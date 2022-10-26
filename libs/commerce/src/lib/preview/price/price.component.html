@@ -1,6 +1,6 @@
 <dtcde-dynamic></dtcde-dynamic>
 <ng-template #inlineView >
-  <ng-container *ngTemplateOutlet="subFieldInlineViewTemplate('price')"></ng-container>
+  <ng-container *ngTemplateOutlet="subFieldInlineViewTemplate('price')"></ng-container>&nbsp;
   <small>(<ng-container *ngTemplateOutlet="subFieldInlineViewTemplate('shop')"></ng-container>)</small>
 </ng-template>
 <ng-template #fullEditView>
@@ -18,12 +18,15 @@
       <div class="field col-12 md:col-6">
         <div class="flex">
           <button class="flex flex-initial" pButton pRipple type="button" icon="pi pi-sync" class="p-button-rounded p-button-text" [disabled]="cannotUpdatePrice ()" (click)="updatePrice()"></button>
-          <div class="flex flex-1">
+          <div class="flex flex-1">Price:&nbsp;
             <ng-container *ngTemplateOutlet="subFieldFullEditTemplate('price')"></ng-container>
           </div>
         </div>
       </div>
-      <div class="field col-12 md:col-6">
+      <div class="field col-12 md:col-6">Date of Price:&nbsp;
+        <ng-container *ngTemplateOutlet="subFieldFullEditTemplate('date')"></ng-container>
+      </div>
+      <div class="field col-12">
         <span class="p-float-label">
           <input [id]="name+'-id'" type="text" readonly="true" pInputText formControlName="productId" class="w-full">
           <label [for]="name+'-id'">Product Id</label>

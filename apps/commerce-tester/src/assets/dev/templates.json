@@ -3,14 +3,14 @@
     "name": "Test Price",
     "sequence": [
       {
-        "position": "creation/entities/a",
+        "position": "creation/entities/b",
         "type": "ADD",
         "value": {
           "name": "Product"
         }
       },
       {
-        "position": "creation/entities/a/fields",
+        "position": "creation/entities/b/fields",
         "type": "ADD",
         "value": {
           "aa": {

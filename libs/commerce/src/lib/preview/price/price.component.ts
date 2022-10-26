@@ -2,7 +2,8 @@ import {ChangeDetectorRef, Component, Injector, TemplateRef, ViewChild} from '@a
 import {
   AbstractDynamicComponent,
   AbstractDynamicLoaderComponent,
-  ComponentLoaderService, DynamicComponent,
+  ComponentLoaderService,
+  DynamicComponent,
   DynamicEventType,
   PossibleTemplateList,
   TemplateList
@@ -10,7 +11,6 @@ import {
 import {FormControl} from "@angular/forms";
 import {PriceFinderService} from "../../shared/services/price-finder.service";
 import {AbstractOnlineShopScrapper, ScrappedProduct} from "../../shared/online-shop-scrapper";
-import {$v} from "codelyzer/angular/styles/chars";
 
 @Component({
   selector: 'dontcode-commerce-price',
@@ -32,6 +32,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
               injector: Injector, ref: ChangeDetectorRef) {
     super (loader, injector, ref);
     this.defineSubField ('price', 'Other currency');
+    this.defineSubField ('date', 'Date & Time');
     this.defineSubField ('shop', 'Shop type');
     this.value={};
   }
@@ -49,12 +50,6 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     this.form.registerControl('productName', control);
     control = new FormControl (null, {updateOn:'blur'});
     this.form.registerControl('productId', control);
-  }
-
-  displayableValue():string {
-    const ret= AbstractDynamicComponent.toBeautifyString (this.value);
-    if (ret==null)  return "";
-    else return ret;
   }
 
   cannotUpdatePrice():boolean {
@@ -85,6 +80,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
       this.priceFinder.findPrice(this.value, this.value.shop, this.parentPosition??"").then (newPrice => {
         if (newPrice!=null) {
           this.setSubFieldValue('price', newPrice);
+          this.setSubFieldValue('date', new Date());
         }
       })
     }
@@ -96,11 +92,19 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     this.value.productName=product.productName;
     this.hydrateValueToForm();
     this.setSubFieldValue("price", AbstractOnlineShopScrapper.toMoneyAmount(product));
+    this.setSubFieldValue('date', new Date());
     this.value.price=this.getSubFieldValue("price");
+    this.value.date = this.getSubFieldValue('date');
 /*    this.ref.markForCheck();
     this.ref.detectChanges();*/
   }
 
+  /**
+   * Override this method to listen to shop name change
+   * @param component
+   * @param type
+   * @param formName
+   */
   override applyComponentToSubField(component: DynamicComponent, type: string, formName: string): boolean {
     const ret = super.applyComponentToSubField(component, type, formName);
     if (formName=='shop') {
