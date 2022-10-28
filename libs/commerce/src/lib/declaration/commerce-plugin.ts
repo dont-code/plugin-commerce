@@ -6,6 +6,9 @@ import {Plugin, DontCodeModel, PluginConfig, Core} from '@dontcode/core';
  * - As well it adds a new attribute 'seed' to any Entity and provides a viewer for the Previewer when its value is Yes or Maybe.
  */
 export class CommercePlugin implements Plugin {
+
+  public static readonly SHOP_ENTITY_NAME='Online Shop';
+
   getConfiguration(): PluginConfig {
     return {
       plugin: {
@@ -26,7 +29,7 @@ export class CommercePlugin implements Plugin {
               Commerce: {
                 enum: [
                   'Price',
-                  'Price Comparison',
+                  'Shop',
                   'Shop type'
                 ]}
               }
@@ -59,12 +62,12 @@ export class CommercePlugin implements Plugin {
             values: [{
               Commerce: {
                 enum: [
-                  'Price Comparison'
+                  'Shop'
                 ]}
             }]
           },
           class: {
-            name: 'PriceCompareComponent',
+            name: 'ShopHandlerComponent',
             source: 'commerce'
           }
         },
@@ -80,7 +83,7 @@ export class CommercePlugin implements Plugin {
             }]
           },
           class: {
-            name: 'ShopHandlerComponent',
+            name: 'ShopTypeHandlerComponent',
             source: 'commerce'
           }
         }
@@ -92,15 +95,15 @@ export class CommercePlugin implements Plugin {
             id:'*'
           },
           update: {
-            name: 'Online Shop',
+            name: CommercePlugin.SHOP_ENTITY_NAME,
             fields: {
               'aa': {
-                name:"Shop",
+                name: 'Shop',
                 type: 'Text'
               },
               'ab': {
-                name:"Type",
-                type:"Shop type"
+                name:'Type',
+                type:'Shop type'
               }
             }
           }

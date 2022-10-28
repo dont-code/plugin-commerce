@@ -11,6 +11,7 @@ import {GreenWeezScrapper} from "../scrappers/greenweez-scrapper";
 })
 export class PriceFinderService {
 
+  private static DONT_UPDATE_UNTIL_DELAY_MS = 1000*60*60*12; // Don't update price until 12h has passed since the last one
   protected listOfScrappers = new Map<string, OnlineShopScrapper> ();
   protected shopTypeNames = new Array<string>();
 
@@ -126,4 +127,26 @@ export class PriceFinderService {
     }
     return null;
   }
+
+  async updatePriceIfPossible(val: Price, position:string):Promise<MoneyAmount | null> {
+    if( val == null) return null;
+    if( (val.productId!=null)&& (val.shop!=null)) {
+      if ((val.date==null) ||
+          (val.date.getTime()+PriceFinderService.DONT_UPDATE_UNTIL_DELAY_MS < new Date().getTime())
+      ) {
+        // Yes we can update
+        const newPrice = await this.findPrice(val, val.shop, position);
+        return newPrice;
+      }
+    }
+    return null;
+  }
+}
+
+export interface Price {
+  productName?:string;
+  productId?:string;
+  price?:MoneyAmount;
+  date?:Date;
+  shop?:string;
 }

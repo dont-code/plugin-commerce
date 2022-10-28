@@ -16,13 +16,16 @@ import {ProductSelectionComponent} from "./shared/ui/product-selection.component
 import {DataViewModule} from "primeng/dataview";
 import {CardModule} from "primeng/card";
 import {BasicModule} from "@dontcode/plugin-basic";
+import {TooltipModule} from "primeng/tooltip";
+import {ShopTypeHandlerComponent} from "./preview/shop/shop-type-handler.component";
 
 @NgModule({
-  imports: [CommonModule, PluginCommonModule.forRoot(), BasicModule, FieldsModule, ReactiveFormsModule, InputTextModule, FormsModule, DropdownModule, RippleModule, ButtonModule, DataViewModule, CardModule],
+    imports: [CommonModule, PluginCommonModule.forRoot(), BasicModule, FieldsModule, ReactiveFormsModule, InputTextModule, FormsModule, DropdownModule, RippleModule, ButtonModule, DataViewModule, CardModule, TooltipModule],
   declarations: [
     PriceCompareComponent,
     PriceComponent,
     ShopHandlerComponent,
+    ShopTypeHandlerComponent,
     ProductSelectionComponent
   ],
   id:'dontcode-plugin/commerce' // A module containing previewer components must have an id to be found by the dont-code platform.
@@ -38,11 +41,13 @@ export class CommerceModule {
     return new Map<string, any> ([
       ['PriceComponent', PriceComponent],
       ['PriceCompareComponent', PriceCompareComponent],
-      ['ShopHandlerComponent', ShopHandlerComponent]
+      ['ShopHandlerComponent', ShopHandlerComponent],
+      ['ShopTypeHandlerComponent', ShopTypeHandlerComponent]
     ]);
   }
 }
 
 export * from './preview/price/price.component';
 export * from './preview/shop/shop-handler.component';
+export * from './preview/shop/shop-type-handler.component';
 export * from './preview/price/price-compare.component';

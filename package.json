@@ -24,6 +24,7 @@
     "@angular/platform-browser-dynamic": "^13.3.2",
     "@angular/router": "^13.3.2",
     "@dontcode/core": "^0.5.25",
+    "@dontcode/plugin-basic": "^0.5.27",
     "@dontcode/plugin-common": "^0.5.25",
     "@dontcode/plugin-fields": "^0.5.25",
     "@dontcode/sandbox": "^0.5.25",

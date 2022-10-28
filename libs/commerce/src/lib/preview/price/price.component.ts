@@ -9,7 +9,7 @@ import {
   TemplateList
 } from '@dontcode/plugin-common';
 import {FormControl} from "@angular/forms";
-import {PriceFinderService} from "../../shared/services/price-finder.service";
+import {Price, PriceFinderService} from "../../shared/services/price-finder.service";
 import {AbstractOnlineShopScrapper, ScrappedProduct} from "../../shared/online-shop-scrapper";
 
 @Component({
@@ -25,6 +25,8 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
   @ViewChild('fullEditView', { static: true })
   private fullEditView!: TemplateRef<any>;
 
+  override value: Price;
+
   productSelectionMode=false;
   listOfSelectableProducts = new Array<ScrappedProduct>();
 
@@ -33,7 +35,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     super (loader, injector, ref);
     this.defineSubField ('price', 'Other currency');
     this.defineSubField ('date', 'Date & Time');
-    this.defineSubField ('shop', 'Shop type');
+    this.defineSubField ('shop', 'Shop');
     this.value={};
   }
 
@@ -43,6 +45,16 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
 
   canProvide(key?: string): PossibleTemplateList {
     return new PossibleTemplateList(true, false, true);
+  }
+
+  override setValue(val: any) {
+    super.setValue(val);
+    this.priceFinder.updatePriceIfPossible(val, this.parentPosition??'').then(newPrice => {
+      if (newPrice!=null) {
+        this.value.price = newPrice;
+        this.value.date = new Date();
+      }
+    });
   }
 
   override createAndRegisterFormControls (): void {
@@ -67,16 +79,18 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
       testProduct.currencyCode="EUR";
       testProduct.productPrice=12;
       this.selectedProduct(testProduct);*/
-      // We have to let the use select the product
-      this.priceFinder.searchProducts(this.value.productName, this.value.shop).then(value => {
-        if( value!=null) {
-          this.listOfSelectableProducts = value;
-          this.productSelectionMode=true;
-          this.ref.markForCheck();
-          this.ref.detectChanges();
-        }
-      })
-    } else {
+      if ((this.value.productName!=null) && (this.value.shop!=null)) {
+        // We have to let the use select the product
+        this.priceFinder.searchProducts(this.value.productName, this.value.shop).then(value => {
+          if( value!=null) {
+            this.listOfSelectableProducts = value;
+            this.productSelectionMode=true;
+            this.ref.markForCheck();
+            this.ref.detectChanges();
+          }
+        });
+      }
+    } else if (this.value.shop!=null) {
       this.priceFinder.findPrice(this.value, this.value.shop, this.parentPosition??"").then (newPrice => {
         if (newPrice!=null) {
           this.setSubFieldValue('price', newPrice);
@@ -89,7 +103,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
   selectedProduct(product: ScrappedProduct) {
     this.productSelectionMode=false;
     this.value.productId=product.productId;
-    this.value.productName=product.productName;
+    this.value.productName=product.productName??undefined;
     this.hydrateValueToForm();
     this.setSubFieldValue("price", AbstractOnlineShopScrapper.toMoneyAmount(product));
     this.setSubFieldValue('date', new Date());
@@ -108,9 +122,9 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
   override applyComponentToSubField(component: DynamicComponent, type: string, formName: string): boolean {
     const ret = super.applyComponentToSubField(component, type, formName);
     if (formName=='shop') {
-      const $valueChange = component.selectEventSourceFor(DynamicEventType.VALUE_CHANGE);
-      if ($valueChange!=null) {
-        this.subscriptions.add($valueChange.eventSource.subscribe({
+      const valueChange = component.selectEventSourceFor(DynamicEventType.VALUE_CHANGE);
+      if (valueChange!=null) {
+        this.subscriptions.add(valueChange.eventSource.subscribe({
           next: (event) => {
             this.clearProduct ();
           }

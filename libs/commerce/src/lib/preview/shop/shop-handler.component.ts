@@ -1,64 +1,23 @@
-import {Component, EventEmitter, Output, TemplateRef, ViewChild} from '@angular/core';
-import {AbstractDynamicComponent, PossibleTemplateList, TemplateList} from '@dontcode/plugin-common';
-import {FormControl} from "@angular/forms";
-import {PriceFinderService} from "../../shared/services/price-finder.service";
-import {
-  BaseDynamicEvent,
-  BaseDynamicEventSource,
-  DynamicEvent,
-  DynamicEventSource,
-  DynamicEventType
-} from "@dontcode/plugin-common";
+import {Component} from '@angular/core';
+import {AbstractReferenceComponent} from '@dontcode/plugin-common';
+import {DontCodeModelManager, DontCodeStoreManager} from "@dontcode/core";
+import {CommercePlugin} from "../../declaration/commerce-plugin";
 
+/**
+ * Display and enable selection of a shop.
+ * Shops are found by listing all entities that are managed with the Entity definition 'Online Shop'
+ */
 @Component({
-  selector: 'dontcode-commerce-shop-type',
+  selector: 'dontcode-commerce-shop',
   templateUrl: './shop-handler.component.html',
   styleUrls: ['./shop-handler.component.scss']
 })
-export class ShopHandlerComponent extends AbstractDynamicComponent {
+export class ShopHandlerComponent extends AbstractReferenceComponent {
 
-  @ViewChild('inlineView', { static: true })
-  private inlineView!: TemplateRef<any>;
-
-  @ViewChild('fullEditView', { static: true })
-  private fullEditView!: TemplateRef<any>;
-  shopTypes = new Array<string>();
-
-  @Output()
-  valueChange = new EventEmitter<DynamicEvent>();
-
-  constructor(protected priceFinder:PriceFinderService) {
-    super ();
-    this.shopTypes=this.priceFinder.getListOfShopTypes();
+  constructor(modelMgr:DontCodeModelManager, storeMgr:DontCodeStoreManager) {
+    super (modelMgr, storeMgr);
+    // Manages the list of Shops
+    this.setTargetEntitiesWithName(CommercePlugin.SHOP_ENTITY_NAME, 'Shop');
   }
 
-  override createAndRegisterFormControls (): void {
-    this.form.registerControl(this.name, new FormControl(null, {updateOn:"change"}));
-  }
-
-  providesTemplates(key?: string): TemplateList {
-    return new TemplateList(this.inlineView, null, this.fullEditView);
-  }
-
-  canProvide(key?: string): PossibleTemplateList {
-    return new PossibleTemplateList(true, false, true);
-  }
-
-  displayableValue():string {
-    const ret= AbstractDynamicComponent.toBeautifyString (this.value);
-    if (ret==null)  return "";
-    else return ret;
-  }
-
-  override listEventSources(): DynamicEventSource[] {
-    const ret= super.listEventSources();
-    ret.push(
-      new BaseDynamicEventSource ("Value", DynamicEventType.VALUE_CHANGE, this.valueChange.asObservable())
-    );
-    return ret;
-  }
-
-  valueChanged($event: any):void {
-    this.valueChange.emit(new BaseDynamicEvent("Value", DynamicEventType.VALUE_CHANGE, $event.value));
-  }
 }

@@ -1,6 +1,6 @@
 [
   {
-    "name": "Test Price",
+    "name": "Product Price",
     "sequence": [
       {
         "position": "creation/entities/b",
@@ -20,51 +20,6 @@
           "ab": {
             "name": "Price",
             "type": "Price"
-          }
-        }
-      }
-    ]
-  }, {
-  "name": "Shops",
-  "sequence": [{
-      "position": "creation/entities/shops",
-        "type": "ADD",
-        "value": {
-          "name": "Shop",
-          "fields": {
-            "aa": {
-              "name": "Name",
-              "type": "Text"
-            },
-            "ab": {
-              "name": "Type",
-              "type": "Shop type"
-            }
-          }
-        }
-      }]
-  },
-  {
-    "name": "Test Price Comparison",
-    "sequence": [
-      {
-        "position": "creation/entities/b",
-        "type": "ADD",
-        "value": {
-          "name": "Comparison"
-        }
-      },
-      {
-        "position": "creation/entities/b/fields",
-        "type": "ADD",
-        "value": {
-          "ba": {
-            "name": "Product Name",
-            "type": "string"
-          },
-          "bb": {
-            "name": "Price",
-            "type": "Price Comparison"
           }
         }
       }
