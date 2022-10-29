@@ -29,3 +29,5 @@ export const checkValueOfInputWithName = (name: string, value: string) =>
   getValueOfInputWithName(name).should('equal', value);
 export const getCheckWithName = (name: string) =>
   cy.get('p-checkbox[ng-reflect-name="' + name + '"]');
+
+export const getListRowWithText = (text:string) => cy.get('table > tbody > tr').contains('tr', text);

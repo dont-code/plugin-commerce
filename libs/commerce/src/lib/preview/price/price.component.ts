@@ -33,7 +33,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
   constructor(loader: ComponentLoaderService,protected priceFinder:PriceFinderService,
               injector: Injector, ref: ChangeDetectorRef) {
     super (loader, injector, ref);
-    this.defineSubField ('price', 'Other currency');
+    this.defineSubField ('cost', 'Other currency');
     this.defineSubField ('date', 'Date & Time');
     this.defineSubField ('shop', 'Shop');
     this.value={};
@@ -93,7 +93,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     } else if (this.value.shop!=null) {
       this.priceFinder.findPrice(this.value, this.value.shop, this.parentPosition??"").then (newPrice => {
         if (newPrice!=null) {
-          this.setSubFieldValue('price', newPrice);
+          this.setSubFieldValue('cost', newPrice);
           this.setSubFieldValue('date', new Date());
         }
       })
@@ -105,9 +105,9 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     this.value.productId=product.productId;
     this.value.productName=product.productName??undefined;
     this.hydrateValueToForm();
-    this.setSubFieldValue("price", AbstractOnlineShopScrapper.toMoneyAmount(product));
+    this.setSubFieldValue("cost", AbstractOnlineShopScrapper.toMoneyAmount(product));
     this.setSubFieldValue('date', new Date());
-    this.value.price=this.getSubFieldValue("price");
+    this.value.price=this.getSubFieldValue("cost");
     this.value.date = this.getSubFieldValue('date');
 /*    this.ref.markForCheck();
     this.ref.detectChanges();*/

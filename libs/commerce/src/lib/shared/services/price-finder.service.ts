@@ -2,9 +2,19 @@ import {Injectable, Optional} from '@angular/core';
 import {OnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapper";
 import {HttpClient} from "@angular/common/http";
 import {EasyParaScrapper} from "../scrappers/easy-para-scrapper";
-import {DontCodeEntityType, DontCodeModelManager, dtcde, MoneyAmount} from "@dontcode/core";
+import {
+  DontCodeEntityType,
+  DontCodeModelManager,
+  DontCodeStoreCriteriaOperator,
+  DontCodeStoreManager,
+  dtcde,
+  MoneyAmount
+} from "@dontcode/core";
 import {PriceModel} from "../price-model";
 import {GreenWeezScrapper} from "../scrappers/greenweez-scrapper";
+import {CommerceModule, ShopHandlerComponent} from "@dontcode/plugin-commerce";
+import {CommercePlugin} from "../../declaration/commerce-plugin";
+import {firstValueFrom, of} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +25,10 @@ export class PriceFinderService {
   protected listOfScrappers = new Map<string, OnlineShopScrapper> ();
   protected shopTypeNames = new Array<string>();
 
-  constructor(protected httpClient:HttpClient, @Optional() protected modelMgr:DontCodeModelManager) {
+  constructor(protected httpClient:HttpClient, @Optional() protected modelMgr:DontCodeModelManager,
+              @Optional() protected storeMgr:DontCodeStoreManager) {
     if (this.modelMgr==null)  this.modelMgr=dtcde.getModelManager();
+    if (this.storeMgr==null) this.storeMgr=dtcde.getStoreManager();
 
     this.addScrapper (new EasyParaScrapper(httpClient));
     this.addScrapper (new GreenWeezScrapper(httpClient));
@@ -35,13 +47,13 @@ export class PriceFinderService {
    * Finds the list of products corresponding to the productInfo given for the shopTypeName given at the model position given.
    * @param productInfo
    * @param position
-   * @param shopTypeName
+   * @param shopName
    * @param model
    */
-  searchProducts (productName: string, shopTypeName:string): Promise<Array<ScrappedProduct>> {
-    const scrapper = this.listOfScrappers.get(shopTypeName);
+  async searchProducts (productName: string, shopName:string): Promise<Array<ScrappedProduct>> {
+    const scrapper = this.listOfScrappers.get(await this.getShopTypeNameOf (shopName));
     if (scrapper==null)
-      throw new Error ("Shop type "+shopTypeName+" not found");
+      throw new Error ("Shop type "+shopName+" not found");
 
     return scrapper.searchProductsForName(productName);
   }
@@ -51,16 +63,16 @@ export class PriceFinderService {
    * and updates it
    * @param productValue
    * @param position
-   * @param shopTypeName
+   * @param shopName
    * @param model
    */
-  findPrice (productValue: any, shopTypeName:string, position:string, model?:DontCodeEntityType): Promise<MoneyAmount|null> {
+  async findPrice (productValue: any, shopName:string, position:string, model?:DontCodeEntityType): Promise<MoneyAmount|null> {
     if (productValue==null) {
       throw new Error ("No product to get price for");
     }
-    const scrapper = this.listOfScrappers.get(shopTypeName);
+    const scrapper = this.listOfScrappers.get(await this.getShopTypeNameOf (shopName));
     if (scrapper==null)
-      throw new Error ("Shop type "+shopTypeName+" not found");
+      throw new Error ("Shop type "+shopName+" not found");
 
     if( model==null){
       model = this.modelMgr.findAtPosition(position, false);
@@ -140,6 +152,25 @@ export class PriceFinderService {
       }
     }
     return null;
+  }
+
+  private getShopTypeNameOf(shopName: string):Promise<string> {
+    const query="$.creation.entities[?(@.name=='"+CommercePlugin.SHOP_ENTITY_NAME+"')]";
+    const targetEntitiesPos = this.modelMgr.queryModelToSingle(query).pointer;
+
+    if (targetEntitiesPos==null)  return Promise.resolve(shopName);
+
+    return firstValueFrom(this.storeMgr.searchEntities(targetEntitiesPos, {
+      name:'Shop',
+      value:shopName,
+      operator:DontCodeStoreCriteriaOperator.EQUALS
+    })).then((loaded) => {
+      if (loaded?.length!=1) return shopName;
+      if( loaded[0].Type!=null)
+        return loaded[0].Type;
+      else
+        return shopName;
+    })
   }
 }
 
