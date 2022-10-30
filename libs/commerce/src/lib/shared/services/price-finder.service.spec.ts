@@ -28,7 +28,7 @@ describe('PriceFinderService', () => {
     expect(service).toBeTruthy();
   });
 
- /* it('should manage easypara prices', (done) => {
+ it('should manage easypara prices', (done) => {
     dtcde.getModelManager().resetContent({
       creation: {
         entities: {
@@ -63,11 +63,11 @@ describe('PriceFinderService', () => {
        }).catch(error => {
          done (error);
        });
-      expectOneSampleFile("easypara/chardon-marie-search-result.json", httpTestingController);
     }).catch(error => {
       done (error);
     });
-    waitForOneMatchSampleFile("easypara/chardon-marie-search-result.json", httpTestingController);
-    waitForOneMatchSampleFile("easypara/chardon-marie-search-result.json", httpTestingController);
-  });*/
+    // We wait for 2 queries
+    waitForOneMatchSampleFile("easypara/chardon-marie-search-result.json", httpTestingController, done);
+    waitForOneMatchSampleFile("easypara/chardon-marie-search-result.json", httpTestingController, done);
+  });
 });

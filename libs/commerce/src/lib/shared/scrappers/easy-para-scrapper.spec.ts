@@ -63,9 +63,14 @@ export function expectOneSampleFile (sampleFileRelative:string, controller:HttpT
   return searchCall;
 }
 
-export function waitForOneMatchSampleFile (sampleFileRelative:string, controller:HttpTestingController):void {
-  const maxWait = new Date().getTime()+10000; // Wait for 10s max
-  do {
+export function waitForOneMatchSampleFile (sampleFileRelative:string, controller:HttpTestingController, done:jest.DoneCallback):void {
+  setTimeout(() => {
+    const counter= 0;
+    __isMatchRecursive(sampleFileRelative, controller, done, counter);
+  }, 100);
+}
+
+function __isMatchRecursive (sampleFileRelative:string, controller:HttpTestingController, done:jest.DoneCallback, counter:number):void {
     const searchCall = controller.match(req => {
       if (req.url.startsWith(AbstractOnlineShopScrapper.CORS_SERVER_URL))
         return true;
@@ -80,9 +85,14 @@ export function waitForOneMatchSampleFile (sampleFileRelative:string, controller
       } else throw new Error("Multiple requests occured for sample file "+sampleFileRelative);
     }
 
-  } while (new Date().getTime()<maxWait);
+    counter++;
+    // Wait 5 s max
+    if (counter<50) {
+      setTimeout (()=> __isMatchRecursive(sampleFileRelative, controller, done, counter), 100);
+    } else {
+      done("No query created");
+    }
 
-  throw new Error ("No requests occured for sample file "+sampleFileRelative);
 }
 
 export function expectMultipleSampleFile (sampleFileRelative:string, controller:HttpTestingController): number {
