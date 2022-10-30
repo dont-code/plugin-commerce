@@ -1,7 +1,7 @@
 import {
   checkValueOfInputWithName,
-  clickAutoComplete, getButtonWithName,
-  getContentArea,
+  clickAutoComplete, getButtonWithName, getButtonWithText,
+  getContentArea, getDivWithId,
   getDropdownListItemWithName,
   getDropdownWithName,
   getInputWithName, getListRowWithText,
@@ -83,14 +83,15 @@ describe('Commerce test', () => {
         getButtonWithName('FetchPrice').click();
         cy.wait('@LoadPrice');
 
-        checkValueOfInputWithName('price', '234.00');
+        getDivWithId('Price-select').find('Button').first().click();
+        checkValueOfInputWithName('cost', Intl.NumberFormat(navigator.language).format(10.99));
 
-        getDropdownWithName('currencyCode').click();
+        getDropdownWithName('currencyCode').click('right');
         getDropdownListItemWithName('Pound Sterling - GBP').click();
 
         getButtonWithName("save").click();
 
-        getListRowWithText(FormatUtils.generateMoney(123, "GBP") + ' (Shop 2)');
+        getListRowWithText(FormatUtils.generateMoney(10.99, "GBP") + ' (Shop 2)');
       });
 
     });

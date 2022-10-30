@@ -1,5 +1,5 @@
 <dtcde-dynamic></dtcde-dynamic>
-<ng-template #inlineView><span pTooltip="Price Date: {{value.date}}">
+<ng-template #inlineView><span pTooltip="Price Date: {{value?.date}}">
     <ng-container *ngTemplateOutlet="subFieldInlineViewTemplate('cost')"></ng-container>&nbsp;
     <small>(<ng-container *ngTemplateOutlet="subFieldInlineViewTemplate('shop')"></ng-container>)</small>
   </span>
@@ -34,7 +34,7 @@
         </span>
       </div>
       <ng-container *ngIf="productSelectionMode">
-        <div class="field col-12"><dontcode-commerce-product-selection [listOfProducts]="listOfSelectableProducts" (selected)="selectedProduct ($event)"></dontcode-commerce-product-selection>
+        <div [id]="name+'-select'" class="field col-12"><dontcode-commerce-product-selection [listOfProducts]="listOfSelectableProducts" (selected)="selectedProduct ($event)"></dontcode-commerce-product-selection>
         </div>
       </ng-container>
     </div>

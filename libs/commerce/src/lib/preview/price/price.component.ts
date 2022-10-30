@@ -1,6 +1,5 @@
 import {ChangeDetectorRef, Component, Injector, TemplateRef, ViewChild} from '@angular/core';
 import {
-  AbstractDynamicComponent,
   AbstractDynamicLoaderComponent,
   ComponentLoaderService,
   DynamicComponent,
@@ -51,7 +50,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     super.setValue(val);
     this.priceFinder.updatePriceIfPossible(val, this.parentPosition??'').then(newPrice => {
       if (newPrice!=null) {
-        this.value.price = newPrice;
+        this.value.cost = newPrice;
         this.value.date = new Date();
       }
     });
@@ -107,7 +106,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     this.hydrateValueToForm();
     this.setSubFieldValue("cost", AbstractOnlineShopScrapper.toMoneyAmount(product));
     this.setSubFieldValue('date', new Date());
-    this.value.price=this.getSubFieldValue("cost");
+    this.value.cost=this.getSubFieldValue("cost");
     this.value.date = this.getSubFieldValue('date');
 /*    this.ref.markForCheck();
     this.ref.detectChanges();*/

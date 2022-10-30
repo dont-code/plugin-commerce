@@ -14,7 +14,7 @@ import {PriceModel} from "../price-model";
 import {GreenWeezScrapper} from "../scrappers/greenweez-scrapper";
 import {CommerceModule, ShopHandlerComponent} from "@dontcode/plugin-commerce";
 import {CommercePlugin} from "../../declaration/commerce-plugin";
-import {firstValueFrom, of} from "rxjs";
+import {firstValueFrom, from, of} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -141,7 +141,7 @@ export class PriceFinderService {
   }
 
   async updatePriceIfPossible(val: Price, position:string):Promise<MoneyAmount | null> {
-    if( val == null) return null;
+   if( val == null) return null;
     if( (val.productId!=null)&& (val.shop!=null)) {
       if ((val.date==null) ||
           (val.date.getTime()+PriceFinderService.DONT_UPDATE_UNTIL_DELAY_MS < new Date().getTime())
@@ -160,24 +160,26 @@ export class PriceFinderService {
 
     if (targetEntitiesPos==null)  return Promise.resolve(shopName);
 
+    console.log("Getting shoptype");
     return firstValueFrom(this.storeMgr.searchEntities(targetEntitiesPos, {
       name:'Shop',
       value:shopName,
       operator:DontCodeStoreCriteriaOperator.EQUALS
     })).then((loaded) => {
+      console.log("shoptype found");
       if (loaded?.length!=1) return shopName;
       if( loaded[0].Type!=null)
         return loaded[0].Type;
       else
         return shopName;
-    })
+    });
   }
 }
 
 export interface Price {
   productName?:string;
   productId?:string;
-  price?:MoneyAmount;
+  cost?:MoneyAmount;
   date?:Date;
   shop?:string;
 }

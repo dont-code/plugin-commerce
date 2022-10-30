@@ -1,6 +1,6 @@
-<p-dataView [value]="listOfProducts" [rows]="6" [paginator]="true" layout="grid">Hello
+<p-dataView [value]="listOfProducts" [rows]="6" [paginator]="true" layout="grid">
   <ng-template let-product pTemplate="gridItem">
-    <div class="col-4 md:col-2">
+    <div class="col-6 md:col-3">
       <p-card [header]="product.productName">
         <ng-template pTemplate="header">
           <img *ngIf="product.productImageUrl!==null" [src]="product.productImageUrl" width="80px" height="120px" />&nbsp;
@@ -8,7 +8,7 @@
         <p><small>{{product.productDescription}}</small></p>
         <p><h2>{{localizedAmount(product)}}</h2>
         <ng-template pTemplate="footer">
-          <p-button label="Select" icon="pi pi-check" (click)="selectionOf (product)"></p-button>
+          <button label="Select" icon="pi pi-check" pButton (click)="selectionOf (product)"></button>
         </ng-template>
       </p-card>
     </div>
