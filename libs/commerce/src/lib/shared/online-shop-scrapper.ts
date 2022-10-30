@@ -41,13 +41,6 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
 
   protected onlineShopName="Unknown";
 
-  constructor(protected http:HttpClient) {
-  }
-
-  getOnlineShopName(): string {
-    return this.onlineShopName;
-  }
-
   /**
    * Helper method to convert a scrappedProduct to a MoneyAmount.
    * @param scrappedProduct
@@ -57,6 +50,13 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
     ret.amount=scrappedProduct.productPrice;
     ret.currencyCode=scrappedProduct.currencyCode;
     return ret;
+  }
+
+  constructor(protected http:HttpClient) {
+  }
+
+  getOnlineShopName(): string {
+    return this.onlineShopName;
   }
 
   getShopTypeName (): string {

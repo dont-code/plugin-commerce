@@ -12,9 +12,8 @@ import {
 } from "@dontcode/core";
 import {PriceModel} from "../price-model";
 import {GreenWeezScrapper} from "../scrappers/greenweez-scrapper";
-import {CommerceModule, ShopHandlerComponent} from "@dontcode/plugin-commerce";
 import {CommercePlugin} from "../../declaration/commerce-plugin";
-import {firstValueFrom, from, of} from "rxjs";
+import {firstValueFrom} from "rxjs";
 
 @Injectable({
   providedIn: 'root'

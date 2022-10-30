@@ -1,13 +1,8 @@
 import {TestBed} from '@angular/core/testing';
-
-import {EasyParaScrapper} from './easy-para-scrapper';
 import {PluginCommonModule} from "@dontcode/plugin-common";
-import {HttpClientTestingModule, HttpTestingController, TestRequest} from "@angular/common/http/testing";
-import {ShopHandlerComponent} from "@dontcode/plugin-commerce";
+import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
+import {ShopHandlerComponent} from "../../preview/shop/shop-handler.component";
 import {HttpClient} from "@angular/common/http";
-import {AbstractOnlineShopScrapper} from "../online-shop-scrapper";
-import * as fs from "fs";
-import * as Path from "path";
 import {GreenWeezScrapper} from "./greenweez-scrapper";
 import {expectOneSampleFile} from "./easy-para-scrapper.spec";
 

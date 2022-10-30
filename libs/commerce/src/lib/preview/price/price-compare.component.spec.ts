@@ -1,6 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {PluginCommonModule} from "@dontcode/plugin-common";
-import {PriceCompareComponent} from "@dontcode/plugin-commerce";
+import {PriceCompareComponent} from "./price-compare.component";
 
 describe('Price Compare Component', () => {
   let component: PriceCompareComponent;
