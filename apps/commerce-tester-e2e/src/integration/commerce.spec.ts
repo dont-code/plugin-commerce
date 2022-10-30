@@ -78,7 +78,7 @@ describe('Commerce test', () => {
         getButtonWithName("new").click();
         getInputWithName('Name').type("Product 1");
         getInputWithName('productName').type("Product 1 Name");
-        getDropdownWithName('shop').click();
+        getDropdownWithName('shop').click('right');
         getDropdownListItemWithName('Shop 2').click();
         getButtonWithName('FetchPrice').click();
         cy.wait('@LoadPrice');
