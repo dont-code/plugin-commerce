@@ -1,4 +1,4 @@
-import {TestBed} from '@angular/core/testing';
+import {TestBed, tick} from '@angular/core/testing';
 
 import {EasyParaScrapper} from './easy-para-scrapper';
 import {PluginCommonModule} from "@dontcode/plugin-common";
@@ -61,6 +61,28 @@ export function expectOneSampleFile (sampleFileRelative:string, controller:HttpT
   const responseRead=fs.readFileSync(Path.join(__dirname,"../../../../../../samples/",sampleFileRelative), {encoding:'utf-8'});
   searchCall.flush(responseRead);
   return searchCall;
+}
+
+export function waitForOneMatchSampleFile (sampleFileRelative:string, controller:HttpTestingController):void {
+  const maxWait = new Date().getTime()+10000; // Wait for 10s max
+  do {
+    const searchCall = controller.match(req => {
+      if (req.url.startsWith(AbstractOnlineShopScrapper.CORS_SERVER_URL))
+        return true;
+      else
+        return false;
+    });
+    if (searchCall!=null && searchCall.length>0) {
+      if (searchCall.length==1) {
+        const responseRead=fs.readFileSync(Path.join(__dirname,"../../../../../../samples/",sampleFileRelative), {encoding:'utf-8'});
+        searchCall[0].flush(responseRead);
+        return;
+      } else throw new Error("Multiple requests occured for sample file "+sampleFileRelative);
+    }
+
+  } while (new Date().getTime()<maxWait);
+
+  throw new Error ("No requests occured for sample file "+sampleFileRelative);
 }
 
 export function expectMultipleSampleFile (sampleFileRelative:string, controller:HttpTestingController): number {
