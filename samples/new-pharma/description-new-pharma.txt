@@ -1,0 +1,13 @@
+Search:   https://www.newpharma.fr/search-results/search.html?q=chardon marie
+
+Title: Get first   <a class="details__title js-product-detail-row js-product-click"
+                        title="A.Vogel Chardon-Marie Digestion Extrait De Plante Flacon 50ml">
+
+Price: Get first            <div class="c-price__sale c-price__sale--permanent">
+                              <div>
+                                <span>12,<sup>20</sup></span>&nbsp;
+                                <span class="currency"></span>
+                              </div>
+                            </div>
+
+

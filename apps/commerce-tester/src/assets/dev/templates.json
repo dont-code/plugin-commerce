@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Product Price",
+    "sequence": [
+      {
+        "position": "creation/entities/b",
+        "type": "ADD",
+        "value": {
+          "name": "Product"
+        }
+      },
+      {
+        "position": "creation/entities/b/fields",
+        "type": "ADD",
+        "value": {
+          "aa": {
+            "name": "Name",
+            "type": "string"
+          },
+          "ab": {
+            "name": "Price",
+            "type": "Price"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Empty Application",
+    "type": "RESET",
+    "position": "creation",
+    "value": null
+  }
+]

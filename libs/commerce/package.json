@@ -1,0 +1,17 @@
+{
+  "name": "@dontcode/plugin-commerce",
+  "version": "0.1.0",
+  "peerDependencies": {
+    "@angular/common": "^13.3.2",
+    "@angular/core": "^13.3.2",
+    "@dontcode/core": "^0.5.25",
+    "@dontcode/plugin-common": "^0.5.25",
+    "@dontcode/sandbox": "^0.5.25",
+    "@dontcode/plugin-basic": "^0.5.25",
+    "@dontcode/plugin-fields": "^0.5.25",
+    "rxjs": "^7.5.5"
+  },
+  "dependencies": {
+    "tslib": "^2.3.1"
+  }
+}

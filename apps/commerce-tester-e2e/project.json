@@ -1,0 +1,28 @@
+{
+  "root": "apps/commerce-tester-e2e",
+  "sourceRoot": "apps/commerce-tester-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/commerce-tester-e2e/cypress.json",
+        "tsConfig": "apps/commerce-tester-e2e/tsconfig.e2e.json",
+        "devServerTarget": "commerce-tester:serve:development"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "commerce-tester:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/commerce-tester-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["commerce-tester"]
+}
