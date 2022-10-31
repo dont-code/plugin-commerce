@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectorRef, Component} from '@angular/core';
 import {AbstractReferenceComponent} from '@dontcode/plugin-common';
 import {DontCodeModelManager, DontCodeStoreManager} from "@dontcode/core";
 import {CommercePlugin} from "../../declaration/commerce-plugin";

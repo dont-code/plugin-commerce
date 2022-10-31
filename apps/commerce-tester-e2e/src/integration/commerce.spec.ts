@@ -11,9 +11,15 @@ import {
 } from '../support/app.po';
 
 describe('Commerce test', () => {
-  beforeEach(() => cy.visit('/'));
+  beforeEach(() => cy.visit('/', {
+    onBeforeLoad (win) {
+      cy.stub(win.console, 'log').callsFake((args:any[]) => {
+        cy.task('log',args);
+      });
+    },
+  }));
 
-  it('should display Price', () => {
+  /*it('should display Price', () => {
     cy.clearDbCollection("Online Shop").then (() => {
       cy.clearDbCollection("Product"). then (() => {
 
@@ -66,6 +72,7 @@ describe('Commerce test', () => {
         getDropdownWithName('Type').click("right");
         getDropdownListItemWithName('GreenWeez').click();
         getButtonWithName("save").click();
+        cy.get('th[id="header-Shop"]');
 
         getButtonWithName("new").click();
         getInputWithName('Shop').type("Shop 2");
@@ -73,6 +80,10 @@ describe('Commerce test', () => {
         getDropdownListItemWithName('EasyParapharmacie').click();
         getButtonWithName("save").click();
 
+        cy.get('th[id="header-Shop"]');
+        getSubMenuWithText('Dev').click(); // Move to dev page
+        getSubMenuWithText('Online Shop').click();
+        cy.get('th[id="header-Shop"]');
         getSubMenuWithText('Product').click();
 
         getButtonWithName("new").click();
@@ -95,7 +106,7 @@ describe('Commerce test', () => {
       });
 
     });
-  });
+  });*/
 
 });
 
