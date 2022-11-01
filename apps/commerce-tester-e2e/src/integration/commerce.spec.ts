@@ -11,15 +11,10 @@ import {
 } from '../support/app.po';
 
 describe('Commerce test', () => {
-  beforeEach(() => cy.visit('/', {
-    onBeforeLoad (win) {
-      cy.stub(win.console, 'log').callsFake((args:any[]) => {
-        cy.task('log',args);
-      });
-    },
-  }));
+  beforeEach(() => cy.visit('/'));
 
-  /*it('should display Price', () => {
+  /*
+  it('should display Price', () => {
     cy.clearDbCollection("Online Shop").then (() => {
       cy.clearDbCollection("Product"). then (() => {
 
@@ -62,6 +57,11 @@ describe('Commerce test', () => {
         getSubMenuWithText('Dev').click(); // Move to dev page
 
         cy.wait('@LoadTemplate');
+
+        clickAutoComplete('template');
+        selectPopupChoiceWithText('Online Shop');
+        getSendButton().click();
+
         clickAutoComplete('template');
         selectPopupChoiceWithText('Product Price');
         getSendButton().click();
