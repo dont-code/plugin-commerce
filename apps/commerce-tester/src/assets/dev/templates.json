@@ -1,5 +1,31 @@
 [
   {
+    "name": "Online Shops",
+    "sequence": [
+      {
+        "position": "creation/entities/a",
+        "type": "ADD",
+        "value": {
+          "name": "Online Shop"
+        }
+      },
+      {
+        "position": "creation/entities/a/fields",
+        "type": "ADD",
+        "value": {
+          "aa": {
+            "name": "Shop",
+            "type": "Text"
+          },
+          "ab": {
+            "name": "Type",
+            "type": "Shop type"
+          }
+        }
+      }
+    ]
+  },
+  {
     "name": "Product Price",
     "sequence": [
       {
@@ -15,7 +41,7 @@
         "value": {
           "aa": {
             "name": "Name",
-            "type": "string"
+            "type": "Text"
           },
           "ab": {
             "name": "Price",
