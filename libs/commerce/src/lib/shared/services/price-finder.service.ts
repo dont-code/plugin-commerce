@@ -159,13 +159,11 @@ export class PriceFinderService {
 
     if (targetEntitiesPos==null)  return Promise.resolve(shopName);
 
-    console.log("Getting shoptype");
     return firstValueFrom(this.storeMgr.searchEntities(targetEntitiesPos, {
       name:'Shop',
       value:shopName,
       operator:DontCodeStoreCriteriaOperator.EQUALS
     })).then((loaded) => {
-      console.log("shoptype found");
       if (loaded?.length!=1) return shopName;
       if( loaded[0].Type!=null)
         return loaded[0].Type;
@@ -181,4 +179,5 @@ export interface Price {
   cost?:MoneyAmount;
   date?:Date;
   shop?:string;
+  url?: string;
 }

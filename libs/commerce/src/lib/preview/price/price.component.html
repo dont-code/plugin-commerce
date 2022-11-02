@@ -1,7 +1,14 @@
 <dtcde-dynamic></dtcde-dynamic>
 <ng-template #inlineView><span pTooltip="Price Date: {{value?.date}}">
+  <ng-container *ngIf="value?.url">
+    <a href="{{value.url}}" target="_blank">
+      <ng-container *ngTemplateOutlet="subFieldInlineViewTemplate('cost')"></ng-container>&nbsp;
+    </a>
+  </ng-container>
+  <ng-container *ngIf="!value?.url">
     <ng-container *ngTemplateOutlet="subFieldInlineViewTemplate('cost')"></ng-container>&nbsp;
-    <small>(<ng-container *ngTemplateOutlet="subFieldInlineViewTemplate('shop')"></ng-container>)</small>
+  </ng-container>
+  <small>(<ng-container *ngTemplateOutlet="subFieldInlineViewTemplate('shop')"></ng-container>)</small>
   </span>
 </ng-template>
 <ng-template #fullEditView>
@@ -9,7 +16,7 @@
     <div class="formgrid grid">
       <div class="field col-12 md:col-6">
         <span class="p-float-label">
-          <input [id]="name+'-name'" type="text" pInputText formControlName="productName" class="w-full">
+          <input [id]="name+'-name'" type="text" pInputText formControlName="productName" class="w-full" (input)="productNameChanged($event)">
           <label [for]="name+'-name'">Product Name</label>
         </span>
       </div>

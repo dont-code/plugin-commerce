@@ -11,7 +11,7 @@ export class ProductSelectionComponent {
   listOfProducts=new Array<ScrappedProduct>();
 
   @Output()
-  selected = new EventEmitter<ScrappedProduct>();
+  selected = new EventEmitter<ScrappedProduct|null>();
 
   constructor(protected ref: ChangeDetectorRef) {
   }
@@ -27,4 +27,7 @@ export class ProductSelectionComponent {
       .format(product.productPrice);
   }
 
+  notFound() {
+    this.selected.next(null);
+  }
 }

@@ -35,6 +35,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     this.defineSubField ('cost', 'Other currency');
     this.defineSubField ('date', 'Date & Time');
     this.defineSubField ('shop', 'Shop');
+    this.defineSubField ('url', 'Website (url)');
     this.value={};
   }
 
@@ -99,15 +100,21 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     }
   }
 
-  selectedProduct(product: ScrappedProduct) {
+  selectedProduct(product: ScrappedProduct|null) {
     this.productSelectionMode=false;
-    this.value.productId=product.productId;
-    this.value.productName=product.productName??undefined;
-    this.hydrateValueToForm();
-    this.setSubFieldValue("cost", AbstractOnlineShopScrapper.toMoneyAmount(product));
-    this.setSubFieldValue('date', new Date());
-    this.value.cost=this.getSubFieldValue("cost");
-    this.value.date = this.getSubFieldValue('date');
+    if( product!=null) {
+      this.value.productId=product.productId;
+      this.value.productName=product.productName??undefined;
+      this.hydrateValueToForm();
+      this.setSubFieldValue("cost", AbstractOnlineShopScrapper.toMoneyAmount(product));
+      this.setSubFieldValue('date', new Date());
+      this.setSubFieldValue('url', product.productUrl);
+      this.value.cost=this.getSubFieldValue("cost");
+      this.value.date = this.getSubFieldValue('date');
+      this.value.url = this.getSubFieldValue('url');
+    } else {
+      this.clearProduct();
+    }
 /*    this.ref.markForCheck();
     this.ref.detectChanges();*/
   }
@@ -134,8 +141,12 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
   }
 
   clearProduct ():void {
+    this.productSelectionMode=false;
     delete this.value.productId;
     this.hydrateValueToForm();
   }
 
+  productNameChanged(event: Event) {
+    this.clearProduct();
+  }
 }
