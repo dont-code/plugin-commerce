@@ -34,11 +34,11 @@
       <div class="field col-12 md:col-6">Date of Price:&nbsp;
         <ng-container *ngTemplateOutlet="subFieldFullEditTemplate('date')"></ng-container>
       </div>
-      <div class="field col-12">
-        <span class="p-float-label">
-          <input [id]="name+'-id'" type="text" readonly="true" pInputText formControlName="productId" class="w-full">
-          <label [for]="name+'-id'">Product Id</label>
-        </span>
+      <div class="field col-12 md:col-6">Product Id:
+          <input type="text" pInputText formControlName="productId" class="w-full">
+      </div>
+      <div class="field col-12 md:col-6">Product url:
+          <ng-container *ngTemplateOutlet="subFieldFullEditTemplate('url')"></ng-container>
       </div>
       <ng-container *ngIf="productSelectionMode">
         <div [id]="name+'-select'" class="field col-12"><dontcode-commerce-product-selection [listOfProducts]="listOfSelectableProducts" (selected)="selectedProduct ($event)"></dontcode-commerce-product-selection>

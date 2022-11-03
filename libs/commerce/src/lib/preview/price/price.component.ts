@@ -60,7 +60,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
   override createAndRegisterFormControls (): void {
     let control = new FormControl (null, {updateOn:'blur'});
     this.form.registerControl('productName', control);
-    control = new FormControl (null, {updateOn:'blur'});
+    control = new FormControl ({value:null, disabled:true}, {updateOn:'blur'});
     this.form.registerControl('productId', control);
   }
 
@@ -147,6 +147,6 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
   }
 
   productNameChanged(event: Event) {
-    this.clearProduct();
+    this.productSelectionMode=false;
   }
 }
