@@ -1,7 +1,7 @@
 <dtcde-dynamic></dtcde-dynamic>
-<ng-template #inlineView><span pTooltip="Price Date: {{value?.date}}">
-  <ng-container *ngIf="value?.url">
-    <a href="{{value.url}}" target="_blank">
+<ng-template #inlineView><span pTooltip="Price Date: {{value?.priceDate}}">
+  <ng-container *ngIf="value?.urlInShop">
+    <a href="{{value.urlInShop}}" target="_blank">
       <ng-container *ngTemplateOutlet="subFieldInlineViewTemplate('cost')"></ng-container>&nbsp;
     </a>
   </ng-container>
@@ -32,13 +32,13 @@
         </div>
       </div>
       <div class="field col-12 md:col-6">Date of Price:&nbsp;
-        <ng-container *ngTemplateOutlet="subFieldFullEditTemplate('date')"></ng-container>
+        <ng-container *ngTemplateOutlet="subFieldFullEditTemplate('priceDate')"></ng-container>
       </div>
       <div class="field col-12 md:col-6">Product Id:
           <input type="text" pInputText formControlName="productId" class="w-full">
       </div>
       <div class="field col-12 md:col-6">Product url:
-          <ng-container *ngTemplateOutlet="subFieldFullEditTemplate('url')"></ng-container>
+          <ng-container *ngTemplateOutlet="subFieldFullEditTemplate('urlInShop')"></ng-container>
       </div>
       <ng-container *ngIf="productSelectionMode">
         <div [id]="name+'-select'" class="field col-12"><dontcode-commerce-product-selection [listOfProducts]="listOfSelectableProducts" (selected)="selectedProduct ($event)"></dontcode-commerce-product-selection>

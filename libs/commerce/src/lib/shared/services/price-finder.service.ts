@@ -14,6 +14,7 @@ import {PriceModel} from "../price-model";
 import {GreenWeezScrapper} from "../scrappers/greenweez-scrapper";
 import {CommercePlugin} from "../../declaration/commerce-plugin";
 import {firstValueFrom} from "rxjs";
+import {NewPharmaScrapper} from "../scrappers/new-pharma-scrapper";
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +32,7 @@ export class PriceFinderService {
 
     this.addScrapper (new EasyParaScrapper(httpClient));
     this.addScrapper (new GreenWeezScrapper(httpClient));
+    this.addScrapper(new NewPharmaScrapper(httpClient));
   }
 
   addScrapper (newScrapper: OnlineShopScrapper): void {
@@ -104,10 +106,10 @@ export class PriceFinderService {
 
       // Let's see if we already have the id of the item, then we can get the price very quickly
     const productId=this.findProductId (productPrice);
-    if (productId==null) {
+    if ((productId==null) || (productPrice==null)) {
       return Promise.reject("Product Id not found in "+productValue);
     } else {
-      return scrapper.updatePrice(productId);
+      return scrapper.updatePrice({productId, productName:productPrice.nameInShop??null, productUrl:productPrice.urlInShop});
     }
   }
 
@@ -139,11 +141,11 @@ export class PriceFinderService {
     return null;
   }
 
-  async updatePriceIfPossible(val: Price, position:string):Promise<MoneyAmount | null> {
+  async updatePriceIfPossible(val: PriceModel, position:string):Promise<MoneyAmount | null> {
    if( val == null) return null;
-    if( (val.productId!=null)&& (val.shop!=null)) {
-      if ((val.date==null) ||
-          (val.date.getTime()+PriceFinderService.DONT_UPDATE_UNTIL_DELAY_MS < new Date().getTime())
+    if( (val.idInShop!=null)&& (val.shop!=null)) {
+      if ((val.priceDate==null) ||
+          (val.priceDate.getTime()+PriceFinderService.DONT_UPDATE_UNTIL_DELAY_MS < new Date().getTime())
       ) {
         // Yes we can update
         const newPrice = await this.findPrice(val, val.shop, position);
@@ -171,13 +173,4 @@ export class PriceFinderService {
         return shopName;
     });
   }
-}
-
-export interface Price {
-  productName?:string;
-  productId?:string;
-  cost?:MoneyAmount;
-  date?:Date;
-  shop?:string;
-  url?: string;
 }
