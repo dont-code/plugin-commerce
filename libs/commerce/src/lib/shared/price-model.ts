@@ -1,10 +1,11 @@
 import {MoneyAmount} from "@dontcode/core";
 
 export interface PriceModel {
-  price?:MoneyAmount;
+  cost?:MoneyAmount;
   shop?:string;
   priceDate?:Date;
 
   idInShop?:string;
   nameInShop?:string;
+  urlInShop?:string
 }

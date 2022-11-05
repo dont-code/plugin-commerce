@@ -8,8 +8,9 @@ import {
   TemplateList
 } from '@dontcode/plugin-common';
 import {FormControl} from "@angular/forms";
-import {Price, PriceFinderService} from "../../shared/services/price-finder.service";
+import { PriceFinderService} from "../../shared/services/price-finder.service";
 import {AbstractOnlineShopScrapper, ScrappedProduct} from "../../shared/online-shop-scrapper";
+import {PriceModel} from "../../shared/price-model";
 
 @Component({
   selector: 'dontcode-commerce-price',
@@ -24,7 +25,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
   @ViewChild('fullEditView', { static: true })
   private fullEditView!: TemplateRef<any>;
 
-  override value: Price;
+  override value: PriceModel;
 
   productSelectionMode=false;
   listOfSelectableProducts = new Array<ScrappedProduct>();
@@ -33,8 +34,9 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
               injector: Injector, ref: ChangeDetectorRef) {
     super (loader, injector, ref);
     this.defineSubField ('cost', 'Other currency');
-    this.defineSubField ('date', 'Date & Time');
+    this.defineSubField ('priceDate', 'Date & Time');
     this.defineSubField ('shop', 'Shop');
+    this.defineSubField ('urlInShop', 'Website (url)');
     this.value={};
   }
 
@@ -51,36 +53,36 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     this.priceFinder.updatePriceIfPossible(val, this.parentPosition??'').then(newPrice => {
       if (newPrice!=null) {
         this.value.cost = newPrice;
-        this.value.date = new Date();
+        this.value.priceDate = new Date();
       }
     });
   }
 
   override createAndRegisterFormControls (): void {
     let control = new FormControl (null, {updateOn:'blur'});
-    this.form.registerControl('productName', control);
-    control = new FormControl (null, {updateOn:'blur'});
-    this.form.registerControl('productId', control);
+    this.form.registerControl('nameInShop', control);
+    control = new FormControl ({value:null, disabled:true}, {updateOn:'blur'});
+    this.form.registerControl('idInShop', control);
   }
 
   cannotUpdatePrice():boolean {
-    if ((this.value!=null) && (this.value.shop!=null) && (this.value.productName!=null)) {
+    if ((this.value!=null) && (this.value.shop!=null) && (this.value.nameInShop!=null)) {
       return false;
     }
     return true;
   }
 
   updatePrice() {
-    if( this.value?.productId==null) {
+    if( this.value?.idInShop==null) {
 /*      const testProduct = new ScrappedProduct();
       testProduct.productName="Test Product";
       testProduct.productId="TEST-PRODUCT";
       testProduct.currencyCode="EUR";
       testProduct.productPrice=12;
       this.selectedProduct(testProduct);*/
-      if ((this.value.productName!=null) && (this.value.shop!=null)) {
+      if ((this.value.nameInShop!=null) && (this.value.shop!=null)) {
         // We have to let the use select the product
-        this.priceFinder.searchProducts(this.value.productName, this.value.shop).then(value => {
+        this.priceFinder.searchProducts(this.value.nameInShop, this.value.shop).then(value => {
           if( value!=null) {
             this.listOfSelectableProducts = value;
             this.productSelectionMode=true;
@@ -99,15 +101,21 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     }
   }
 
-  selectedProduct(product: ScrappedProduct) {
+  selectedProduct(product: ScrappedProduct|null) {
     this.productSelectionMode=false;
-    this.value.productId=product.productId;
-    this.value.productName=product.productName??undefined;
-    this.hydrateValueToForm();
-    this.setSubFieldValue("cost", AbstractOnlineShopScrapper.toMoneyAmount(product));
-    this.setSubFieldValue('date', new Date());
-    this.value.cost=this.getSubFieldValue("cost");
-    this.value.date = this.getSubFieldValue('date');
+    if( product!=null) {
+      this.value.idInShop=product.productId;
+      this.value.nameInShop=product.productName??undefined;
+      this.hydrateValueToForm();
+      this.setSubFieldValue("cost", AbstractOnlineShopScrapper.toMoneyAmount(product));
+      this.setSubFieldValue('priceDate', new Date());
+      this.setSubFieldValue('urlInShop', product.productUrl);
+      this.value.cost=this.getSubFieldValue("cost");
+      this.value.priceDate = this.getSubFieldValue('priceDate');
+      this.value.urlInShop = this.getSubFieldValue('urlInShop');
+    } else {
+      this.clearProduct();
+    }
 /*    this.ref.markForCheck();
     this.ref.detectChanges();*/
   }
@@ -134,8 +142,13 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
   }
 
   clearProduct ():void {
-    delete this.value.productId;
+    this.productSelectionMode=false;
+    delete this.value.idInShop;
     this.hydrateValueToForm();
   }
 
+  productNameChanged(event: Event) {
+    const inputEvent = event as InputEvent;
+    this.productSelectionMode=false;
+  }
 }

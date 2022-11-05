@@ -1,5 +1,31 @@
 Search:   https://www.newpharma.fr/search-results/search.html?q=chardon marie
 
+          <a class="details__title js-product-detail-row js-product-click"
+             data-id="514710"
+             data-position="1"
+             data-queryid="7787cb04d9bc962ebd495d8eb4622b20"
+             data-sortfield=""
+             data-sortdirection="asc"
+             data-algoliatrack="1"           href="https://www.newpharma.fr/pileje/514710/pileje-phytostandard-chardon-marie-gelules-vegetales-20.html"
+             title="PiLeJe Phytostandard Chardon Marie Gélules Végétales 20">
+            PiLeJe Phytostandard <span class="search_highlight">Chardon</span> <span class="search_highlight">Marie</span> Gélules Végétales 20
+          </a>
+
+AND price:
+                    <button
+                      data-content_ids="[514710]"
+                      data-content_name="PiLeJe Phytostandard {highlight_start}Chardon{highlight_end} {highlight_start}Marie{highlight_end} Gélules Végétales 20"
+                      data-content_type="product"
+                      data-contents="[{"id":514710,"quantity":1}]"
+                    data-currency="EUR"
+                    data-value="11.49"
+                    data-queryid="7787cb04d9bc962ebd495d8eb4622b20"
+                    data-id="514710"
+                    data-search-filters=""
+                    data-algoliatrack="1"                                    class="button button-orange button-icon-left bht-btn-add-to-cart js-button-fbPixel-addtocart  js-product-addtocart"
+                    type="submit"
+                    onclick="">
+
 Title: Get first   <a class="details__title js-product-detail-row js-product-click"
                         title="A.Vogel Chardon-Marie Digestion Extrait De Plante Flacon 50ml">
 

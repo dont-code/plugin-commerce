@@ -4,7 +4,7 @@ import {PriceFinderService} from './price-finder.service';
 import {HttpClient} from "@angular/common/http";
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
 import {PluginCommonModule} from "@dontcode/plugin-common";
-import {expectOneSampleFile, waitForOneMatchSampleFile} from "../scrappers/easy-para-scrapper.spec";
+import {waitForOneMatchSampleFile} from "../scrappers/easy-para-scrapper.spec";
 import {EasyParaScrapper} from "../scrappers/easy-para-scrapper";
 import {PriceModel} from "../price-model";
 import {AbstractOnlineShopScrapper} from "../online-shop-scrapper";
@@ -53,7 +53,7 @@ describe('PriceFinderService', () => {
        productModel.price={
          idInShop:selectedProduct.productId,
          nameInShop:selectedProduct.productName??undefined,
-         price:AbstractOnlineShopScrapper.toMoneyAmount(selectedProduct),
+         cost:AbstractOnlineShopScrapper.toMoneyAmount(selectedProduct),
          priceDate:new Date()
        }
 

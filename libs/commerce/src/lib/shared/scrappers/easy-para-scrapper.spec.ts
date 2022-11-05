@@ -9,7 +9,7 @@ import {AbstractOnlineShopScrapper} from "../online-shop-scrapper";
 import * as fs from "fs";
 import * as Path from "path";
 
-describe('ShopHandlerComponent', () => {
+describe('EasyParaScrapper', () => {
   let component: EasyParaScrapper;
   let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
@@ -41,7 +41,7 @@ describe('ShopHandlerComponent', () => {
 
   it('should get price', (done) => {
     expect(component).toBeTruthy();
-    component.updatePrice("3700026996703").then(value => {
+    component.updatePrice({productId:"3700026996703", productName:"Chardon Marie"}).then(value => {
       expect(value.amount).toEqual(9.8);
       done();
     }).catch(error => {

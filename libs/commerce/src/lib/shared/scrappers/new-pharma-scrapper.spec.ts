@@ -3,11 +3,11 @@ import {PluginCommonModule} from "@dontcode/plugin-common";
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
 import {ShopHandlerComponent} from "../../preview/shop/shop-handler.component";
 import {HttpClient} from "@angular/common/http";
-import {GreenWeezScrapper} from "./greenweez-scrapper";
 import {expectOneSampleFile} from "./easy-para-scrapper.spec";
+import {NewPharmaScrapper} from "./new-pharma-scrapper";
 
-describe('GreenweezScrapper', () => {
-  let component: GreenWeezScrapper;
+describe('NewPharmaScrapper', () => {
+  let component: NewPharmaScrapper;
   let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
 
@@ -22,7 +22,7 @@ describe('GreenweezScrapper', () => {
   beforeEach(() => {
     httpClient = TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);
-    component = new GreenWeezScrapper(httpClient);
+    component = new NewPharmaScrapper(httpClient);
   });
 
   it('should search', (done) => {
@@ -33,18 +33,38 @@ describe('GreenweezScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("greenweez/chardon-marie-search-result.json", httpTestingController);
+    expectOneSampleFile("new-pharma/chardon-marie-search.html", httpTestingController);
   });
 
   it('should get price', (done) => {
     expect(component).toBeTruthy();
-    component.updatePrice({productId:"1AVOG0069", productName:"Chardon Marie"}).then(value => {
-      expect(value.amount).toEqual(11.94);
+    component.updatePrice({
+      productId:"670885",
+      productName:"Chardon Marie",
+      productUrl:"https://www.newpharma.fr/a-vogel/670885/a-vogel-chardon-marie-digestion-extrait-de-plante-flacon-50ml.html"
+    }).then(value => {
+      expect(value.amount).toEqual(12.2);
+      expect(value.currencyCode).toEqual("EUR");
       done();
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("greenweez/chardon-marie-search-result.json", httpTestingController);
+    expectOneSampleFile("new-pharma/chardon-marie-product.html", httpTestingController);
+  });
+
+  it('should get price event without product url', (done) => {
+    expect(component).toBeTruthy();
+    component.updatePrice({
+      productId:"670885",
+      productName:"Chardon Marie"
+    }).then(value => {
+      expect(value.amount).toEqual(12.2);
+      expect(value.currencyCode).toEqual("EUR");
+      done();
+    }).catch(error => {
+      done (error);
+    });
+    expectOneSampleFile("new-pharma/chardon-marie-search.html", httpTestingController);
   });
 });
 

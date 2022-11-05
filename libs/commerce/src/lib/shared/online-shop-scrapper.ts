@@ -31,7 +31,7 @@ export interface OnlineShopScrapper {
    * Retrieve the price of the given product
    * @param productId
    */
-  updatePrice (productId: string): Promise<MoneyAmount>;
+  updatePrice (product: ScrappedProduct, useProductName?:boolean): Promise<MoneyAmount>;
 
 }
 
@@ -76,15 +76,25 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
    * By default we do a search with the productId and returns the price
    * @param productId
    */
-  updatePrice(productId: string): Promise<MoneyAmount> {
-    return this.searchProductsForName(productId).then(listOfAllElements => {
-      for (const product of listOfAllElements) {
-        if (product.productId==productId) {
-          return AbstractOnlineShopScrapper.toMoneyAmount(product);
+  updatePrice(prod: ScrappedProduct, useProductName?:boolean): Promise<MoneyAmount> {
+    let productToFind = prod.productId;
+    if( useProductName==null) useProductName=false;
+
+    if (useProductName||(productToFind==null)) {
+      productToFind=prod.productName??undefined;
+    }
+    if (productToFind==null) {
+      return Promise.reject("You must define a product with a name or id ");
+    } else {
+      return this.searchProductsForName(productToFind).then(listOfAllElements => {
+        for (const product of listOfAllElements) {
+          if (product.productId == prod.productId) {
+            return AbstractOnlineShopScrapper.toMoneyAmount(product);
+          }
         }
-      }
-      return Promise.reject("Product "+productId+" not found in shoptype "+this.onlineShopName);
-    });
+        return Promise.reject("Product " + productToFind + " not found in shoptype " + this.onlineShopName);
+      });
+    }
   }
 
 }
