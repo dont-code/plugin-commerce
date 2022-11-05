@@ -44,6 +44,7 @@ describe('NewPharmaScrapper', () => {
       productUrl:"https://www.newpharma.fr/a-vogel/670885/a-vogel-chardon-marie-digestion-extrait-de-plante-flacon-50ml.html"
     }).then(value => {
       expect(value.amount).toEqual(12.2);
+      expect(value.currencyCode).toEqual("EUR");
       done();
     }).catch(error => {
       done (error);

@@ -45,9 +45,9 @@ export class NewPharmaScrapper extends AbstractOnlineShopScrapper {
   extractPrice (htmlResult:string, startPos:number, newProduct:ScrappedProduct): void {
     const startPricePos = htmlResult.indexOf('data-content_ids="['+newProduct.productId+']"', startPos+1);
     if (startPricePos!=-1) { // It may be unavailable
-      let itemPos = htmlResult.indexOf('data-currency="', startPos)+15;
+      let itemPos = htmlResult.indexOf('data-currency="', startPricePos)+15;
       newProduct.currencyCode=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
-      itemPos = htmlResult.indexOf('data-value="', startPos)+12;
+      itemPos = htmlResult.indexOf('data-value="', startPricePos)+12;
       newProduct.productPrice=parseFloat(htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1)));
     }
 
