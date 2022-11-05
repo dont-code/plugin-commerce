@@ -5,9 +5,10 @@ import {ShopHandlerComponent} from "../../preview/shop/shop-handler.component";
 import {HttpClient} from "@angular/common/http";
 import {expectOneSampleFile} from "./easy-para-scrapper.spec";
 import {NewPharmaScrapper} from "./new-pharma-scrapper";
+import {WebEcologieScrapper} from "./web-ecologie-scrapper";
 
-describe('NewPharmaScrapper', () => {
-  let component: NewPharmaScrapper;
+describe('WebEcologieScrapper', () => {
+  let component: WebEcologieScrapper;
   let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
 
@@ -22,7 +23,7 @@ describe('NewPharmaScrapper', () => {
   beforeEach(() => {
     httpClient = TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);
-    component = new NewPharmaScrapper(httpClient);
+    component = new WebEcologieScrapper(httpClient);
   });
 
   it('should search', (done) => {
@@ -33,38 +34,38 @@ describe('NewPharmaScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("new-pharma/chardon-marie-search.html", httpTestingController);
+    expectOneSampleFile("webecologie/chardon-marie-search.html", httpTestingController);
   });
 
   it('should get price', (done) => {
     expect(component).toBeTruthy();
     component.updatePrice({
-      productId:"670885",
-      productName:"Chardon Marie",
-      productUrl:"https://www.newpharma.fr/a-vogel/670885/a-vogel-chardon-marie-digestion-extrait-de-plante-flacon-50ml.html"
+      productId:"11622",
+      productName:"Chardon Marie 20 Ampoules",
+      productUrl:'https://www.webecologie.com/foie-vesicule-biliaire/11622-dietaroma-chardon-marie-20-ampoules-3460341503306.html'
     }).then(value => {
-      expect(value.amount).toEqual(12.2);
+      expect(value.amount).toEqual(13.55);
       expect(value.currencyCode).toEqual("EUR");
       done();
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("new-pharma/chardon-marie-product.html", httpTestingController);
+    expectOneSampleFile("webecologie/chardon-marie-product.html", httpTestingController);
   });
 
-  it('should get price event without product url', (done) => {
+  it('should get price even with no product url', (done) => {
     expect(component).toBeTruthy();
     component.updatePrice({
-      productId:"670885",
-      productName:"Chardon Marie"
+      productId:"11622",
+      productName:"Chardon Marie 20 Ampoules"
     }).then(value => {
-      expect(value.amount).toEqual(12.2);
+      expect(value.amount).toEqual(13.55);
       expect(value.currencyCode).toEqual("EUR");
       done();
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("new-pharma/chardon-marie-search.html", httpTestingController);
+    expectOneSampleFile("webecologie/chardon-marie-search.html", httpTestingController);
   });
 });
 

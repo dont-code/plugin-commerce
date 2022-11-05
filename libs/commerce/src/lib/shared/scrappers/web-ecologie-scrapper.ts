@@ -3,38 +3,39 @@ import {firstValueFrom, map} from "rxjs";
 import {MoneyAmount} from "@dontcode/core";
 import {PriceFinderService} from "../services/price-finder.service";
 
-export class NewPharmaScrapper extends AbstractOnlineShopScrapper {
+export class WebEcologieScrapper extends AbstractOnlineShopScrapper {
 
-  static readonly SEARCH_ONLINE_URL="https://www.newpharma.fr/search-results/search.html?q=QUERY_STRING"
-  protected static readonly PRODUCT_START_STRING="<a class=\"details__title js-product-detail-row js-product-click\"";
+  static readonly SEARCH_ONLINE_URL="https://www.webecologie.com/rechercher?search_query=QUERY_STRING"
+  protected static readonly PRODUCT_START_STRING="<a class=\"product_img_link\"";
 
-  override onlineShopName="NewPharma";
+  override onlineShopName="WebEcologie";
 
   searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
-    const query = NewPharmaScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", encodeURIComponent(name));
+    const query = WebEcologieScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", encodeURIComponent(name));
 
     return firstValueFrom(this.http.get(this.encodeUrlForCors(query)
     ,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"}).pipe (
         map(htmlResult => {
 
           const ret= new Array<ScrappedProduct>();
-          let startPos = htmlResult.indexOf(NewPharmaScrapper.PRODUCT_START_STRING);
+          let startPos = htmlResult.indexOf(WebEcologieScrapper.PRODUCT_START_STRING);
           while (startPos>=0) {
             const newProduct = new ScrappedProduct();
-            let itemPos = htmlResult.indexOf('data-id="', startPos)+9;
-            newProduct.productId=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
+            let itemPos = htmlResult.indexOf('href="', startPos)+6;
+            newProduct.productUrl=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
             itemPos = htmlResult.indexOf('title="', startPos)+7;
             newProduct.productName=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
             newProduct.productDescription=undefined;
-            itemPos = htmlResult.indexOf('href="', startPos)+6;
-            newProduct.productUrl=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
-            itemPos = htmlResult.indexOf('<img src="', startPos+1)+10;
+            itemPos = htmlResult.indexOf('src="', startPos+1)+5;
             newProduct.productImageUrl=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
+            const startWishlistPos = htmlResult.indexOf('<a class="addToWishlist', startPos)+23;
+            itemPos = htmlResult.indexOf('rel="', startWishlistPos)+5;
+            newProduct.productId=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
 
             this.extractPrice(htmlResult, startPos, newProduct);
             ret.push(newProduct);
 
-            startPos = htmlResult.indexOf(NewPharmaScrapper.PRODUCT_START_STRING, startPos+1);
+            startPos = htmlResult.indexOf(WebEcologieScrapper.PRODUCT_START_STRING, startPos+1);
           }
 
           return ret;
@@ -43,13 +44,16 @@ export class NewPharmaScrapper extends AbstractOnlineShopScrapper {
   }
 
   extractPrice (htmlResult:string, startPos:number, newProduct:ScrappedProduct): void {
-    const startPricePos = htmlResult.indexOf('data-content_ids="['+newProduct.productId+']"', startPos+1);
-    if (startPricePos!=-1) { // It may be unavailable
-      let itemPos = htmlResult.indexOf('data-currency="', startPricePos)+15;
+      let itemPos = htmlResult.indexOf('class="price-first-part">', startPos)+25;
+      let price = Number.parseInt(htmlResult.substring(itemPos, htmlResult.indexOf('<', itemPos+1)));
+
+      itemPos = htmlResult.indexOf('class="price-last-part">', startPos)+24;
+      price = price + Number.parseInt(htmlResult.substring(itemPos, htmlResult.indexOf('<', itemPos+1)))/100;
+      newProduct.productPrice=price;
+
+      itemPos = htmlResult.indexOf("itemprop=\"priceCurrency\"", startPos)+24;
+      itemPos = htmlResult.indexOf("content=\"", itemPos)+9;
       newProduct.currencyCode=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
-      itemPos = htmlResult.indexOf('data-value="', startPricePos)+12;
-      newProduct.productPrice=parseFloat(htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1)));
-    }
 
   }
 
@@ -59,7 +63,7 @@ export class NewPharmaScrapper extends AbstractOnlineShopScrapper {
    */
   override updatePrice(product:ScrappedProduct, useProductName?:boolean): Promise<MoneyAmount> {
     if (product.productUrl==null) {
-      return super.updatePrice(product, true);
+      return super.updatePrice(product, true);  // If the product url is not found, let's try with the product name
     }
     return firstValueFrom(this.http.get(this.encodeUrlForCors(product.productUrl)
       ,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"}).pipe (

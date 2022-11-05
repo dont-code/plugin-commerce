@@ -31,7 +31,7 @@ export interface OnlineShopScrapper {
    * Retrieve the price of the given product
    * @param productId
    */
-  updatePrice (product: ScrappedProduct): Promise<MoneyAmount>;
+  updatePrice (product: ScrappedProduct, useProductName?:boolean): Promise<MoneyAmount>;
 
 }
 
@@ -76,9 +76,11 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
    * By default we do a search with the productId and returns the price
    * @param productId
    */
-  updatePrice(prod: ScrappedProduct): Promise<MoneyAmount> {
+  updatePrice(prod: ScrappedProduct, useProductName?:boolean): Promise<MoneyAmount> {
     let productToFind = prod.productId;
-    if (productToFind==null) {
+    if( useProductName==null) useProductName=false;
+
+    if (useProductName||(productToFind==null)) {
       productToFind=prod.productName??undefined;
     }
     if (productToFind==null) {

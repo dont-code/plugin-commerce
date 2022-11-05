@@ -15,6 +15,7 @@ import {GreenWeezScrapper} from "../scrappers/greenweez-scrapper";
 import {CommercePlugin} from "../../declaration/commerce-plugin";
 import {firstValueFrom} from "rxjs";
 import {NewPharmaScrapper} from "../scrappers/new-pharma-scrapper";
+import {WebEcologieScrapper} from "../scrappers/web-ecologie-scrapper";
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +34,7 @@ export class PriceFinderService {
     this.addScrapper (new EasyParaScrapper(httpClient));
     this.addScrapper (new GreenWeezScrapper(httpClient));
     this.addScrapper(new NewPharmaScrapper(httpClient));
+    this.addScrapper(new WebEcologieScrapper(httpClient));
   }
 
   addScrapper (newScrapper: OnlineShopScrapper): void {
