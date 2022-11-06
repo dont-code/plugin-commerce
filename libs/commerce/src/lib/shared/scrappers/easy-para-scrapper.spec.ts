@@ -42,7 +42,7 @@ describe('EasyParaScrapper', () => {
   it('should get price', (done) => {
     expect(component).toBeTruthy();
     component.updatePrice({productId:"3700026996703", productName:"Chardon Marie"}).then(value => {
-      expect(value.amount).toEqual(9.8);
+      expect(value?.productPrice).toEqual(9.8);
       done();
     }).catch(error => {
       done (error);

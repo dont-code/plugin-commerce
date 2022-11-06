@@ -58,7 +58,7 @@ export class NewPharmaScrapper extends AbstractOnlineShopScrapper {
    * We have to go directly to the product page, otherwise there may be a redirect
    * @param product
    */
-  override updatePrice(product:ScrappedProduct, useProductName?:boolean): Promise<MoneyAmount> {
+  override updatePrice(product:ScrappedProduct, useProductName?:boolean): Promise<ScrappedProduct|null> {
     if (product.productUrl==null) {
       return super.updatePrice(product, true);
     }
@@ -69,7 +69,9 @@ export class NewPharmaScrapper extends AbstractOnlineShopScrapper {
           productName:product.productName};
           this.extractPrice(htmlResult, 0, newProduct);
           if (newProduct.productPrice!=null) {
-            return AbstractOnlineShopScrapper.toMoneyAmount (newProduct);
+            product.productPrice=newProduct.productPrice;
+            product.currencyCode=newProduct.currencyCode;
+            return product;
           } else {
             throw new Error ("Cannot find price for product "+product.productName);
           };

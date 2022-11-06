@@ -1,41 +1,44 @@
 import {AbstractOnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapper";
 import {firstValueFrom, map} from "rxjs";
 import {MoneyAmount} from "@dontcode/core";
-import {PriceFinderService} from "../services/price-finder.service";
 
-export class WebEcologieScrapper extends AbstractOnlineShopScrapper {
+export class BoulangerScrapper extends AbstractOnlineShopScrapper {
 
-  static readonly SEARCH_ONLINE_URL="https://www.webecologie.com/rechercher?search_query=QUERY_STRING"
-  protected static readonly PRODUCT_START_STRING="<a class=\"product_img_link\"";
+  static readonly SEARCH_ONLINE_URL="https://www.boulanger.com/resultats?tr=QUERY_STRING"
+  protected static readonly PRODUCT_START_STRING="<article";
 
-  override onlineShopName="WebEcologie";
+  protected static readonly BASE_URL='https://www.boulanger.com'
+
+  override onlineShopName="Boulanger";
 
   searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
-    const query = WebEcologieScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", encodeURIComponent(name));
+    // remove accents
+    name = name.normalize("NFD").replace(/\p{Diacritic}/gu, "");
+
+    const query = BoulangerScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", name);
 
     return firstValueFrom(this.http.get(this.encodeUrlForCors(query)
     ,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"}).pipe (
         map(htmlResult => {
 
           const ret= new Array<ScrappedProduct>();
-          let startPos = htmlResult.indexOf(WebEcologieScrapper.PRODUCT_START_STRING);
+          let startPos = htmlResult.indexOf(BoulangerScrapper.PRODUCT_START_STRING);
           while (startPos>=0) {
             const newProduct = new ScrappedProduct();
             let itemPos = htmlResult.indexOf('href="', startPos)+6;
-            newProduct.productUrl=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
-            itemPos = htmlResult.indexOf('title="', startPos)+7;
+            newProduct.productUrl=BoulangerScrapper.BASE_URL+htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
+            itemPos = htmlResult.indexOf('data-product-label="', startPos)+20;
             newProduct.productName=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
             newProduct.productDescription=undefined;
-            itemPos = htmlResult.indexOf('src="', startPos+1)+5;
+            itemPos = htmlResult.indexOf('<img src="', startPos+1)+10;
             newProduct.productImageUrl=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
-            const startWishlistPos = htmlResult.indexOf('<a class="addToWishlist', startPos)+23;
-            itemPos = htmlResult.indexOf('rel="', startWishlistPos)+5;
+            itemPos = htmlResult.indexOf('data-product-id="', startPos)+17;
             newProduct.productId=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
 
             this.extractPrice(htmlResult, startPos, newProduct);
             ret.push(newProduct);
 
-            startPos = htmlResult.indexOf(WebEcologieScrapper.PRODUCT_START_STRING, startPos+1);
+            startPos = htmlResult.indexOf(BoulangerScrapper.PRODUCT_START_STRING, startPos+1);
           }
 
           return ret;
@@ -44,16 +47,11 @@ export class WebEcologieScrapper extends AbstractOnlineShopScrapper {
   }
 
   extractPrice (htmlResult:string, startPos:number, newProduct:ScrappedProduct): void {
-      let itemPos = htmlResult.indexOf('class="price-first-part">', startPos)+25;
-      let price = Number.parseInt(htmlResult.substring(itemPos, htmlResult.indexOf('<', itemPos+1)));
+      const itemPos = htmlResult.indexOf('data-analytics_product_unitprice_ati="', startPos)+38;
+      const price = Number.parseFloat(htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1)));
 
-      itemPos = htmlResult.indexOf('class="price-last-part">', startPos)+24;
-      price = price + Number.parseInt(htmlResult.substring(itemPos, htmlResult.indexOf('<', itemPos+1)))/100;
       newProduct.productPrice=price;
-
-      itemPos = htmlResult.indexOf("itemprop=\"priceCurrency\"", startPos)+24;
-      itemPos = htmlResult.indexOf("content=\"", itemPos)+9;
-      newProduct.currencyCode=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
+      newProduct.currencyCode="EUR"
 
   }
 

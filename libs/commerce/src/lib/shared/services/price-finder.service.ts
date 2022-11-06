@@ -1,5 +1,5 @@
 import {Injectable, Optional} from '@angular/core';
-import {OnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapper";
+import {AbstractOnlineShopScrapper, OnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapper";
 import {HttpClient} from "@angular/common/http";
 import {EasyParaScrapper} from "../scrappers/easy-para-scrapper";
 import {
@@ -7,8 +7,7 @@ import {
   DontCodeModelManager,
   DontCodeStoreCriteriaOperator,
   DontCodeStoreManager,
-  dtcde,
-  MoneyAmount
+  dtcde
 } from "@dontcode/core";
 import {PriceModel} from "../price-model";
 import {GreenWeezScrapper} from "../scrappers/greenweez-scrapper";
@@ -16,6 +15,7 @@ import {CommercePlugin} from "../../declaration/commerce-plugin";
 import {firstValueFrom} from "rxjs";
 import {NewPharmaScrapper} from "../scrappers/new-pharma-scrapper";
 import {WebEcologieScrapper} from "../scrappers/web-ecologie-scrapper";
+import {BoulangerScrapper} from "../scrappers/boulanger-scrapper";
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +35,7 @@ export class PriceFinderService {
     this.addScrapper (new GreenWeezScrapper(httpClient));
     this.addScrapper(new NewPharmaScrapper(httpClient));
     this.addScrapper(new WebEcologieScrapper(httpClient));
+    this.addScrapper(new BoulangerScrapper(httpClient));
   }
 
   addScrapper (newScrapper: OnlineShopScrapper): void {
@@ -69,7 +70,7 @@ export class PriceFinderService {
    * @param shopName
    * @param model
    */
-  async findPrice (productValue: any, shopName:string, position:string, model?:DontCodeEntityType): Promise<MoneyAmount|null> {
+  async findPrice (productValue: any, shopName:string, position:string, model?:DontCodeEntityType): Promise<PriceModel|null> {
     if (productValue==null) {
       throw new Error ("No product to get price for");
     }
@@ -111,7 +112,14 @@ export class PriceFinderService {
     if ((productId==null) || (productPrice==null)) {
       return Promise.reject("Product Id not found in "+productValue);
     } else {
-      return scrapper.updatePrice({productId, productName:productPrice.nameInShop??null, productUrl:productPrice.urlInShop});
+      return scrapper.updatePrice({productId, productName:productPrice.nameInShop??null, productUrl:productPrice.urlInShop}).then(updated => {
+        if ((updated!=null)&&(productPrice!=null)) {
+          productPrice.cost=AbstractOnlineShopScrapper.toMoneyAmount(updated);
+          return productPrice;
+        } else {
+          return null;
+        }
+      })
     }
   }
 
@@ -143,8 +151,7 @@ export class PriceFinderService {
     return null;
   }
 
-  async updatePriceIfPossible(val: PriceModel, position:string):Promise<MoneyAmount | null> {
-   if( val == null) return null;
+  async updatePriceIfPossible(val: PriceModel, position:string):Promise<PriceModel|null> {
     if( (val.idInShop!=null)&& (val.shop!=null)) {
       if( typeof val.priceDate === 'string') {
         val.priceDate = new Date(val.priceDate);
@@ -154,6 +161,7 @@ export class PriceFinderService {
       ) {
         // Yes we can update
         const newPrice = await this.findPrice(val, val.shop, position);
+
         return newPrice;
       }
     }

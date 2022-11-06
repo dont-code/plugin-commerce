@@ -51,8 +51,8 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
   override setValue(val: any) {
     super.setValue(val);
     this.priceFinder.updatePriceIfPossible(val, this.parentPosition??'').then(newPrice => {
+        // newPrice is this.value in fact
       if (newPrice!=null) {
-        this.value.cost = newPrice;
         this.value.priceDate = new Date();
       }
     });
