@@ -55,32 +55,4 @@ export class BoulangerScrapper extends AbstractOnlineShopScrapper {
 
   }
 
-  /**
-   * We have to go directly to the product page, otherwise there may be a redirect
-   * @param product
-   */
-  override updatePrice(product:ScrappedProduct, useProductName?:boolean): Promise<ScrappedProduct|null> {
-    if (product.productUrl==null) {
-      return super.updatePrice(product, true);  // If the product url is not found, let's try with the product name
-    }
-    return firstValueFrom(this.http.get(this.encodeUrlForCors(product.productUrl)
-      ,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"}).pipe (
-      map(htmlResult => {
-        const newProduct:ScrappedProduct = {productId:product.productId,
-          productName:product.productName};
-          this.extractPrice(htmlResult, 0, newProduct);
-          if (newProduct.productPrice!=null) {
-            product.productPrice=newProduct.productPrice;
-            product.currencyCode=newProduct.currencyCode;
-            return product;
-          } else {
-            throw new Error ("Cannot find price for product "+product.productName);
-          };
-      }))
-    ).catch(error => {
-      console.error("Error trying to access page for product "+product.productName, error);
-      return super.updatePrice(product, true);
-    });
-
-  }
 }
