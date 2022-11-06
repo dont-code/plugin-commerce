@@ -146,6 +146,9 @@ export class PriceFinderService {
   async updatePriceIfPossible(val: PriceModel, position:string):Promise<MoneyAmount | null> {
    if( val == null) return null;
     if( (val.idInShop!=null)&& (val.shop!=null)) {
+      if( typeof val.priceDate === 'string') {
+        val.priceDate = new Date(val.priceDate);
+      }
       if ((val.priceDate==null) ||
           (val.priceDate.getTime()+PriceFinderService.DONT_UPDATE_UNTIL_DELAY_MS < new Date().getTime())
       ) {
