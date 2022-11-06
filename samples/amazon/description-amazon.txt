@@ -1,1 +1,6 @@
 Search: https://www.amazon.fr/s?k=chardon%20marie
+
+Search for
+data-component-type="s-search-result" , ignore data-component-type=""  (Video link)
+Product: get
+https://www.amazon.fr/Doro-8080-Smartphone-d%C3%A9bloqu%C3%A9-Android/dp/B07XLV8VW9/ref=sr_1_5_mod_primary_new?crid=1SFTXO8I2GMA6&keywords=doro+8080+smartphone&qid=1667728264&qu=eyJxc2MiOiIyLjIwIiwicXNhIjoiMS4zMiIsInFzcCI6IjAuNjYifQ%3D%3D&sbo=RZvfv%2F%2FHxDF%2BO5021pAnSA%3D%3D&sprefix=doro+8080%2Caps%2C76&sr=8-5

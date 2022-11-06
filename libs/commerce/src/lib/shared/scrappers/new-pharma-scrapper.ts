@@ -6,7 +6,7 @@ import {PriceFinderService} from "../services/price-finder.service";
 export class NewPharmaScrapper extends AbstractOnlineShopScrapper {
 
   static readonly SEARCH_ONLINE_URL="https://www.newpharma.fr/search-results/search.html?q=QUERY_STRING"
-  protected static readonly PRODUCT_START_STRING="<a class=\"details__title js-product-detail-row js-product-click\"";
+  protected static readonly PRODUCT_START_STRING="<div class=\"product js-product-row product--desktop";
 
   override onlineShopName="NewPharma";
 
@@ -21,9 +21,10 @@ export class NewPharmaScrapper extends AbstractOnlineShopScrapper {
           let startPos = htmlResult.indexOf(NewPharmaScrapper.PRODUCT_START_STRING);
           while (startPos>=0) {
             const newProduct = new ScrappedProduct();
-            let itemPos = htmlResult.indexOf('data-id="', startPos)+9;
+            let itemPos = htmlResult.indexOf('data-productid="', startPos)+16;
             newProduct.productId=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
-            itemPos = htmlResult.indexOf('title="', startPos)+7;
+            itemPos = htmlResult.indexOf('<a class="details__title', startPos)+24;
+            itemPos = htmlResult.indexOf('title="', itemPos+1)+7;
             newProduct.productName=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
             newProduct.productDescription=undefined;
             itemPos = htmlResult.indexOf('href="', startPos)+6;
