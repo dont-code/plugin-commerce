@@ -44,8 +44,8 @@ describe('WebEcologieScrapper', () => {
       productName:"Chardon Marie 20 Ampoules",
       productUrl:'https://www.webecologie.com/foie-vesicule-biliaire/11622-dietaroma-chardon-marie-20-ampoules-3460341503306.html'
     }).then(value => {
-      expect(value.amount).toEqual(13.55);
-      expect(value.currencyCode).toEqual("EUR");
+      expect(value?.productPrice).toEqual(13.55);
+      expect(value?.currencyCode).toEqual("EUR");
       done();
     }).catch(error => {
       done (error);
@@ -59,8 +59,8 @@ describe('WebEcologieScrapper', () => {
       productId:"11622",
       productName:"Chardon Marie 20 Ampoules"
     }).then(value => {
-      expect(value.amount).toEqual(13.55);
-      expect(value.currencyCode).toEqual("EUR");
+      expect(value?.productPrice).toEqual(13.55);
+      expect(value?.currencyCode).toEqual("EUR");
       done();
     }).catch(error => {
       done (error);
