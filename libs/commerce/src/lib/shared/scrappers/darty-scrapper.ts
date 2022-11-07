@@ -51,7 +51,7 @@ static readonly SEARCH_ONLINE_URL="https://www.darty.com/nav/recherche/QUERY_STR
               for (const aResult of hits) {
                 const newProduct = new ScrappedProduct();
 
-                newProduct.productPrice=this.extractPrice (aResult.prices.stores);
+                newProduct.productPrice=this.extractPrice (aResult);
                 newProduct.currencyCode="EUR";
                 newProduct.productName=aResult.searchText;
                 newProduct.productDescription=undefined;
@@ -99,12 +99,22 @@ static readonly SEARCH_ONLINE_URL="https://www.darty.com/nav/recherche/QUERY_STR
   }
 
 
-private extractPrice(stores: any): number {
+private extractPrice(response: any): number {
+  if (response.priceSort!=null)
+    return response.priceSort/100;
+  if (response.dartyExclusivePriceSort!=null)
+    return response.dartyExclusivePriceSort/100;
   let ret=0;
-  for (const key in stores) {
-    ret=stores[key];
-    if (ret!=0) return ret/100;
+  for (const key in response.prices.stores) {
+    if( key==='000000') {
+      ret= response.prices.stores[key]/100;
+    } else if ((key==='dartyExclusive') && ( ret===0)) {
+    ret = response.prices.stores[key]/100;
+    }else if (ret===0) {
+      ret = response.prices.stores[key]/100;
+    }
   }
+
   return ret;
 }
 }

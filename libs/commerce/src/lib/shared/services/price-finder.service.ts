@@ -162,6 +162,7 @@ export class PriceFinderService {
           (val.priceDate.getTime()+PriceFinderService.DONT_UPDATE_UNTIL_DELAY_MS < new Date().getTime())
       ) {
         // Yes we can update
+        console.debug("Need to update price for ", val.nameInShop);
         const newPrice = await this.findPrice(val, val.shop, position);
 
         return newPrice;
