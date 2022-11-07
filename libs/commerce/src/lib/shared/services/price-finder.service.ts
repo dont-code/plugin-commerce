@@ -18,6 +18,7 @@ import {WebEcologieScrapper} from "../scrappers/web-ecologie-scrapper";
 import {BoulangerScrapper} from "../scrappers/boulanger-scrapper";
 import {DartyScrapper} from "../scrappers/darty-scrapper";
 import {CDiscountScrapper} from "../scrappers/cdiscount-scrapper";
+import {AmazonScrapper} from "../scrappers/amazon-scrapper";
 
 @Injectable({
   providedIn: 'root'
@@ -40,6 +41,7 @@ export class PriceFinderService {
     this.addScrapper(new BoulangerScrapper(httpClient));
     this.addScrapper(new DartyScrapper(httpClient));
     this.addScrapper(new CDiscountScrapper(httpClient));
+    this.addScrapper(new AmazonScrapper(httpClient));
   }
 
   addScrapper (newScrapper: OnlineShopScrapper): void {

@@ -1,6 +1,5 @@
 import {AbstractOnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapper";
 import {firstValueFrom, map} from "rxjs";
-import {MoneyAmount} from "@dontcode/core";
 
 export class BoulangerScrapper extends AbstractOnlineShopScrapper {
 
