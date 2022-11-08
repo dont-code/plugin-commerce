@@ -6,9 +6,10 @@ import {HttpClient} from "@angular/common/http";
 import {expectOneSampleFile} from "./easy-para-scrapper.spec";
 import {NewPharmaScrapper} from "./new-pharma-scrapper";
 import {WebEcologieScrapper} from "./web-ecologie-scrapper";
+import {BoulangerScrapper} from "./boulanger-scrapper";
 
-describe('WebEcologieScrapper', () => {
-  let component: WebEcologieScrapper;
+describe('BoulangerScrapper', () => {
+  let component: BoulangerScrapper;
   let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
 
@@ -23,49 +24,37 @@ describe('WebEcologieScrapper', () => {
   beforeEach(() => {
     httpClient = TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);
-    component = new WebEcologieScrapper(httpClient);
+    component = new BoulangerScrapper(httpClient);
   });
 
   it('should search', (done) => {
     expect(component).toBeTruthy();
-    component.searchProductsForName("Chardon Marie").then(value => {
+    component.searchProductsForName("Doro 8080 smartphone").then(value => {
       expect(value.length>0).toBeTruthy();
+      expect(value[0].productName).toEqual("Smartphone DORO 8100 Plus Graphite");
+      expect(value[0].productPrice).toEqual (229);
+      expect(value[0].productId).toEqual("1177036");
       done();
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("webecologie/chardon-marie-search.html", httpTestingController);
+    expectOneSampleFile("boulanger/doro-8080-smartphone-search.html", httpTestingController);
   });
 
   it('should get price', (done) => {
     expect(component).toBeTruthy();
     component.updatePrice({
-      productId:"11622",
-      productName:"Chardon Marie 20 Ampoules",
-      productUrl:'https://www.webecologie.com/foie-vesicule-biliaire/11622-dietaroma-chardon-marie-20-ampoules-3460341503306.html'
+      productId:"1177036",
+      productName:"Smartphone DORO 8100 Plus Graphite"
     }).then(value => {
-      expect(value?.productPrice).toEqual(13.55);
+      expect(value?.productPrice).toEqual(229);
       expect(value?.currencyCode).toEqual("EUR");
       done();
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("webecologie/chardon-marie-product.html", httpTestingController);
+    expectOneSampleFile("boulanger/doro-8080-smartphone-search.html", httpTestingController);
   });
 
-  it('should get price even with no product url', (done) => {
-    expect(component).toBeTruthy();
-    component.updatePrice({
-      productId:"11622",
-      productName:"Chardon Marie 20 Ampoules"
-    }).then(value => {
-      expect(value?.productPrice).toEqual(13.55);
-      expect(value?.currencyCode).toEqual("EUR");
-      done();
-    }).catch(error => {
-      done (error);
-    });
-    expectOneSampleFile("webecologie/chardon-marie-search.html", httpTestingController);
-  });
 });
 

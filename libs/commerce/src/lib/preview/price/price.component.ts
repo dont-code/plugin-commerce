@@ -27,6 +27,8 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
 
   override value: PriceModel;
 
+  parsingErrorMessage:string|null=null;
+
   productSelectionMode=false;
   listOfSelectableProducts = new Array<ScrappedProduct>();
 
@@ -51,10 +53,15 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
   override setValue(val: any) {
     super.setValue(val);
     this.priceFinder.updatePriceIfPossible(val, this.parentPosition??'').then(newPrice => {
+        // newPrice is this.value in fact
       if (newPrice!=null) {
-        this.value.cost = newPrice;
-        this.value.priceDate = new Date();
+        console.debug ("Update date for ", newPrice?.nameInShop);
+        newPrice.priceDate = new Date();
+        //this.hydrateValueToForm();
       }
+      this.parsingErrorMessage=null;
+    }).catch(reason => {
+      this.parsingErrorMessage=reason.toString();
     });
   }
 
@@ -73,6 +80,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
   }
 
   updatePrice() {
+    this.parsingErrorMessage=null;
     if( this.value?.idInShop==null) {
 /*      const testProduct = new ScrappedProduct();
       testProduct.productName="Test Product";
@@ -89,13 +97,15 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
             this.ref.markForCheck();
             this.ref.detectChanges();
           }
+        }).catch(reason => {
+          this.parsingErrorMessage=reason.toString();
         });
       }
     } else if (this.value.shop!=null) {
       this.priceFinder.findPrice(this.value, this.value.shop, this.parentPosition??"").then (newPrice => {
         if (newPrice!=null) {
-          this.setSubFieldValue('cost', newPrice);
-          this.setSubFieldValue('date', new Date());
+          this.setSubFieldValue('cost', newPrice.cost);
+          this.setSubFieldValue('priceDate', new Date());
         }
       })
     }
@@ -144,11 +154,13 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
   clearProduct ():void {
     this.productSelectionMode=false;
     delete this.value.idInShop;
+    this.parsingErrorMessage=null;
     this.hydrateValueToForm();
   }
 
   productNameChanged(event: Event) {
     const inputEvent = event as InputEvent;
     this.productSelectionMode=false;
+    this.parsingErrorMessage=null;
   }
 }

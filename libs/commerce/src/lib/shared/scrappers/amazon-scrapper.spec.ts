@@ -4,11 +4,10 @@ import {HttpClientTestingModule, HttpTestingController} from "@angular/common/ht
 import {ShopHandlerComponent} from "../../preview/shop/shop-handler.component";
 import {HttpClient} from "@angular/common/http";
 import {expectOneSampleFile} from "./easy-para-scrapper.spec";
-import {NewPharmaScrapper} from "./new-pharma-scrapper";
-import {WebEcologieScrapper} from "./web-ecologie-scrapper";
+import {AmazonScrapper} from "./amazon-scrapper";
 
-describe('WebEcologieScrapper', () => {
-  let component: WebEcologieScrapper;
+describe('AmazonScrapper', () => {
+  let component: AmazonScrapper;
   let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
 
@@ -23,49 +22,37 @@ describe('WebEcologieScrapper', () => {
   beforeEach(() => {
     httpClient = TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);
-    component = new WebEcologieScrapper(httpClient);
+    component = new AmazonScrapper(httpClient);
   });
 
   it('should search', (done) => {
     expect(component).toBeTruthy();
-    component.searchProductsForName("Chardon Marie").then(value => {
+    component.searchProductsForName("Doro 8080 smartphone").then(value => {
       expect(value.length>0).toBeTruthy();
+      expect(value[4].productName).toEqual("Doro 8080 Smartphone 4G Débloqué pour Seniors avec Écran de 5.7&quot;, Caméra de 16MP, Touche d'Assistance avec Géolocalisation...".substring(0,60));
+      expect(value[4].productPrice).toEqual (232);
+      expect(value[4].productId).toEqual("B07XLV8VW9");
       done();
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("webecologie/chardon-marie-search.html", httpTestingController);
+    expectOneSampleFile("amazon/doro-8080-smartphone-search.html", httpTestingController);
   });
 
   it('should get price', (done) => {
     expect(component).toBeTruthy();
     component.updatePrice({
-      productId:"11622",
-      productName:"Chardon Marie 20 Ampoules",
-      productUrl:'https://www.webecologie.com/foie-vesicule-biliaire/11622-dietaroma-chardon-marie-20-ampoules-3460341503306.html'
+      productId:"B07XLV8VW9",
+      productName:"Doro 8080 Smartphone 4G Débloqué pour Seniors avec Écran"
     }).then(value => {
-      expect(value?.productPrice).toEqual(13.55);
+      expect(value?.productPrice).toEqual(232);
       expect(value?.currencyCode).toEqual("EUR");
       done();
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("webecologie/chardon-marie-product.html", httpTestingController);
+    expectOneSampleFile("amazon/doro-8080-smartphone-search.html", httpTestingController);
   });
 
-  it('should get price even with no product url', (done) => {
-    expect(component).toBeTruthy();
-    component.updatePrice({
-      productId:"11622",
-      productName:"Chardon Marie 20 Ampoules"
-    }).then(value => {
-      expect(value?.productPrice).toEqual(13.55);
-      expect(value?.currencyCode).toEqual("EUR");
-      done();
-    }).catch(error => {
-      done (error);
-    });
-    expectOneSampleFile("webecologie/chardon-marie-search.html", httpTestingController);
-  });
 });
 

@@ -1,4 +1,5 @@
 Search: https://www.amazon.fr/s?k=chardon%20marie
+https://www.amazon.fr/s/ref=nav_bb_sb?field-keywords=seche+linge+electrolux
 
 Search for
 data-component-type="s-search-result" , ignore data-component-type=""  (Video link)

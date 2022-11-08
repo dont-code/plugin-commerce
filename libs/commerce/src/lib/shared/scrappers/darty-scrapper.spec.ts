@@ -4,11 +4,10 @@ import {HttpClientTestingModule, HttpTestingController} from "@angular/common/ht
 import {ShopHandlerComponent} from "../../preview/shop/shop-handler.component";
 import {HttpClient} from "@angular/common/http";
 import {expectOneSampleFile} from "./easy-para-scrapper.spec";
-import {NewPharmaScrapper} from "./new-pharma-scrapper";
-import {WebEcologieScrapper} from "./web-ecologie-scrapper";
+import {DartyScrapper} from "./darty-scrapper";
 
-describe('WebEcologieScrapper', () => {
-  let component: WebEcologieScrapper;
+describe('DartyScrapper', () => {
+  let component: DartyScrapper;
   let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
 
@@ -23,49 +22,38 @@ describe('WebEcologieScrapper', () => {
   beforeEach(() => {
     httpClient = TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);
-    component = new WebEcologieScrapper(httpClient);
+    component = new DartyScrapper(httpClient);
   });
 
   it('should search', (done) => {
     expect(component).toBeTruthy();
-    component.searchProductsForName("Chardon Marie").then(value => {
+    component.searchProductsForName("Doro 8080 smartphone").then(value => {
       expect(value.length>0).toBeTruthy();
+      expect(value[0].productName).toEqual("Smartphone senior doro 8080 noir avec extension mémoire carte sd 32go");
+      expect(value[0].productPrice).toEqual (371.80);
+      expect(value[0].productId).toEqual("MK48285871");
       done();
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("webecologie/chardon-marie-search.html", httpTestingController);
+    expectOneSampleFile("darty/doro-8080-smartphone-search.json", httpTestingController);
   });
 
   it('should get price', (done) => {
     expect(component).toBeTruthy();
     component.updatePrice({
-      productId:"11622",
-      productName:"Chardon Marie 20 Ampoules",
-      productUrl:'https://www.webecologie.com/foie-vesicule-biliaire/11622-dietaroma-chardon-marie-20-ampoules-3460341503306.html'
+      productId:"MK48285871",
+      productName:"Doro Smartphone senior doro 8080 noir avec extension mémoire carte sd 32go",
+      productUrl:"https://darty.com/nav/achat/telephonie/telephone_mobile/mobile/doro_smartphone_senior_doro_8080_noir_avec_extension_memoire_carte_sd_32go__MK48285871.html"
     }).then(value => {
-      expect(value?.productPrice).toEqual(13.55);
+      expect(value?.productPrice).toEqual(371.80);
       expect(value?.currencyCode).toEqual("EUR");
       done();
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("webecologie/chardon-marie-product.html", httpTestingController);
+    expectOneSampleFile("darty/doro-8080-smartphone-search.json", httpTestingController);
   });
 
-  it('should get price even with no product url', (done) => {
-    expect(component).toBeTruthy();
-    component.updatePrice({
-      productId:"11622",
-      productName:"Chardon Marie 20 Ampoules"
-    }).then(value => {
-      expect(value?.productPrice).toEqual(13.55);
-      expect(value?.currencyCode).toEqual("EUR");
-      done();
-    }).catch(error => {
-      done (error);
-    });
-    expectOneSampleFile("webecologie/chardon-marie-search.html", httpTestingController);
-  });
 });
 

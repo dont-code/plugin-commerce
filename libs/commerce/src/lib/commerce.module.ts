@@ -18,9 +18,10 @@ import {CardModule} from "primeng/card";
 import {BasicModule} from "@dontcode/plugin-basic";
 import {TooltipModule} from "primeng/tooltip";
 import {ShopTypeHandlerComponent} from "./preview/shop/shop-type-handler.component";
+import {MessageModule} from "primeng/message";
 
 @NgModule({
-    imports: [CommonModule, PluginCommonModule.forRoot(), BasicModule, FieldsModule, ReactiveFormsModule, InputTextModule, FormsModule, DropdownModule, RippleModule, ButtonModule, DataViewModule, CardModule, TooltipModule],
+    imports: [CommonModule, PluginCommonModule.forRoot(), BasicModule, FieldsModule, ReactiveFormsModule, InputTextModule, FormsModule, DropdownModule, RippleModule, ButtonModule, DataViewModule, CardModule, TooltipModule, MessageModule],
   declarations: [
     PriceCompareComponent,
     PriceComponent,
