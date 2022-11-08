@@ -53,7 +53,7 @@ static readonly SEARCH_ONLINE_URL="https://www.darty.com/nav/recherche/QUERY_STR
 
                 newProduct.productPrice=this.extractPrice (aResult);
                 newProduct.currencyCode="EUR";
-                newProduct.productName=aResult.searchText;
+                newProduct.productName=aResult.reference;
                 newProduct.productDescription=undefined;
                 newProduct.productId=aResult.codic;
                 newProduct.productUrl=DartyScrapper.BASE_URL+"/nav/codic/"+aResult.codic;

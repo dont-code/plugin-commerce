@@ -29,9 +29,9 @@ describe('AmazonScrapper', () => {
     expect(component).toBeTruthy();
     component.searchProductsForName("Doro 8080 smartphone").then(value => {
       expect(value.length>0).toBeTruthy();
-      expect(value[1].productName).toEqual("Doro 8080 Smartphone 4G Débloqué pour Seniors avec Écran de 5.7&quot;, Caméra de 16MP, Touche d'Assistance avec Géolocalisation...".substring(0,60));
-      expect(value[1].productPrice).toEqual (232);
-      expect(value[1].productId).toEqual("B07XLV8VW9");
+      expect(value[4].productName).toEqual("Doro 8080 Smartphone 4G Débloqué pour Seniors avec Écran de 5.7&quot;, Caméra de 16MP, Touche d'Assistance avec Géolocalisation...".substring(0,60));
+      expect(value[4].productPrice).toEqual (232);
+      expect(value[4].productId).toEqual("B07XLV8VW9");
       done();
     }).catch(error => {
       done (error);

@@ -29,14 +29,14 @@ describe('DartyScrapper', () => {
     expect(component).toBeTruthy();
     component.searchProductsForName("Doro 8080 smartphone").then(value => {
       expect(value.length>0).toBeTruthy();
-      expect(value[0].productName).toEqual("Doro Smartphone senior doro 8080 noir avec extension mémoire carte sd 32go");
+      expect(value[0].productName).toEqual("Smartphone senior doro 8080 noir avec extension mémoire carte sd 32go");
       expect(value[0].productPrice).toEqual (371.80);
       expect(value[0].productId).toEqual("MK48285871");
       done();
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("darty/doro-8080-smartphone-search.html", httpTestingController);
+    expectOneSampleFile("darty/doro-8080-smartphone-search.json", httpTestingController);
   });
 
   it('should get price', (done) => {
@@ -52,7 +52,7 @@ describe('DartyScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("darty/doro-8080-smartphone-product.html", httpTestingController);
+    expectOneSampleFile("darty/doro-8080-smartphone-search.json", httpTestingController);
   });
 
 });

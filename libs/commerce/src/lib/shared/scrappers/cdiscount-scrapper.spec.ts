@@ -32,7 +32,7 @@ describe('CDiscountScrapper', () => {
     expect(component).toBeTruthy();
     component.searchProductsForName("Doro 8080 smartphone").then(value => {
       expect(value.length>0).toBeTruthy();
-      expect(value[0].productName).toEqual("DORO - Smartphone 8050 PLUS");
+      expect(value[0].productName).toEqual("SMARTPHONE DORO - Smartphone 8050 PLUS");
       expect(value[0].productPrice).toEqual (210.64);
       expect(value[0].productId).toEqual("DOR7322460078355");
       done();
@@ -45,10 +45,10 @@ describe('CDiscountScrapper', () => {
   it('should get price', (done) => {
     expect(component).toBeTruthy();
     component.updatePrice({
-      productId:"1177036",
+      productId:"DOR7322460078355",
       productName:"Smartphone DORO 8100 Plus Graphite"
     }).then(value => {
-      expect(value?.productPrice).toEqual(229);
+      expect(value?.productPrice).toEqual(210.64);
       expect(value?.currencyCode).toEqual("EUR");
       done();
     }).catch(error => {
