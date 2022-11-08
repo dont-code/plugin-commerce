@@ -45,6 +45,7 @@ export class GreenWeezScrapper extends AbstractOnlineShopScrapper {
                 newProduct.productUrl=GreenWeezScrapper.BASE_URL+aResult.url;
                 newProduct.productImageUrl=this.findImageUrl (aResult.medias);
 
+                this.checkScrappedProduct(name, newProduct);
                 ret.push(newProduct);
               }
             }

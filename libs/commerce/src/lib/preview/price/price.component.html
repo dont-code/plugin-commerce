@@ -1,5 +1,5 @@
 <dtcde-dynamic></dtcde-dynamic>
-<ng-template #inlineView><span pTooltip="Price Date: {{value?.priceDate??'Unknown'}}\nShop:{{value?.shop??'Unknown'}}">
+<ng-template #inlineView><span pTooltip="Price Date: {{value?.priceDate??'Unknown'}}<br/>Shop:{{value?.shop??'Unknown'}}" [escape]="false">
   <ng-container *ngIf="value?.urlInShop">
     <a href="{{value.urlInShop}}" target="_blank">
       <ng-container *ngTemplateOutlet="priceView" ></ng-container>
@@ -12,8 +12,8 @@
 </ng-template>
 
 <ng-template #priceView>
-  <ng-template *ngIf="parsingErrorMessage">
-    <button pButton type="button" class="p-button-rounded p-button-outlined p-button-danger" icon="pi pi-exclamation-triangle" pTooltip="{{parsingErrorMessage}}"></button>
+  <ng-template *ngIf="value.inError">
+    <button pButton type="button" class="p-button-rounded p-button-outlined p-button-danger" icon="pi pi-exclamation-triangle" pTooltip="Error reading this product price"></button>
   </ng-template>
   <ng-container *ngTemplateOutlet="subFieldInlineViewTemplate('cost')"></ng-container>&nbsp;
 </ng-template>

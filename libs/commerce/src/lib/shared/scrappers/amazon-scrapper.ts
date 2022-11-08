@@ -52,6 +52,7 @@ export class AmazonScrapper extends AbstractOnlineShopScrapper {
             newProduct.productId=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
 
             this.extractPrice(htmlResult, middlePos, newProduct);
+            this.checkScrappedProduct(name, newProduct);
             ret.push(newProduct);
 
             startPos = htmlResult.indexOf(AmazonScrapper.PRODUCT_START_STRING, startPos+1);

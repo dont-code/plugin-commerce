@@ -33,6 +33,7 @@ export class NewPharmaScrapper extends AbstractOnlineShopScrapper {
             newProduct.productImageUrl=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
 
             this.extractPrice(htmlResult, startPos, newProduct);
+            this.checkScrappedProduct(name, newProduct);
             ret.push(newProduct);
 
             startPos = htmlResult.indexOf(NewPharmaScrapper.PRODUCT_START_STRING, startPos+1);
@@ -68,13 +69,10 @@ export class NewPharmaScrapper extends AbstractOnlineShopScrapper {
         const newProduct:ScrappedProduct = {productId:product.productId,
           productName:product.productName};
           this.extractPrice(htmlResult, 0, newProduct);
-          if (newProduct.productPrice!=null) {
-            product.productPrice=newProduct.productPrice;
-            product.currencyCode=newProduct.currencyCode;
-            return product;
-          } else {
-            throw new Error ("Cannot find price for product "+product.productName);
-          };
+          this.checkScrappedProduct(product.productName??"", newProduct);
+          product.productPrice=newProduct.productPrice;
+          product.currencyCode=newProduct.currencyCode;
+          return product;
       }))
     ).catch(error => {
       console.error("Error trying to access page for product "+product.productName, error);

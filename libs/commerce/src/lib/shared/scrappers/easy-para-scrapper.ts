@@ -43,6 +43,7 @@ export class EasyParaScrapper extends AbstractOnlineShopScrapper {
                 newProduct.productUrl=aResult.url;
                 newProduct.productImageUrl=aResult.image_url;
 
+                this.checkScrappedProduct(name, newProduct);
                 ret.push(newProduct);
               }
             }

@@ -63,6 +63,7 @@ static readonly SEARCH_ONLINE_URL="https://www.darty.com/nav/recherche/QUERY_STR
                 //  newProduct.productImageUrl="https://image.darty.com/"+aResult.rewriteUrl+"_n"+aResult.pictures[0].name;
                 //}
 
+                this.checkScrappedProduct(name, newProduct);
                 ret.push(newProduct);
               }
             }
