@@ -117,4 +117,24 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
     }
   }
 
+  /**
+   * Throw an exception if the itemPos is -1 (not found) or after the next product position
+   * @param itemPos
+   * @param nextStartPos
+   * @private
+   */
+  protected checkStringPosition(itemPos: number, limitPos: number) {
+    if ((itemPos==-1)||((limitPos!=-1)&&(itemPos>limitPos)) ) {
+      throw new Error ("Error decoding product for Scrapper "+ this.getOnlineShopName());
+    }
+  }
+
+  protected safeIndexOf(htmlResult: string, toFind: string, startPos: number, limitPos?:number) {
+    const result=htmlResult.indexOf(toFind, startPos);
+    if( result==-1) throw new Error("Cannot find "+toFind+" for "+this.getOnlineShopName());
+    else if ((limitPos!=null) && (limitPos!=-1) && (result>limitPos)) throw new Error ("The product content does not contains "+toFind+' for '+this.getOnlineShopName());
+
+    return result+toFind.length;
+  }
+
 }

@@ -12,7 +12,7 @@
 </ng-template>
 
 <ng-template #priceView>
-  <ng-template *ngIf="value.inError">
+  <ng-template *ngIf="value?.inError">
     <button pButton type="button" class="p-button-rounded p-button-outlined p-button-danger" icon="pi pi-exclamation-triangle" pTooltip="Error reading this product price"></button>
   </ng-template>
   <ng-container *ngTemplateOutlet="subFieldInlineViewTemplate('cost')"></ng-container>&nbsp;
