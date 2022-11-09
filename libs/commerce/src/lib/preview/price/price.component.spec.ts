@@ -25,4 +25,10 @@ describe('PriceComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should support setValue', () => {
+    component.setValue(null);
+
+  });
+
 });

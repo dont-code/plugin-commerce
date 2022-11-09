@@ -44,6 +44,7 @@ export class CDiscountScrapper extends AbstractOnlineShopScrapper {
             newProduct.productId=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
 
             this.extractPrice(htmlResult, startPos, newProduct);
+            this.checkScrappedProduct(name, newProduct);
             ret.push(newProduct);
 
             startPos = htmlResult.indexOf(CDiscountScrapper.PRODUCT_START_STRING, startPos+1);

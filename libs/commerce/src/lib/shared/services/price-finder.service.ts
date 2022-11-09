@@ -19,13 +19,14 @@ import {BoulangerScrapper} from "../scrappers/boulanger-scrapper";
 import {DartyScrapper} from "../scrappers/darty-scrapper";
 import {CDiscountScrapper} from "../scrappers/cdiscount-scrapper";
 import {AmazonScrapper} from "../scrappers/amazon-scrapper";
+import {FnacScrapper} from "../scrappers/fnac-scrapper";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PriceFinderService {
 
-  private static DONT_UPDATE_UNTIL_DELAY_MS = 1000*60*60*12; // Don't update price until 12h has passed since the last one
+  private static DONT_UPDATE_UNTIL_DELAY_MS = 1000*60*60*1; // Don't update price until 1h has passed since the last one
   protected listOfScrappers = new Map<string, OnlineShopScrapper> ();
   protected shopTypeNames = new Array<string>();
 
@@ -41,6 +42,7 @@ export class PriceFinderService {
     this.addScrapper(new BoulangerScrapper(httpClient));
     this.addScrapper(new DartyScrapper(httpClient));
     this.addScrapper(new CDiscountScrapper(httpClient));
+    this.addScrapper(new FnacScrapper(httpClient));
     this.addScrapper(new AmazonScrapper(httpClient));
   }
 
@@ -121,11 +123,16 @@ export class PriceFinderService {
       return scrapper.updatePrice({productId, productName:productPrice.nameInShop??null, productUrl:productPrice.urlInShop}).then(updated => {
         if ((updated!=null)&&(productPrice!=null)) {
           productPrice.cost=AbstractOnlineShopScrapper.toMoneyAmount(updated);
+          productPrice.outOfStock=updated.outOfStock;
+          productPrice.inError=false;
           return productPrice;
         } else {
           return null;
         }
-      })
+      }).catch(reason => {
+        console.error("Cannot update price for "+ productPrice?.nameInShop+ " because of "+reason.toString());
+        throw reason;
+      });
     }
   }
 
@@ -166,7 +173,7 @@ export class PriceFinderService {
           (val.priceDate.getTime()+PriceFinderService.DONT_UPDATE_UNTIL_DELAY_MS < new Date().getTime())
       ) {
         // Yes we can update
-        console.debug("Need to update price for ", val.nameInShop);
+        //console.debug("Need to update price for ", val.nameInShop);
         const newPrice = await this.findPrice(val, val.shop, position);
 
         return newPrice;

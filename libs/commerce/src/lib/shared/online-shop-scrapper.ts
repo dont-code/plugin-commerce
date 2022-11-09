@@ -8,11 +8,13 @@ import {HttpClient} from "@angular/common/http";
 export class ScrappedProduct {
   productId?: string;
   productName: string|null=null;
-  productDescription?:string;
-  productUrl?:string;
-  productImageUrl?:string;
+  productDescription?: string;
+  productUrl?: string;
+  productImageUrl?: string;
   productPrice?: number;
   currencyCode?: string;
+  outOfStock?:boolean = false;
+  marketPlace?:boolean;
 }
 
 /**
@@ -23,12 +25,14 @@ export interface OnlineShopScrapper {
   getOnlineShopName ():string;
   /**
    * Given a name returns all products that the onlineshop found
+   * @return empty array if no product matches the criteria, a rejected promise in case of any type of error getting the list
    * @param name
    */
   searchProductsForName (name:string): Promise<Array<ScrappedProduct>>;
 
   /**
-   * Retrieve the price of the given product
+   * Retrieve the price of the given product.
+   * @return null if product is not found, throw an error if scrapping went wrong for any reason
    * @param productId
    */
   updatePrice (product: ScrappedProduct, useProductName?:boolean): Promise<ScrappedProduct|null>;
@@ -95,6 +99,42 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
         return Promise.reject("Product " + productToFind + " not found in shoptype " + this.onlineShopName);
       });
     }
+  }
+
+  /**
+   * Throws an exception if the product scrapped is incorrect
+   * @param product
+   */
+  checkScrappedProduct (productSearch:string, product:ScrappedProduct): void {
+    if ((product.productId==null)||(product.productId.length==0)) {
+      throw new Error ("Incorrect productId scrapped by shop "+this.getOnlineShopName()+" for product search"+productSearch);
+    }
+    if ((product.productName==null)||(product.productName.length==0)) {
+      throw new Error ("Incorrect productName scrapped by shop "+this.getOnlineShopName()+" for product search"+productSearch);
+    }
+    if ((product.productPrice==null)||(isNaN(product.productPrice))) {
+      throw new Error ("Incorrect productPrice scrapped by shop "+this.getOnlineShopName()+" for product search"+productSearch);
+    }
+  }
+
+  /**
+   * Throw an exception if the itemPos is -1 (not found) or after the next product position
+   * @param itemPos
+   * @param nextStartPos
+   * @private
+   */
+  protected checkStringPosition(itemPos: number, limitPos: number) {
+    if ((itemPos==-1)||((limitPos!=-1)&&(itemPos>limitPos)) ) {
+      throw new Error ("Error decoding product for Scrapper "+ this.getOnlineShopName());
+    }
+  }
+
+  protected safeIndexOf(htmlResult: string, toFind: string, startPos: number, limitPos?:number) {
+    const result=htmlResult.indexOf(toFind, startPos);
+    if( result==-1) throw new Error("Cannot find "+toFind+" for "+this.getOnlineShopName());
+    else if ((limitPos!=null) && (limitPos!=-1) && (result>limitPos)) throw new Error ("The product content does not contains "+toFind+' for '+this.getOnlineShopName());
+
+    return result+toFind.length;
   }
 
 }

@@ -52,17 +52,19 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
 
   override setValue(val: any) {
     super.setValue(val);
-    this.priceFinder.updatePriceIfPossible(val, this.parentPosition??'').then(newPrice => {
-        // newPrice is this.value in fact
-      if (newPrice!=null) {
-        console.debug ("Update date for ", newPrice?.nameInShop);
-        newPrice.priceDate = new Date();
-        //this.hydrateValueToForm();
-      }
-      this.parsingErrorMessage=null;
-    }).catch(reason => {
-      this.parsingErrorMessage=reason.toString();
-    });
+    if( val!=null) {
+      this.priceFinder.updatePriceIfPossible(val, this.parentPosition??'').then(newPrice => {
+          // newPrice is this.value in fact
+        if (newPrice!=null) {
+          //console.debug ("Update date for ", newPrice?.nameInShop);
+          newPrice.priceDate = new Date();
+          //this.hydrateValueToForm();
+        }
+        this.parsingErrorMessage=null;
+      }).catch(reason => {
+        val.inError=true;
+      });
+    }
   }
 
   override createAndRegisterFormControls (): void {
@@ -81,7 +83,9 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
 
   updatePrice() {
     this.parsingErrorMessage=null;
-    if( this.value?.idInShop==null) {
+    if( this.value==null) return;
+
+    if( this.value.idInShop==null) {
 /*      const testProduct = new ScrappedProduct();
       testProduct.productName="Test Product";
       testProduct.productId="TEST-PRODUCT";
@@ -98,7 +102,13 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
             this.ref.detectChanges();
           }
         }).catch(reason => {
-          this.parsingErrorMessage=reason.toString();
+          if (reason.message!=null)
+            this.parsingErrorMessage=reason.message;
+          else
+            this.parsingErrorMessage=reason.toString();
+
+          this.ref.markForCheck();
+          this.ref.detectChanges();
         });
       }
     } else if (this.value.shop!=null) {
@@ -107,7 +117,13 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
           this.setSubFieldValue('cost', newPrice.cost);
           this.setSubFieldValue('priceDate', new Date());
         }
-      })
+      }).catch ((reason) => {
+        this.value.inError=true;
+        if (reason.message!=null)
+          this.parsingErrorMessage=reason.message;
+        else
+          this.parsingErrorMessage=reason.toString();
+      });
     }
   }
 

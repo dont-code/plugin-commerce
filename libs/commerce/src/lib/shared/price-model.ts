@@ -7,5 +7,8 @@ export interface PriceModel {
 
   idInShop?:string;
   nameInShop?:string;
-  urlInShop?:string
+  urlInShop?:string;
+
+  outOfStock?:boolean;
+  inError?:boolean;
 }
