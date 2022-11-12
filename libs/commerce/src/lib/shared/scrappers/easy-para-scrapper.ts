@@ -40,6 +40,10 @@ export class EasyParaScrapper extends AbstractOnlineShopScrapper {
                 newProduct.productName=aResult.name;
                 newProduct.productDescription=aResult.short_description??aResult.description;
                 newProduct.productId=aResult.ean_code?.toString();
+                if (newProduct.productId==null) {
+                  console.warn("Product "+newProduct.productName+" searched by "+name+" for Shop "+this.getOnlineShopName()+" has no ean_code, getting objectId instead");
+                  newProduct.productId=aResult.objectID;
+                }
                 newProduct.productUrl=aResult.url;
                 newProduct.productImageUrl=aResult.image_url;
 

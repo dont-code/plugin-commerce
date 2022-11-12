@@ -86,6 +86,7 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
 
     if (useProductName||(productToFind==null)) {
       productToFind=prod.productName??undefined;
+      useProductName=true;
     }
     if (productToFind==null) {
       return Promise.reject("You must define a product with a name or id ");
@@ -96,7 +97,22 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
             return product;
           }
         }
-        return Promise.reject("Product " + productToFind + " not found in shoptype " + this.onlineShopName);
+
+        return null;
+      }).then (value => {
+          // Let's try a seach with the name if possible
+        if( (value == null)&&(!useProductName)&& (prod.productName!=null)) {
+          return this.searchProductsForName(prod.productName).then(listOfAllElements => {
+            for (const product of listOfAllElements) {
+              if (product.productId == prod.productId) {
+                return product;
+              }
+            }
+
+            return Promise.reject("Product " + productToFind + " not found in shoptype " + this.onlineShopName);
+          });
+        }
+        return value;
       });
     }
   }
