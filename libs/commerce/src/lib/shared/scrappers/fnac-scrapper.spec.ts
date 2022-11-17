@@ -30,7 +30,7 @@ describe('FnacScrapper', () => {
     component.searchProductsForName("Doro 8080 smartphone").then(value => {
       expect(value.length>0).toBeTruthy();
       expect(value[0].productName).toEqual("DORO 8080 - 4G smartphone / Mémoire interne 32 Go - microSD slot - 5.7&quot; - 1440 x 720 pixels - rear camera 16 MP - blanc");
-      expect(value[0].productPrice).toEqual (267.57);
+      expect(value[0].productPrice).toEqual (289.88);
       expect(value[0].productId).toEqual("ID43280553");
       done();
     }).catch(error => {

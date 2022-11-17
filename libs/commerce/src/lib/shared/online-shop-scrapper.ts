@@ -41,7 +41,7 @@ export interface OnlineShopScrapper {
 
 export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
 
-  public static readonly CORS_SERVER_URL='https://corsproxy.io/?';
+  public static readonly CORS_SERVER_URL='https://test.dont-code.net/proxy/log';
 
   protected onlineShopName="Unknown";
 
@@ -71,7 +71,7 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
    * @param url
    */
   encodeUrlForCors(url:string):string {
-    return AbstractOnlineShopScrapper.CORS_SERVER_URL+encodeURIComponent(url);
+    return AbstractOnlineShopScrapper.CORS_SERVER_URL+(url.startsWith('/')?'':'/')+url;
   }
 
   abstract searchProductsForName(name: string): Promise<Array<ScrappedProduct>>;
@@ -128,7 +128,7 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
     if ((product.productName==null)||(product.productName.length==0)) {
       throw new Error ("Incorrect productName scrapped by shop "+this.getOnlineShopName()+" for product search"+productSearch);
     }
-    if ((product.productPrice==null)||(isNaN(product.productPrice))) {
+    if (((product.productPrice==null)||(isNaN(product.productPrice))) && (product.outOfStock!=true)) {
       throw new Error ("Incorrect productPrice scrapped by shop "+this.getOnlineShopName()+" for product search"+productSearch);
     }
   }
@@ -145,12 +145,31 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
     }
   }
 
-  protected safeIndexOf(htmlResult: string, toFind: string, startPos: number, limitPos?:number) {
+  protected indexOf(htmlResult: string, toFind: string, startPos: number, limitPos?:number, endIndex:boolean=true): number {
     const result=htmlResult.indexOf(toFind, startPos);
-    if( result==-1) throw new Error("Cannot find "+toFind+" for "+this.getOnlineShopName());
-    else if ((limitPos!=null) && (limitPos!=-1) && (result>limitPos)) throw new Error ("The product content does not contains "+toFind+' for '+this.getOnlineShopName());
+    if( result==-1)
+      return result;
+    else if ((limitPos!=null) && (limitPos!=-1) && (result>limitPos))
+      return -1;
 
-    return result+toFind.length;
+    if (endIndex)
+      return result+toFind.length;
+    else
+      return result;
+
+  }
+
+  protected safeIndexOf(htmlResult: string, toFind: string, startPos: number, limitPos?:number, endIndex:boolean=true): number {
+    const result=htmlResult.indexOf(toFind, startPos);
+    if( result==-1)
+      throw new Error("Cannot find "+toFind+" for "+this.getOnlineShopName());
+    else if ((limitPos!=null) && (limitPos!=-1) && (result>limitPos))
+      throw new Error ("The product content does not contains "+toFind+' for '+this.getOnlineShopName());
+
+    if (endIndex)
+      return result+toFind.length;
+    else
+      return result;
   }
 
 }
