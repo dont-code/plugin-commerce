@@ -15,6 +15,7 @@ export class ScrappedProduct {
   currencyCode?: string;
   outOfStock?:boolean = false;
   marketPlace?:boolean;
+
 }
 
 /**
@@ -41,7 +42,7 @@ export interface OnlineShopScrapper {
 
 export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
 
-  public static readonly CORS_SERVER_URL='https://test.dont-code.net/proxy/log';
+  public static readonly CORS_SERVER_URL='https://corsproxy.io/?';
 
   protected onlineShopName="Unknown";
 
@@ -71,7 +72,7 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
    * @param url
    */
   encodeUrlForCors(url:string):string {
-    return AbstractOnlineShopScrapper.CORS_SERVER_URL+(url.startsWith('/')?'':'/')+url;
+    return AbstractOnlineShopScrapper.CORS_SERVER_URL+ encodeURIComponent(url);
   }
 
   abstract searchProductsForName(name: string): Promise<Array<ScrappedProduct>>;
@@ -112,7 +113,11 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
             return Promise.reject("Product " + productToFind + " not found in shoptype " + this.onlineShopName);
           });
         }
-        return value;
+        if( value!=null)
+          return value;
+        else {
+          return Promise.reject("Product " + productToFind + " not found in shoptype " + this.onlineShopName);
+        }
       });
     }
   }

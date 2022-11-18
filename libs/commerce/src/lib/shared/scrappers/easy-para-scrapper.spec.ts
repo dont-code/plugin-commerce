@@ -51,9 +51,9 @@ describe('EasyParaScrapper', () => {
   });
 });
 
-export function expectOneSampleFile (sampleFileRelative:string, controller:HttpTestingController): TestRequest {
+export function expectOneSampleFile (sampleFileRelative:string, controller:HttpTestingController, matchProxyUrl=AbstractOnlineShopScrapper.CORS_SERVER_URL): TestRequest {
   const searchCall = controller.expectOne(req => {
-    if (req.url.startsWith(AbstractOnlineShopScrapper.CORS_SERVER_URL))
+    if (req.url.startsWith(matchProxyUrl))
       return true;
     else
       return false;
@@ -63,16 +63,16 @@ export function expectOneSampleFile (sampleFileRelative:string, controller:HttpT
   return searchCall;
 }
 
-export function waitForOneMatchSampleFile (sampleFileRelative:string, controller:HttpTestingController, done:jest.DoneCallback):void {
+export function waitForOneMatchSampleFile (sampleFileRelative:string, controller:HttpTestingController, done:jest.DoneCallback, matchProxyUrl=AbstractOnlineShopScrapper.CORS_SERVER_URL):void {
   setTimeout(() => {
     const counter= 0;
     __isMatchRecursive(sampleFileRelative, controller, done, counter);
   }, 100);
 }
 
-function __isMatchRecursive (sampleFileRelative:string, controller:HttpTestingController, done:jest.DoneCallback, counter:number):void {
+function __isMatchRecursive (sampleFileRelative:string, controller:HttpTestingController, done:jest.DoneCallback, counter:number, matchProxyUrl=AbstractOnlineShopScrapper.CORS_SERVER_URL):void {
     const searchCall = controller.match(req => {
-      if (req.url.startsWith(AbstractOnlineShopScrapper.CORS_SERVER_URL))
+      if (req.url.startsWith(matchProxyUrl))
         return true;
       else
         return false;
@@ -95,9 +95,9 @@ function __isMatchRecursive (sampleFileRelative:string, controller:HttpTestingCo
 
 }
 
-export function expectMultipleSampleFile (sampleFileRelative:string, controller:HttpTestingController): number {
+export function expectMultipleSampleFile (sampleFileRelative:string, controller:HttpTestingController, matchProxyUrl=AbstractOnlineShopScrapper.CORS_SERVER_URL): number {
   const searchCalls = controller.match(req => {
-    if (req.url.startsWith(AbstractOnlineShopScrapper.CORS_SERVER_URL))
+    if (req.url.startsWith(matchProxyUrl))
       return true;
     else
       return false;

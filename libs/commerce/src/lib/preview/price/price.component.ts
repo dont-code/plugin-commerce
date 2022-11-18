@@ -54,12 +54,6 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     super.setValue(val);
     if( val!=null) {
       this.priceFinder.updatePriceIfPossible(val, this.parentPosition??'').then(newPrice => {
-          // newPrice is this.value in fact
-        if (newPrice!=null) {
-          //console.debug ("Update date for ", newPrice?.nameInShop);
-          newPrice.priceDate = new Date();
-          //this.hydrateValueToForm();
-        }
         this.parsingErrorMessage=null;
       }).catch(reason => {
         val.inError=true;

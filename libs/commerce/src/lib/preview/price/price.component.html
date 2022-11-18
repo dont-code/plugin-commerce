@@ -12,9 +12,7 @@
 </ng-template>
 
 <ng-template #priceView>
-  <ng-template *ngIf="value?.inError">
-    <button pButton type="button" class="p-button-rounded p-button-outlined p-button-danger" icon="pi pi-exclamation-triangle" pTooltip="Error reading this product price"></button>
-  </ng-template>
+  <button *ngIf="value?.inError" pButton type="button" class="p-button-rounded p-button-outlined p-button-danger" icon="pi pi-exclamation-triangle" pTooltip="Error reading this product price"></button>
   <ng-container *ngTemplateOutlet="subFieldInlineViewTemplate('cost')"></ng-container>&nbsp;
 </ng-template>
 
@@ -32,6 +30,7 @@
       </div>
       <div class="field col-12 md:col-6">
         <div class="flex align-items-center">
+          <button *ngIf="value?.inError" pButton type="button" class="p-button-rounded p-button-outlined p-button-danger" icon="pi pi-exclamation-triangle" pTooltip="Error reading this product price"></button>
           <button name="FetchPrice" class="flex flex-initial align-items-center" pButton pRipple type="button" icon="pi pi-sync" class="p-button-rounded p-button-text" [disabled]="cannotUpdatePrice ()" (click)="updatePrice()"></button>
           <div class="flex align-items-center flex-1" style="margin-top: 0.5rem">Price:&nbsp;
             <ng-container *ngTemplateOutlet="subFieldFullEditTemplate('cost')"></ng-container>

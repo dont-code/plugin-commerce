@@ -3,12 +3,22 @@ import {firstValueFrom, map} from "rxjs";
 
 export class FnacScrapper extends AbstractOnlineShopScrapper {
 
+  public static readonly CORS_FNAC_PROXY_URL='https://test.dont-code.net/proxy/log';
+
   static readonly SEARCH_ONLINE_URL="https://www.fnac.com/SearchResult/ResultList.aspx?SCat=0&Search=QUERY_STRING&sft=1&sa=0";
   protected static readonly PRODUCT_START_STRING='<div class="clearfix Article-item';
 
   protected static readonly BASE_URL='https://www.fnac.com'
 
   override onlineShopName="Fnac";
+
+  /**
+   * Avoid Cors issue by running the url through a Cors manager proxy
+   * @param url
+   */
+  encodeUrlForCors(url:string):string {
+    return FnacScrapper.CORS_FNAC_PROXY_URL+(url.startsWith('/')?'':'/')+url;
+  }
 
   searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
     // remove accents
@@ -79,6 +89,7 @@ export class FnacScrapper extends AbstractOnlineShopScrapper {
         })
     ));
   }
+
 
   extractPrice (htmlResult:string, startPos:number, newProduct:ScrappedProduct, nextStartPos:number): void {
       const itemPos = this.indexOf(htmlResult, 'class="userPrice">', startPos, nextStartPos);
