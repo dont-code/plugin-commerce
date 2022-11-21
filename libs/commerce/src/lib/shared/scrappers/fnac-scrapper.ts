@@ -3,8 +3,6 @@ import {firstValueFrom, map} from "rxjs";
 
 export class FnacScrapper extends AbstractOnlineShopScrapper {
 
-  public static readonly CORS_FNAC_PROXY_URL='https://test.dont-code.net/proxy/log';
-
   static readonly SEARCH_ONLINE_URL="https://www.fnac.com/SearchResult/ResultList.aspx?SCat=0&Search=QUERY_STRING&sft=1&sa=0";
   protected static readonly PRODUCT_START_STRING='<div class="clearfix Article-item';
 

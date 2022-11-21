@@ -36,7 +36,7 @@ describe('FnacScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("fnac/doro-8080-smartphone-search.html", httpTestingController, FnacScrapper.CORS_FNAC_PROXY_URL);
+    expectOneSampleFile("fnac/doro-8080-smartphone-search.html", httpTestingController);
   });
 
   it('should get price', (done) => {
@@ -52,7 +52,7 @@ describe('FnacScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("fnac/doro-8080-smartphone-product.html", httpTestingController,FnacScrapper.CORS_FNAC_PROXY_URL);
+    expectOneSampleFile("fnac/doro-8080-smartphone-product.html", httpTestingController);
   });
 
 });

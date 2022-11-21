@@ -8,6 +8,7 @@ import {NewPharmaScrapper} from "./new-pharma-scrapper";
 import {WebEcologieScrapper} from "./web-ecologie-scrapper";
 import {BoulangerScrapper} from "./boulanger-scrapper";
 import {CDiscountScrapper} from "./cdiscount-scrapper";
+import {AbstractOnlineShopScrapper} from "../online-shop-scrapper";
 
 describe('CDiscountScrapper', () => {
   let component: CDiscountScrapper;
@@ -39,7 +40,7 @@ describe('CDiscountScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("cdiscount/doro-8080-smartphone-search.html", httpTestingController);
+    expectOneSampleFile("cdiscount/doro-8080-smartphone-search.html", httpTestingController, AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 
   it('should get price', (done) => {
@@ -54,7 +55,7 @@ describe('CDiscountScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("cdiscount/doro-8080-smartphone-search.html", httpTestingController);
+    expectOneSampleFile("cdiscount/doro-8080-smartphone-search.html", httpTestingController, AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 
 });
