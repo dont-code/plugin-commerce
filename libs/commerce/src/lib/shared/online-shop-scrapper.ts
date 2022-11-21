@@ -42,7 +42,11 @@ export interface OnlineShopScrapper {
 
 export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
 
-  public static readonly CORS_SERVER_URL='https://corsproxy.io/?';
+  public static readonly CORS_PROXY_URL='https://corsproxy.io/?';
+  // public static readonly CORS_SERVER_URL='http://localhost:3000/proxy/debug';
+  public static readonly CORS_DONTCODE_PROXY_URL='https://test.dont-code.net/proxy/debug';
+
+  protected useCorsProxy = false;
 
   protected onlineShopName="Unknown";
 
@@ -72,7 +76,11 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
    * @param url
    */
   encodeUrlForCors(url:string):string {
-    return AbstractOnlineShopScrapper.CORS_SERVER_URL+ encodeURIComponent(url);
+    if( this.useCorsProxy) {
+      return AbstractOnlineShopScrapper.CORS_PROXY_URL+ encodeURIComponent(url);
+    } else {
+      return AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL+(url.startsWith('/')?'':'/')+url;
+    }
   }
 
   abstract searchProductsForName(name: string): Promise<Array<ScrappedProduct>>;

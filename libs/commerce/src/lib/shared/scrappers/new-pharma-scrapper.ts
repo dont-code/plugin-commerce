@@ -2,6 +2,7 @@ import {AbstractOnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapp
 import {firstValueFrom, map} from "rxjs";
 import {MoneyAmount} from "@dontcode/core";
 import {PriceFinderService} from "../services/price-finder.service";
+import {HttpClient} from "@angular/common/http";
 
 export class NewPharmaScrapper extends AbstractOnlineShopScrapper {
 
@@ -9,6 +10,11 @@ export class NewPharmaScrapper extends AbstractOnlineShopScrapper {
   protected static readonly PRODUCT_START_STRING="<div class=\"product js-product-row product--desktop";
 
   override onlineShopName="NewPharma";
+
+  constructor(httpClient: HttpClient) {
+    super(httpClient);
+    this.useCorsProxy=true;
+  }
 
   searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
     const query = NewPharmaScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", encodeURIComponent(name));

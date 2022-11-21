@@ -58,6 +58,7 @@ static readonly SEARCH_ONLINE_URL="https://www.darty.com/nav/recherche/QUERY_STR
                 newProduct.productId=aResult.codic;
                 newProduct.productUrl=DartyScrapper.BASE_URL+"/nav/codic/"+aResult.codic;
                 //if( aResult.rewriteUrl==null) {
+                if (aResult.pictures?.length>0)
                   newProduct.productImageUrl=DartyScrapper.BASE_IMAGE_URL.replace("IMAGE_URL", aResult.pictures[0].algoliaPict);
                 //} else {
                 //  newProduct.productImageUrl="https://image.darty.com/"+aResult.rewriteUrl+"_n"+aResult.pictures[0].name;

@@ -46,8 +46,12 @@
       <div class="field col-12 md:col-6">Product url:
           <ng-container *ngTemplateOutlet="subFieldFullEditTemplate('urlInShop')"></ng-container>
       </div>
-      <ng-container *ngIf="parsingErrorMessage">
-        <p-message severity="error" [text]="parsingErrorMessage"></p-message>
+      <ng-container *ngIf="parsingError">
+        <p-messages severity="error">
+          <ng-template pTemplate>Error : {{parsingError.status??''+':'+parsingError.message}}&nbsp;
+            <a *ngIf="parsingError.url" [href]="parsingError.url" target="_blank">Try in the browser</a>
+          </ng-template>
+        </p-messages>
       </ng-container>
       <ng-container *ngIf="productSelectionMode">
         <div [id]="name+'-select'" class="field col-12"><dontcode-commerce-product-selection [listOfProducts]="listOfSelectableProducts" (selected)="selectedProduct ($event)"></dontcode-commerce-product-selection>

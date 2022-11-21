@@ -16,9 +16,9 @@ export class FnacScrapper extends AbstractOnlineShopScrapper {
    * Avoid Cors issue by running the url through a Cors manager proxy
    * @param url
    */
-  encodeUrlForCors(url:string):string {
+/*  encodeUrlForCors(url:string):string {
     return FnacScrapper.CORS_FNAC_PROXY_URL+(url.startsWith('/')?'':'/')+url;
-  }
+  }*/
 
   searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
     // remove accents
