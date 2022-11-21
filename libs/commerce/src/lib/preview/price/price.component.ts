@@ -27,7 +27,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
 
   override value: PriceModel;
 
-  parsingErrorMessage:string|null=null;
+  parsingError:{message?:string, url?:string, status?:number, content?:string}|null=null;
 
   productSelectionMode=false;
   listOfSelectableProducts = new Array<ScrappedProduct>();
@@ -54,13 +54,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     super.setValue(val);
     if( val!=null) {
       this.priceFinder.updatePriceIfPossible(val, this.parentPosition??'').then(newPrice => {
-          // newPrice is this.value in fact
-        if (newPrice!=null) {
-          //console.debug ("Update date for ", newPrice?.nameInShop);
-          newPrice.priceDate = new Date();
-          //this.hydrateValueToForm();
-        }
-        this.parsingErrorMessage=null;
+        this.parsingError=null;
       }).catch(reason => {
         val.inError=true;
       });
@@ -82,7 +76,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
   }
 
   updatePrice() {
-    this.parsingErrorMessage=null;
+    this.parsingError=null;
     if( this.value==null) return;
 
     if( this.value.idInShop==null) {
@@ -102,11 +96,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
             this.ref.detectChanges();
           }
         }).catch(reason => {
-          if (reason.message!=null)
-            this.parsingErrorMessage=reason.message;
-          else
-            this.parsingErrorMessage=reason.toString();
-
+          this.parsingError=this.translateToError(reason);
           this.ref.markForCheck();
           this.ref.detectChanges();
         });
@@ -114,15 +104,13 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     } else if (this.value.shop!=null) {
       this.priceFinder.findPrice(this.value, this.value.shop, this.parentPosition??"").then (newPrice => {
         if (newPrice!=null) {
+          this.value.inError=false;
           this.setSubFieldValue('cost', newPrice.cost);
           this.setSubFieldValue('priceDate', new Date());
         }
       }).catch ((reason) => {
         this.value.inError=true;
-        if (reason.message!=null)
-          this.parsingErrorMessage=reason.message;
-        else
-          this.parsingErrorMessage=reason.toString();
+        this.parsingError=this.translateToError(reason);
       });
     }
   }
@@ -170,13 +158,42 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
   clearProduct ():void {
     this.productSelectionMode=false;
     delete this.value.idInShop;
-    this.parsingErrorMessage=null;
+    this.parsingError=null;
     this.hydrateValueToForm();
   }
 
   productNameChanged(event: Event) {
     const inputEvent = event as InputEvent;
     this.productSelectionMode=false;
-    this.parsingErrorMessage=null;
+    this.parsingError=null;
+  }
+
+  protected translateToError(reason: any): any {
+
+    const ret:any={};
+    if( typeof reason === 'string') {
+      ret.message=reason;
+      return ret;
+    }
+
+    if (reason.status!=null) {
+      ret.status=reason.status;
+    }
+    if (reason.statusText!=null) {
+      ret.message=reason.statusText;
+    } else if (reason.message!=null) {
+      ret.message=reason.message;
+    }
+    if (reason.url!=null) {
+      ret.url=reason.url;
+    }
+    if (reason.error!=null) {
+      ret.content=reason.error;
+    }
+    if( ret.message==null)  {
+      // Nothing found
+      ret.message=reason.toString();
+    }
+    return ret;
   }
 }

@@ -12,9 +12,7 @@
 </ng-template>
 
 <ng-template #priceView>
-  <ng-template *ngIf="value?.inError">
-    <button pButton type="button" class="p-button-rounded p-button-outlined p-button-danger" icon="pi pi-exclamation-triangle" pTooltip="Error reading this product price"></button>
-  </ng-template>
+  <button *ngIf="value?.inError" pButton type="button" class="p-button-rounded p-button-outlined p-button-danger" icon="pi pi-exclamation-triangle" pTooltip="Error reading this product price"></button>
   <ng-container *ngTemplateOutlet="subFieldInlineViewTemplate('cost')"></ng-container>&nbsp;
 </ng-template>
 
@@ -32,6 +30,7 @@
       </div>
       <div class="field col-12 md:col-6">
         <div class="flex align-items-center">
+          <button *ngIf="value?.inError" pButton type="button" class="p-button-rounded p-button-outlined p-button-danger" icon="pi pi-exclamation-triangle" pTooltip="Error reading this product price"></button>
           <button name="FetchPrice" class="flex flex-initial align-items-center" pButton pRipple type="button" icon="pi pi-sync" class="p-button-rounded p-button-text" [disabled]="cannotUpdatePrice ()" (click)="updatePrice()"></button>
           <div class="flex align-items-center flex-1" style="margin-top: 0.5rem">Price:&nbsp;
             <ng-container *ngTemplateOutlet="subFieldFullEditTemplate('cost')"></ng-container>
@@ -47,8 +46,12 @@
       <div class="field col-12 md:col-6">Product url:
           <ng-container *ngTemplateOutlet="subFieldFullEditTemplate('urlInShop')"></ng-container>
       </div>
-      <ng-container *ngIf="parsingErrorMessage">
-        <p-message severity="error" [text]="parsingErrorMessage"></p-message>
+      <ng-container *ngIf="parsingError">
+        <p-messages severity="error">
+          <ng-template pTemplate>Error : {{parsingError.status??''+':'+parsingError.message}}&nbsp;
+            <a *ngIf="parsingError.url" [href]="parsingError.url" target="_blank">Try in the browser</a>
+          </ng-template>
+        </p-messages>
       </ng-container>
       <ng-container *ngIf="productSelectionMode">
         <div [id]="name+'-select'" class="field col-12"><dontcode-commerce-product-selection [listOfProducts]="listOfSelectableProducts" (selected)="selectedProduct ($event)"></dontcode-commerce-product-selection>

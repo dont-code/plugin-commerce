@@ -1,5 +1,6 @@
 import {AbstractOnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapper";
 import {firstValueFrom, map} from "rxjs";
+import {HttpClient} from "@angular/common/http";
 
 export class CDiscountScrapper extends AbstractOnlineShopScrapper {
 
@@ -9,6 +10,11 @@ export class CDiscountScrapper extends AbstractOnlineShopScrapper {
   protected static readonly BASE_URL='https://www.cdiscount.com'
 
   override onlineShopName="CDiscount";
+
+  constructor(httpClient:HttpClient) {
+    super(httpClient);
+    this.useCorsProxy=true;
+  }
 
   searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
     // remove accents

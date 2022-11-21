@@ -79,25 +79,25 @@ export class PriceFinderService {
    * @param model
    */
   async findPrice (productValue: any, shopName:string, position:string, model?:DontCodeEntityType): Promise<PriceModel|null> {
-    if (productValue==null) {
-      throw new Error ("No product to get price for");
+    if (productValue == null) {
+      throw new Error("No product to get price for");
     }
-    const scrapper = this.listOfScrappers.get(await this.getShopTypeNameOf (shopName));
-    if (scrapper==null)
-      throw new Error ("Shop type "+shopName+" not found");
+    const scrapper = this.listOfScrappers.get(await this.getShopTypeNameOf(shopName));
+    if (scrapper == null)
+      throw new Error("Shop type " + shopName + " not found");
 
-    if( model==null){
+    if (model == null) {
       model = this.modelMgr.findAtPosition(position, false);
     }
     // We're looking for a Price that points to the shopType given in parameter
-    let priceField=null;
-    let productPrice:PriceModel|null = null;
+    let priceField = null;
+    let productPrice: PriceModel | null = null;
     if (model?.fields) {
       for (const field of model.fields) {
-        if (field.type==="Price") {
+        if (field.type === "Price") {
           // We found one, is it the correct one ?
-          priceField=field;
-          productPrice=productValue[priceField.name];
+          priceField = field;
+          productPrice = productValue[priceField.name];
           break;
           /*if (productPrice?.shop!==shopTypeName) {
             priceField=null;
@@ -109,30 +109,40 @@ export class PriceFinderService {
       }
     }
 
-      // In case we didn't find anything, we assume the value in parameter is the price
-    if (priceField==null) {
-        priceField=model;
-        productPrice=productValue;
-      }
+    // In case we didn't find anything, we assume the value in parameter is the price
+    if (priceField == null) {
+      priceField = model;
+      productPrice = productValue;
+    }
 
-      // Let's see if we already have the id of the item, then we can get the price very quickly
-    const productId=this.findProductId (productPrice);
-    if ((productId==null) || (productPrice==null)) {
-      return Promise.reject("Product Id not found in "+productValue);
+    // Let's see if we already have the id of the item, then we can get the price very quickly
+    const productId = this.findProductId(productPrice);
+    if ((productId == null) || (productPrice == null)) {
+      return Promise.reject("Product Id not found in " + productValue);
     } else {
-      return scrapper.updatePrice({productId, productName:productPrice.nameInShop??null, productUrl:productPrice.urlInShop}).then(updated => {
-        if ((updated!=null)&&(productPrice!=null)) {
-          productPrice.cost=AbstractOnlineShopScrapper.toMoneyAmount(updated);
-          productPrice.outOfStock=updated.outOfStock;
-          productPrice.inError=false;
-          return productPrice;
-        } else {
+
+      if (productPrice != null) {
+        // First update the lastCheckDate to avoid continuously retrying to get the price in case of error
+        productPrice.lastCheckDate = new Date();
+        return scrapper.updatePrice({
+          productId,
+          productName: productPrice.nameInShop ?? null,
+          productUrl: productPrice.urlInShop
+        }).then(updated => {
+          if ((updated != null) && (productPrice != null)) {
+            productPrice.cost = AbstractOnlineShopScrapper.toMoneyAmount(updated);
+            productPrice.outOfStock = updated.outOfStock;
+            productPrice.inError = false;
+            return productPrice;
+          }
           return null;
-        }
-      }).catch(reason => {
-        console.error("Cannot update price for "+ productPrice?.nameInShop+ " because of "+reason.toString());
-        throw reason;
-      });
+        }).catch(reason => {
+          console.error("Cannot update price for " + productPrice?.nameInShop + " because of " + reason.toString());
+          throw reason;
+        });
+      } else {
+        return Promise.reject("Impossible to be there...");
+      }
     }
   }
 
@@ -166,16 +176,18 @@ export class PriceFinderService {
 
   async updatePriceIfPossible(val: PriceModel, position:string):Promise<PriceModel|null> {
     if( (val.idInShop!=null)&& (val.shop!=null)) {
-      if( typeof val.priceDate === 'string') {
-        val.priceDate = new Date(val.priceDate);
+      if( typeof val.lastCheckDate === 'string') {
+        val.lastCheckDate= new Date(val.lastCheckDate);
       }
-      if ((val.priceDate==null) ||
-          (val.priceDate.getTime()+PriceFinderService.DONT_UPDATE_UNTIL_DELAY_MS < new Date().getTime())
+      if ((val.lastCheckDate==null) ||
+          (val.lastCheckDate.getTime()+PriceFinderService.DONT_UPDATE_UNTIL_DELAY_MS < new Date().getTime())
       ) {
         // Yes we can update
         //console.debug("Need to update price for ", val.nameInShop);
         const newPrice = await this.findPrice(val, val.shop, position);
 
+        if( newPrice!=null)
+          newPrice.priceDate=new Date();
         return newPrice;
       }
     }

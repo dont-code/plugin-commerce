@@ -5,6 +5,7 @@ import {ShopHandlerComponent} from "../../preview/shop/shop-handler.component";
 import {HttpClient} from "@angular/common/http";
 import {expectOneSampleFile} from "./easy-para-scrapper.spec";
 import {NewPharmaScrapper} from "./new-pharma-scrapper";
+import {AbstractOnlineShopScrapper} from "../online-shop-scrapper";
 
 describe('NewPharmaScrapper', () => {
   let component: NewPharmaScrapper;
@@ -33,7 +34,7 @@ describe('NewPharmaScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("new-pharma/chardon-marie-search.html", httpTestingController);
+    expectOneSampleFile("new-pharma/chardon-marie-search.html", httpTestingController, AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 
   it('should get price', (done) => {
@@ -49,7 +50,7 @@ describe('NewPharmaScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("new-pharma/chardon-marie-product.html", httpTestingController);
+    expectOneSampleFile("new-pharma/chardon-marie-product.html", httpTestingController, AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 
   it('should get price event without product url', (done) => {
@@ -64,7 +65,7 @@ describe('NewPharmaScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("new-pharma/chardon-marie-search.html", httpTestingController);
+    expectOneSampleFile("new-pharma/chardon-marie-search.html", httpTestingController, AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 });
 

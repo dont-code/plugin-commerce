@@ -7,6 +7,7 @@ import {expectOneSampleFile} from "./easy-para-scrapper.spec";
 import {NewPharmaScrapper} from "./new-pharma-scrapper";
 import {WebEcologieScrapper} from "./web-ecologie-scrapper";
 import {BoulangerScrapper} from "./boulanger-scrapper";
+import {AbstractOnlineShopScrapper} from "../online-shop-scrapper";
 
 describe('BoulangerScrapper', () => {
   let component: BoulangerScrapper;
@@ -38,7 +39,7 @@ describe('BoulangerScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("boulanger/doro-8080-smartphone-search.html", httpTestingController);
+    expectOneSampleFile("boulanger/doro-8080-smartphone-search.html", httpTestingController, AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 
   it('should get price', (done) => {
@@ -53,7 +54,7 @@ describe('BoulangerScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("boulanger/doro-8080-smartphone-search.html", httpTestingController);
+    expectOneSampleFile("boulanger/doro-8080-smartphone-search.html", httpTestingController, AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 
 });

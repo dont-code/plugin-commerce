@@ -10,6 +10,14 @@ export class FnacScrapper extends AbstractOnlineShopScrapper {
 
   override onlineShopName="Fnac";
 
+  /**
+   * Avoid Cors issue by running the url through a Cors manager proxy
+   * @param url
+   */
+/*  encodeUrlForCors(url:string):string {
+    return FnacScrapper.CORS_FNAC_PROXY_URL+(url.startsWith('/')?'':'/')+url;
+  }*/
+
   searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
     // remove accents
     const words=name.split(" ");
@@ -24,9 +32,10 @@ export class FnacScrapper extends AbstractOnlineShopScrapper {
     const query = FnacScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", encodedName);
 
     return firstValueFrom(this.http.get(this.encodeUrlForCors(query)
-    ,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"}).pipe (
-        map(htmlResult => {
+    ,{headers:{Accept:'text/html'}, responseType:"text", observe:"response", withCredentials:true}).pipe (
+        map(response => {
 
+          const htmlResult=response.body||'';
           const ret= new Array<ScrappedProduct>();
           let startPos = htmlResult.indexOf(FnacScrapper.PRODUCT_START_STRING);
           let nextStartPos = htmlResult.indexOf(FnacScrapper.PRODUCT_START_STRING, startPos+1);
@@ -35,7 +44,11 @@ export class FnacScrapper extends AbstractOnlineShopScrapper {
             let itemPos = this.safeIndexOf (htmlResult,'id="', startPos, nextStartPos);
             newProduct.productId=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
             let middlePos = this.safeIndexOf(htmlResult, '<img class="Article-itemVisualImg', startPos, nextStartPos);
-            itemPos = this.safeIndexOf(htmlResult, 'src="', middlePos, nextStartPos);
+
+            itemPos = this.indexOf(htmlResult, 'data-lazyimage="', middlePos);
+            if( itemPos==-1) {
+              itemPos = this.safeIndexOf(htmlResult, 'src="', middlePos, nextStartPos);
+            }
             newProduct.productImageUrl=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
             itemPos = this.safeIndexOf(htmlResult,'alt="', middlePos, nextStartPos);
             newProduct.productName=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
@@ -60,6 +73,9 @@ export class FnacScrapper extends AbstractOnlineShopScrapper {
             }
 
             this.extractPrice(htmlResult, startPos, newProduct, nextStartPos);
+            if( newProduct.productPrice==undefined) {
+               newProduct.outOfStock=true;
+            }
             this.checkScrappedProduct(name, newProduct);
             ret.push(newProduct);
 
@@ -72,13 +88,25 @@ export class FnacScrapper extends AbstractOnlineShopScrapper {
     ));
   }
 
-  extractPrice (htmlResult:string, startPos:number, newProduct:ScrappedProduct, nextStartPos?:number): void {
-      const itemPos = this.safeIndexOf(htmlResult, 'class="userPrice">', startPos, nextStartPos);
 
-      const price = Number.parseInt(htmlResult.substring(itemPos, this.safeIndexOf(htmlResult, '<sup>', itemPos+1, nextStartPos)-5));
-      const cents = Number.parseInt(htmlResult.substring(this.safeIndexOf(htmlResult, '</sup>', itemPos+1, nextStartPos)-2-6,this.safeIndexOf(htmlResult, '</sup>', itemPos+1, nextStartPos) ));
+  extractPrice (htmlResult:string, startPos:number, newProduct:ScrappedProduct, nextStartPos:number): void {
+      const itemPos = this.indexOf(htmlResult, 'class="userPrice">', startPos, nextStartPos);
+      if( itemPos==-1) {
+        newProduct.productPrice=undefined;
+        return;
+      }
 
-      newProduct.productPrice=price+cents/100;
+      const supIndex=this.indexOf( htmlResult,'<sup>', itemPos+1, nextStartPos, false);
+      let price=0;
+      if (supIndex==-1) // No cents
+      {
+        price = Number.parseInt(htmlResult.substring(itemPos, this.safeIndexOf(htmlResult, '&euro;', itemPos+1,nextStartPos,false)));
+        newProduct.productPrice=price;
+      } else {
+        price = Number.parseInt(htmlResult.substring(itemPos, supIndex));
+        const cents = Number.parseInt(htmlResult.substring(this.safeIndexOf(htmlResult, '</sup>', itemPos+1, nextStartPos, false)-2,this.safeIndexOf(htmlResult, '</sup>', itemPos+1, nextStartPos) ));
+        newProduct.productPrice=price+cents/100;
+      }
       newProduct.currencyCode="EUR"
   }
 

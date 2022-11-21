@@ -1,3 +1,8 @@
+
+First call:
+
+
+
 https://www.fnac.com/SearchResult/ResultList.aspx?SCat=0&Search=doro+8080+smartphone&sft=1&sa=0
 
 Get product:
