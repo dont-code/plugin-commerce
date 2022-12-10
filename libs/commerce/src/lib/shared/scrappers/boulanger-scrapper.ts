@@ -23,7 +23,7 @@ export class BoulangerScrapper extends AbstractOnlineShopScrapper {
     const query = BoulangerScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", name);
 
     return firstValueFrom(this.http.get(this.encodeUrlForCors(query)
-    ,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"}).pipe (
+    ,{headers:this.standardHeaders(), withCredentials:true, responseType:"text", observe:"body"}).pipe (
         map(htmlResult => {
 
           const ret= new Array<ScrappedProduct>();

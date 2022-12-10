@@ -2,7 +2,7 @@ import {AbstractOnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapp
 import {firstValueFrom, map} from "rxjs";
 import {MoneyAmount} from "@dontcode/core";
 import {PriceFinderService} from "../services/price-finder.service";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 export class NewPharmaScrapper extends AbstractOnlineShopScrapper {
 
@@ -18,9 +18,10 @@ export class NewPharmaScrapper extends AbstractOnlineShopScrapper {
 
   searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
     const query = NewPharmaScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", encodeURIComponent(name));
+    const headers = this.standardHeaders ();
 
     return firstValueFrom(this.http.get(this.encodeUrlForCors(query)
-    ,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"}).pipe (
+    ,{headers, withCredentials:false, responseType:"text", observe:"body"}).pipe (
         map(htmlResult => {
 
           const ret= new Array<ScrappedProduct>();

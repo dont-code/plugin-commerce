@@ -6,6 +6,7 @@ import {HttpClient} from "@angular/common/http";
 import {expectOneSampleFile} from "./easy-para-scrapper.spec";
 import {NewPharmaScrapper} from "./new-pharma-scrapper";
 import {WebEcologieScrapper} from "./web-ecologie-scrapper";
+import {AbstractOnlineShopScrapper} from "../online-shop-scrapper";
 
 describe('WebEcologieScrapper', () => {
   let component: WebEcologieScrapper;
@@ -34,7 +35,7 @@ describe('WebEcologieScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("webecologie/chardon-marie-search.html", httpTestingController);
+    expectOneSampleFile("webecologie/chardon-marie-search.html", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 
   it('should get price', (done) => {
@@ -50,7 +51,7 @@ describe('WebEcologieScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("webecologie/chardon-marie-product.html", httpTestingController);
+    expectOneSampleFile("webecologie/chardon-marie-product.html", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 
   it('should get price even with no product url', (done) => {
@@ -65,7 +66,7 @@ describe('WebEcologieScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("webecologie/chardon-marie-search.html", httpTestingController);
+    expectOneSampleFile("webecologie/chardon-marie-search.html", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 });
 

@@ -1,5 +1,6 @@
 import {AbstractOnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapper";
 import {firstValueFrom, map} from "rxjs";
+import {HttpClient} from "@angular/common/http";
 
 export class EasyParaScrapper extends AbstractOnlineShopScrapper {
 
@@ -13,6 +14,12 @@ export class EasyParaScrapper extends AbstractOnlineShopScrapper {
   };
 
   override onlineShopName="EasyParapharmacie";
+
+
+  constructor(http: HttpClient) {
+    super(http);
+    this.useCorsProxy=true;
+  }
 
   searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
       // We copy the content

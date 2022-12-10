@@ -67,7 +67,7 @@ describe('PriceFinderService', () => {
       done (error);
     });
     // We wait for 2 queries
-    waitForOneMatchSampleFile("easypara/chardon-marie-search-result.json", httpTestingController, done);
-    waitForOneMatchSampleFile("easypara/chardon-marie-search-result.json", httpTestingController, done);
+    waitForOneMatchSampleFile("easypara/chardon-marie-search-result.json", httpTestingController, done,AbstractOnlineShopScrapper.CORS_PROXY_URL);
+    waitForOneMatchSampleFile("easypara/chardon-marie-search-result.json", httpTestingController, done,AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 });
