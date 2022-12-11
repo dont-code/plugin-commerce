@@ -5,6 +5,7 @@ import {ShopHandlerComponent} from "../../preview/shop/shop-handler.component";
 import {HttpClient} from "@angular/common/http";
 import {expectOneSampleFile} from "./easy-para-scrapper.spec";
 import {AmazonScrapper} from "./amazon-scrapper";
+import {AbstractOnlineShopScrapper} from "../online-shop-scrapper";
 
 describe('AmazonScrapper', () => {
   let component: AmazonScrapper;
@@ -36,7 +37,7 @@ describe('AmazonScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("amazon/doro-8080-smartphone-search.html", httpTestingController);
+    expectOneSampleFile("amazon/doro-8080-smartphone-search.html", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 
   it('should get price', (done) => {
@@ -51,7 +52,7 @@ describe('AmazonScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("amazon/doro-8080-smartphone-search.html", httpTestingController);
+    expectOneSampleFile("amazon/doro-8080-smartphone-search.html", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 
 });

@@ -1,5 +1,6 @@
 import {AbstractOnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapper";
 import {firstValueFrom, map} from "rxjs";
+import {HttpClient} from "@angular/common/http";
 
 export class GreenWeezScrapper extends AbstractOnlineShopScrapper {
 
@@ -16,6 +17,11 @@ export class GreenWeezScrapper extends AbstractOnlineShopScrapper {
 
   override onlineShopName="GreenWeez";
 
+  constructor(http: HttpClient) {
+    super(http);
+    this.useCorsProxy=true;
+  }
+
   searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
       // We copy the content
     let postContent=JSON.stringify(GreenWeezScrapper.JSON_QUERY);
@@ -24,7 +30,7 @@ export class GreenWeezScrapper extends AbstractOnlineShopScrapper {
     postContent=JSON.parse(postContent);
     return firstValueFrom(this.http.post(this.encodeUrlForCors(GreenWeezScrapper.SEARCH_ONLINE_URL),
       postContent
-    ,{responseType:"json", observe:"body"}).pipe (
+    ,{withCredentials:false, responseType:"json", observe:"body"}).pipe (
         map(jsonResult => {
           if( typeof jsonResult == "string")
             jsonResult = JSON.parse(jsonResult);

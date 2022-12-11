@@ -36,7 +36,7 @@ describe('EasyParaScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("easypara/chardon-marie-search-result.json", httpTestingController);
+    expectOneSampleFile("easypara/chardon-marie-search-result.json", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 
   it('should get price', (done) => {
@@ -47,7 +47,7 @@ describe('EasyParaScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("easypara/chardon-marie-search-result.json", httpTestingController);
+    expectOneSampleFile("easypara/chardon-marie-search-result.json", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 });
 
@@ -66,7 +66,7 @@ export function expectOneSampleFile (sampleFileRelative:string, controller:HttpT
 export function waitForOneMatchSampleFile (sampleFileRelative:string, controller:HttpTestingController, done:jest.DoneCallback, matchProxyUrl=AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL):void {
   setTimeout(() => {
     const counter= 0;
-    __isMatchRecursive(sampleFileRelative, controller, done, counter);
+    __isMatchRecursive(sampleFileRelative, controller, done, counter, matchProxyUrl);
   }, 100);
 }
 

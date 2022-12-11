@@ -1,5 +1,5 @@
 import {MoneyAmount} from "@dontcode/core";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 
 /**
@@ -43,7 +43,7 @@ export interface OnlineShopScrapper {
 export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
 
   public static readonly CORS_PROXY_URL='https://corsproxy.io/?';
-  // public static readonly CORS_SERVER_URL='http://localhost:3000/proxy/debug';
+  //public static readonly CORS_DONTCODE_PROXY_URL='http://localhost:3000/proxy/debug';
   public static readonly CORS_DONTCODE_PROXY_URL='https://test.dont-code.net/proxy/debug';
 
   protected useCorsProxy = false;
@@ -71,14 +71,17 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
   getShopTypeName (): string {
     return this.onlineShopName;
   }
+
+
   /**
    * Avoid Cors issue by running the url through a Cors manager proxy
    * @param url
    */
-  encodeUrlForCors(url:string):string {
+  protected encodeUrlForCors(url:string):string {
     if( this.useCorsProxy) {
       return AbstractOnlineShopScrapper.CORS_PROXY_URL+ encodeURIComponent(url);
     } else {
+      //return AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL+'?url='+encodeURIComponent(url);
       return AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL+(url.startsWith('/')?'':'/')+url;
     }
   }
@@ -128,6 +131,20 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
         }
       });
     }
+  }
+
+  /**
+   * Generates standard headers as a browser would do
+   * @protected
+   */
+  protected standardHeaders (): HttpHeaders {
+    const ret= new HttpHeaders ({
+      //'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+      /*'Accept-Encoding': 'gzip, deflate, br',
+      'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'*/
+    });
+
+    return ret;
   }
 
   /**

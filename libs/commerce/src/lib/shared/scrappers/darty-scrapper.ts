@@ -1,6 +1,6 @@
 import {AbstractOnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapper";
 import {firstValueFrom, map} from "rxjs";
-import {HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 export class DartyScrapper extends AbstractOnlineShopScrapper {
 
@@ -28,6 +28,12 @@ static readonly SEARCH_ONLINE_URL="https://www.darty.com/nav/recherche/QUERY_STR
     "x-algolia-api-key":"740b60dee22b6ca679462288f6cd9c7b",
     "x-algolia-application-id":"Z0YPI1PLPQ"
   };
+
+
+  constructor(http: HttpClient) {
+    super(http);
+    this.useCorsProxy=true;
+  }
 
   searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
     let postContent=JSON.stringify(DartyScrapper.JSON_QUERY);

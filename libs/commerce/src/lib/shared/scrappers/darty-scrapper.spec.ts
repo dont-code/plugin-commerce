@@ -5,6 +5,7 @@ import {ShopHandlerComponent} from "../../preview/shop/shop-handler.component";
 import {HttpClient} from "@angular/common/http";
 import {expectOneSampleFile} from "./easy-para-scrapper.spec";
 import {DartyScrapper} from "./darty-scrapper";
+import {AbstractOnlineShopScrapper} from "../online-shop-scrapper";
 
 describe('DartyScrapper', () => {
   let component: DartyScrapper;
@@ -36,7 +37,7 @@ describe('DartyScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("darty/doro-8080-smartphone-search.json", httpTestingController);
+    expectOneSampleFile("darty/doro-8080-smartphone-search.json", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 
   it('should get price', (done) => {
@@ -52,7 +53,7 @@ describe('DartyScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("darty/doro-8080-smartphone-search.json", httpTestingController);
+    expectOneSampleFile("darty/doro-8080-smartphone-search.json", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 
 });

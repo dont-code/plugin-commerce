@@ -111,6 +111,8 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
       }).catch ((reason) => {
         this.value.inError=true;
         this.parsingError=this.translateToError(reason);
+        this.ref.markForCheck();
+        this.ref.detectChanges();
       });
     }
   }
