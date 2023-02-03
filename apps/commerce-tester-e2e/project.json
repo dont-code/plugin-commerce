@@ -1,12 +1,13 @@
 {
-  "root": "apps/commerce-tester-e2e",
+  "name": "commerce-tester-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/commerce-tester-e2e/src",
   "projectType": "application",
   "targets": {
     "e2e": {
       "executor": "@nrwl/cypress:cypress",
       "options": {
-        "cypressConfig": "apps/commerce-tester-e2e/cypress.json",
+        "cypressConfig": "apps/commerce-tester-e2e/cypress.config.js",
         "tsConfig": "apps/commerce-tester-e2e/tsconfig.e2e.json",
         "devServerTarget": "commerce-tester:serve:development"
       },

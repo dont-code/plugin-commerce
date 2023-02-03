@@ -3,7 +3,7 @@ import { AppComponent } from './app.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { PluginCommonModule } from '@dontcode/plugin-common';
-import { ChangeListenerService } from '@dontcode/sanbox';
+import { ChangeListenerService } from '@dontcode/sandbox';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
