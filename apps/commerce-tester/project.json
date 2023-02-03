@@ -1,12 +1,15 @@
 {
+  "name": "commerce-tester",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "root": "apps/commerce-tester",
   "sourceRoot": "apps/commerce-tester/src",
   "prefix": "dontcode",
   "targets": {
     "build": {
       "executor": "@nrwl/angular:webpack-browser",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/commerce-tester",
         "index": "apps/commerce-tester/src/index.html",
@@ -82,7 +85,7 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@nrwl/angular:webpack-server",
+      "executor": "@nrwl/angular:webpack-dev-server",
       "configurations": {
         "production": {
           "browserTarget": "commerce-tester:build:production"
@@ -114,7 +117,9 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/commerce-tester"],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/commerce-tester"
+      ],
       "options": {
         "jestConfig": "apps/commerce-tester/jest.config.ts",
         "passWithNoTests": true

@@ -39,11 +39,10 @@ export class CustomMenu implements MenuUpdater {
     BrowserAnimationsModule,
     HttpClientModule,
     RouterModule.forRoot(appRoutes, {
-      enableTracing: false, // <-- debugging purposes only
-      useHash: true,
-      relativeLinkResolution: 'corrected',
-      initialNavigation: 'enabledBlocking',
-    }),
+    enableTracing: false,
+    useHash: true,
+    initialNavigation: 'enabledBlocking'
+}),
     FormsModule,
     ButtonModule,
     InputTextModule,

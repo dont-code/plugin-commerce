@@ -13,7 +13,7 @@ import {
 describe('Commerce test', () => {
   beforeEach(() => cy.visit('/'));
 
-  /*
+
   it('should display Price', () => {
     cy.clearDbCollection("Online Shop").then (() => {
       cy.clearDbCollection("Product"). then (() => {
@@ -88,7 +88,7 @@ describe('Commerce test', () => {
 
         getButtonWithName("new").click();
         getInputWithName('Name').type("Product 1");
-        getInputWithName('productName').type("Product 1 Name");
+/*        getInputWithName('Price-name').type("Product 1 Name");
         getDropdownWithName('shop').click('right');
         getDropdownListItemWithName('Shop 2').click();
         getButtonWithName('FetchPrice').click();
@@ -102,11 +102,11 @@ describe('Commerce test', () => {
 
         getButtonWithName("save").click();
 
-        getListRowWithText(FormatUtils.generateMoney(10.99, "GBP") + ' (Shop 2)');
+        getListRowWithText(FormatUtils.generateMoney(10.99, "GBP") + ' (Shop 2)');*/
       });
 
     });
-  });*/
+  });
 
 });
 

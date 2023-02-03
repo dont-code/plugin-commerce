@@ -1,10 +1,19 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Release
+name: Commerce Plugin Release
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: The version of the release, if needed (x.y.z-p)
+        required: false
+        type: string
+      next:
+        description: Is it a next release ?
+        required: true
+        type: boolean
 
 jobs:
   build:
@@ -13,29 +22,51 @@ jobs:
 
     strategy:
       matrix:
-        browser: [chromium, chrome]
+        browser: [chromium, chrome, firefox]
 
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          ref: main
+          ref: 'main'
           token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
-      - name: Use Node.js 16
+      - name: Use Node.js 18
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
-          cache: 'npm'
+          node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
-      - name: Install
+          cache: 'npm'
+      - name: Install Nx.dev
         run: |
           npm install -g nx
-          npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest --no-optional
+      - name: Version
+        if: ${{ success() && ( matrix.browser == 'chromium' ) && ( inputs.version == '') }}
+        run: |
+          PACKAGE_VERSION=$(npm view @dontcode/plugin-commerce versions --json | jq -r '.[-1]')
+          echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
+          cd libs/commerce
+          npm version $PACKAGE_VERSION --allow-same-version
+      - name: Version Patch
+        if: ${{ success() && ( matrix.browser == 'chromium' ) && ( inputs.version == '') && ( inputs.next == true) }}
+        run: |
+          cd libs/commerce
+          npm version patch
+      - name: Version Minor
+        if: ${{ success() && ( matrix.browser == 'chromium' ) && ( inputs.version == '') && ( inputs.next == false) }}
+        run: |
+          cd libs/commerce
+          npm version minor
+      - name: Version
+        if: ${{ success() && ( matrix.browser == 'chromium' ) && ( inputs.version != '') }}
+        run: |
+          PACKAGE_VERSION=${{inputs.version}}
+          echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
+          cd libs/commerce
+          npm version $PACKAGE_VERSION
+      - name: Install
+        run: |
+          npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest @dontcode/plugin-basic@latest @dontcode/plugin-fields@latest
           npm install
-      - name: Version the plugin library
-        if: ${{ matrix.browser == 'chromium' }}
-        run: npm version patch
-        working-directory: libs/commerce
       - name: Build
         run: |
           nx run commerce:build:production
@@ -58,16 +89,11 @@ jobs:
         with:
           name: cypress-videos
           path: dist/cypress/apps/commerce-tester-e2e/videos
-      - name: Get the plugin version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@master
-        with:
-          path: libs/commerce
       - name: Deploy the tester application in github pages
         if: ${{ success() && matrix.browser == 'chromium'}}
         run: |
           nx run commerce-tester:build:production --base-href "https://dont-code.net/plugin-commerce/"
-      - if: ${{ success() && matrix.browser == 'chromium'}}
+      - if: ${{ success() && matrix.browser == 'chromium' && ( inputs.next == false)}}
         uses: crazy-max/ghaction-github-pages@v3.0.0
         with:
           repo: dont-code/plugin-commerce
@@ -77,3 +103,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
 
+      - name: Publish library
+        if: ${{ success() && ( matrix.browser == 'chromium' ) && ( inputs.next == true)}}
+        run: |
+          npm publish dist/libs/commerce --access public --tag next
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish library
+        if: ${{ success() && ( matrix.browser == 'chromium' ) && ( inputs.next == false) }}
+        run: |
+          npm publish dist/libs/commerce --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
