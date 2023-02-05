@@ -44,7 +44,7 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
 
   public static readonly CORS_PROXY_URL='https://corsproxy.io/?';
   //public static readonly CORS_DONTCODE_PROXY_URL='http://localhost:3000/proxy/debug';
-  public static readonly CORS_DONTCODE_PROXY_URL='https://51.159.171.175/proxy/debug';
+  public static readonly CORS_DONTCODE_PROXY_URL='https://shared.collin.best/proxy/debug';
 
   protected useCorsProxy = false;
 

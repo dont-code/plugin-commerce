@@ -14,6 +14,10 @@ on:
         description: Is it a next release ?
         required: true
         type: boolean
+      deploy:
+        description: Deploy to public website?
+        required: true
+        type: boolean
 
 jobs:
   build:
@@ -93,7 +97,7 @@ jobs:
         if: ${{ success() && matrix.browser == 'chromium'}}
         run: |
           nx run commerce-tester:build:production --base-href "https://dont-code.net/plugin-commerce/"
-      - if: ${{ success() && matrix.browser == 'chromium' && ( inputs.next == false)}}
+      - if: ${{ success() && matrix.browser == 'chromium' && ( inputs.deploy == true)}}
         uses: crazy-max/ghaction-github-pages@v3.0.0
         with:
           repo: dont-code/plugin-commerce
