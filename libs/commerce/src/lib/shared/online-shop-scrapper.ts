@@ -45,6 +45,7 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
   public static readonly CORS_PROXY_URL='https://corsproxy.io/?';
   //public static readonly CORS_DONTCODE_PROXY_URL='http://localhost:3000/proxy/debug';
   public static readonly CORS_DONTCODE_PROXY_URL='https://shared.collin.best/proxy/debug';
+  //public static readonly CORS_DONTCODE_PROXY_URL='https://yolo.test/proxy/debug';
 
   protected useCorsProxy = false;
 
@@ -77,12 +78,16 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
    * Avoid Cors issue by running the url through a Cors manager proxy
    * @param url
    */
-  protected encodeUrlForCors(url:string):string {
-    if( this.useCorsProxy) {
+  protected encodeUrlForCors(url:string, useCorsIoProxy?:boolean, useChromEngine?:boolean):string {
+    if( (useCorsIoProxy===true) || ( (useCorsIoProxy==null) && (this.useCorsProxy===true))) {
       return AbstractOnlineShopScrapper.CORS_PROXY_URL+ encodeURIComponent(url);
     } else {
-      //return AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL+'?url='+encodeURIComponent(url);
-      return AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL+(url.startsWith('/')?'':'/')+url;
+      let ret= AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL+'?url='+encodeURIComponent(url);
+      if (useChromEngine===true) {
+        ret = ret + '&engine=chrome';
+      }
+      return ret;
+      //return AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL+(url.startsWith('/')?'':'/')+url;
     }
   }
 

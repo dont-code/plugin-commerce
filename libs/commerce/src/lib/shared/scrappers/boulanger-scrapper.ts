@@ -13,7 +13,7 @@ export class BoulangerScrapper extends AbstractOnlineShopScrapper {
 
   constructor(httpClient:HttpClient) {
     super(httpClient);
-    this.useCorsProxy=true;
+    this.useCorsProxy=false;
   }
 
   searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
@@ -22,7 +22,7 @@ export class BoulangerScrapper extends AbstractOnlineShopScrapper {
 
     const query = BoulangerScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", name);
 
-    return firstValueFrom(this.http.get(this.encodeUrlForCors(query)
+    return firstValueFrom(this.http.get(this.encodeUrlForCors(query, false, true)
     ,{headers:this.standardHeaders(), withCredentials:true, responseType:"text", observe:"body"}).pipe (
         map(htmlResult => {
 
