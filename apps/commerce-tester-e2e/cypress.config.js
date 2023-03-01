@@ -5,8 +5,8 @@ module.exports = defineConfig({
   "fixturesFolder": "./src/fixtures",
   "modifyObstructiveCode": false,
   "video": true,
-  "videosFolder": "../../dist/cypress/apps/report-tester-e2e/videos",
-  "screenshotsFolder": "../../dist/cypress/apps/report-tester-e2e/screenshots",
+  "videosFolder": "../../dist/cypress/apps/commerce-tester-e2e/videos",
+  "screenshotsFolder": "../../dist/cypress/apps/commerce-tester-e2e/screenshots",
   "chromeWebSecurity": false,
   e2e: {
     setupNodeEvents(on, config) {},

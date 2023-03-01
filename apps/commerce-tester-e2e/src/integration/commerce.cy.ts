@@ -74,6 +74,7 @@ describe('Commerce test', () => {
         getButtonWithName("save").click();
         cy.get('th[id="header-Shop"]');
 
+        getSubMenuWithText('Online Shop').click();  // Click again as it seems sometimes the new button is not working.
         getButtonWithName("new").click();
         getInputWithName('Shop').type("Shop 2");
         getDropdownWithName('Type').click("right");
