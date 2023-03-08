@@ -1,19 +1,26 @@
 import {AbstractOnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapper";
 import {firstValueFrom, map} from "rxjs";
 import {HttpClient} from "@angular/common/http";
+import {BoulangerScrapper} from "./boulanger-scrapper";
 
 export class GreenWeezScrapper extends AbstractOnlineShopScrapper {
 
-  static readonly SEARCH_ONLINE_URL="https://54m7x8foua-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(4.5.1)%3B%20Browser%20(lite)%3B%20instantsearch.js%20(4.37.2)%3B%20JS%20Helper%20(3.7.0)&x-algolia-api-key=cfeaf6e6789249fe1f028747beb65aea&x-algolia-application-id=54M7X8FOUA"
+  static readonly SEARCH_ONLINE_URL="https://54m7x8foua-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia for JavaScript (4.14.2); Browser (lite); instantsearch.js (4.48.0); react (17.0.2); react-instantsearch (6.36.0); react-instantsearch-hooks (6.36.0); JS Helper (3.11.1)&x-algolia-api-key=52441d0a775f924291679b7c224d6782&x-algolia-application-id=54M7X8FOUA"
   static readonly BASE_URL="https://greenweez.com";
 
-  protected static JSON_QUERY= {
-    "requests":
-      [{
-      "indexName":"greenweez_france_prod_offers_fr_FR",
-        "params":"hitsPerPage=102&clickAnalytics=true&filters=main%3D1%20AND%20has_parent_objectID%3D0&facetingAfterDistinct=true&attributesToRetrieve=%5B%22name%22%2C%22brands%22%2C%22medias%22%2C%22outer%22%2C%22lot%22%2C%22main%22%2C%22price_per_capacity%22%2C%22product_id%22%2C%22variant_id%22%2C%22price%22%2C%22origin%22%2C%22origin_price%22%2C%22main_category_tree%22%2C%22discount%22%2C%22committed_price%22%2C%22url%22%2C%22merchant%22%2C%22marketplace%22%2C%22quantity%22%2C%22attributes%22%2C%22stats%22%2C%22internal_reference%22%2C%22top%22%2C%22flags%22%2C%22delivery%22%2C%22capacity%22%5D&sortFacetValuesBy=count&query=QUERY_STRING&maxValuesPerFacet=30&page=0&highlightPreTag=__ais-highlight__&highlightPostTag=__%2Fais-highlight__&facets=%5B%22*%22%5D&tagFilters="
-    }]
-  };
+  protected static JSON_QUERY=
+    {
+      "requests": [{
+        "indexName": "france_prod_offers_genepi_fr_FR",
+        "params": "attributesToRetrieve=%5B%22main_category%22%2C%22attributes%22%2C%22capacity%22%2C%22discount.percent%22%2C%22flags%22%2C%22ObjectID%22%2C%22name%22%2C%22options.color.available_colors%22%2C%22seller%22%2C%22shop_data.id%22%2C%22shop_data.variant.images%22%2C%22shop_data.variant.product.id%22%2C%22shop_data.variant.product.legacyId%22%2C%22shop_data.variant.product.slug%22%2C%22shop_data.variant.product.brand.name%22%2C%22shop_data.variant.code%22%2C%22shop_data.sellerCatalog.seller%22%2C%22shop_data.pricing%22%2C%22shop_data.offerData%22%2C%22shop_data.onHand%22%2C%22stats%22%5D&clickAnalytics=true&facets=%5B%5D&filters=has_parent_objectID%3D0&highlightPostTag=__%2Fais-highlight__&highlightPreTag=__ais-highlight__&hitsPerPage=20&query=QUERY_STRING&tagFilters="
+      }, {
+        "indexName": "france_prod_brands_genepi_fr_FR",
+        "params": "attributesToRetrieve=%5B%22name%22%2C%22slug%22%5D&clickAnalytics=true&facets=%5B%5D&filters=&highlightPostTag=__%2Fais-highlight__&highlightPreTag=__ais-highlight__&hitsPerPage=6&query=QUERY_STRING&tagFilters="
+      }, {
+        "indexName": "france_prod_categories_genepi_fr_FR",
+        "params": "attributesToRetrieve=%5B%22parent%22%2C%22name%22%2C%22slug%22%2C%22level%22%5D&clickAnalytics=true&facets=%5B%5D&filters=&highlightPostTag=__%2Fais-highlight__&highlightPreTag=__ais-highlight__&hitsPerPage=6&query=QUERY_STRING&tagFilters="
+      }]
+    }
 
   override onlineShopName="GreenWeez";
 
@@ -26,6 +33,9 @@ export class GreenWeezScrapper extends AbstractOnlineShopScrapper {
       // We copy the content
     let postContent=JSON.stringify(GreenWeezScrapper.JSON_QUERY);
 
+      // 3 replacements to do
+    postContent = postContent.replace("QUERY_STRING", encodeURIComponent(name));
+    postContent = postContent.replace("QUERY_STRING", encodeURIComponent(name));
     postContent = postContent.replace("QUERY_STRING", encodeURIComponent(name));
     postContent=JSON.parse(postContent);
     return firstValueFrom(this.http.post(this.encodeUrlForCors(GreenWeezScrapper.SEARCH_ONLINE_URL),
@@ -43,13 +53,14 @@ export class GreenWeezScrapper extends AbstractOnlineShopScrapper {
               for (const aResult of hits) {
                 const newProduct = new ScrappedProduct();
 
-                newProduct.productPrice=aResult.price;
+                newProduct.productPrice=aResult.shop_data.pricing.priceIncludedVat/100;
                 newProduct.currencyCode="EUR";
                 newProduct.productName=aResult.name;
                 newProduct.productDescription=undefined;
-                newProduct.productId=aResult.internal_reference;
-                newProduct.productUrl=GreenWeezScrapper.BASE_URL+aResult.url;
-                newProduct.productImageUrl=this.findImageUrl (aResult.medias);
+                newProduct.productId=aResult.shop_data.variant.code;
+                newProduct.productUrl= this.calculateProductUrl (aResult.shop_data);
+                newProduct.productImageUrl=this.findImageUrl (aResult.shop_data.variant.images);
+                newProduct.marketPlace=aResult.flags.marketPlace===true;
 
                 this.checkScrappedProduct(name, newProduct);
                 ret.push(newProduct);
@@ -62,10 +73,14 @@ export class GreenWeezScrapper extends AbstractOnlineShopScrapper {
     ));
   }
 
-  findImageUrl (medias:Array<any>): string|undefined {
-    for (const media of medias) {
-      if (media.type=="image")
-        return media.src;
+  calculateProductUrl (shopData:any): string {
+    return GreenWeezScrapper.BASE_URL+'/produit/'+shopData.variant.product.slug+'/'+shopData.variant.code+'/'+shopData.id;
+  }
+
+  findImageUrl (images:Array<any>): string|undefined {
+    for (const image of images) {
+      if (image.type=="variant")
+        return GreenWeezScrapper.BASE_URL+"/_next/image?url=https%3A%2F%2Fcdn.greenweez.com%2Fproducts%2F"+image.path+"&w=640&q=75"
     }
     return;
   }

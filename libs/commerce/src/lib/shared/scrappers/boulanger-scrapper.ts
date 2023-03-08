@@ -4,7 +4,7 @@ import {HttpClient} from "@angular/common/http";
 
 export class BoulangerScrapper extends AbstractOnlineShopScrapper {
 
-  static readonly SEARCH_ONLINE_URL="https://www.boulanger.com/resultats?tr=QUERY_STRING"
+  static readonly SEARCH_ONLINE_URL="https://www.greenweez.com/_next/data/VhKzZ0x6g_lHxd7bV2jxN/fr/recherche/QUERY_STRING.json?slug=ENCODED_QUERY_STRING"
   protected static readonly PRODUCT_START_STRING="<article";
 
   protected static readonly BASE_URL='https://www.boulanger.com'
@@ -13,7 +13,7 @@ export class BoulangerScrapper extends AbstractOnlineShopScrapper {
 
   constructor(httpClient:HttpClient) {
     super(httpClient);
-    this.useCorsProxy=false;
+    this.useCorsProxy=true;
   }
 
   searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
@@ -22,8 +22,8 @@ export class BoulangerScrapper extends AbstractOnlineShopScrapper {
 
     const query = BoulangerScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", name);
 
-    return firstValueFrom(this.http.get(this.encodeUrlForCors(query, false, true)
-    ,{headers:this.standardHeaders(), withCredentials:true, responseType:"text", observe:"body"}).pipe (
+    return firstValueFrom(this.http.get(this.encodeUrlForCors(query, true)
+    ,{headers:this.standardHeaders(), withCredentials:false, responseType:"text", observe:"body"}).pipe (
         map(htmlResult => {
 
           const ret= new Array<ScrappedProduct>();

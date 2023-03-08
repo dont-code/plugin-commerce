@@ -39,7 +39,7 @@ describe('BoulangerScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("boulanger/doro-8080-smartphone-search.html", httpTestingController, AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL);
+    expectOneSampleFile("boulanger/doro-8080-smartphone-search.html", httpTestingController, AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 
   it('should get price', (done) => {
@@ -54,7 +54,7 @@ describe('BoulangerScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("boulanger/doro-8080-smartphone-search.html", httpTestingController, AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL);
+    expectOneSampleFile("boulanger/doro-8080-smartphone-search.html", httpTestingController, AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 
 });
