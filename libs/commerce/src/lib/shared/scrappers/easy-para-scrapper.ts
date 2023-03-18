@@ -1,5 +1,5 @@
-import {AbstractOnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapper";
-import {firstValueFrom, map} from "rxjs";
+import {AbstractOnlineShopScrapper, ProxyEngine, ScrappedProduct} from "../online-shop-scrapper";
+import {map} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 
 export class EasyParaScrapper extends AbstractOnlineShopScrapper {
@@ -18,19 +18,18 @@ export class EasyParaScrapper extends AbstractOnlineShopScrapper {
 
   constructor(http: HttpClient) {
     super(http);
-    this.useCorsProxy=true;
   }
 
-  searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
+ override searchProductsForNameOrId(nameOrId: string, isId:boolean): Promise<Array<ScrappedProduct>> {
       // We copy the content
     let postContent=JSON.stringify(EasyParaScrapper.JSON_QUERY);
 
-    postContent = postContent.replace("QUERY_STRING", encodeURIComponent(name));
+    postContent = postContent.replace("QUERY_STRING", encodeURIComponent(nameOrId));
     postContent=JSON.parse(postContent);
-    return firstValueFrom(this.http.post(this.encodeUrlForCors(EasyParaScrapper.SEARCH_ONLINE_URL),
-      postContent
-    ,{responseType:"json", observe:"body"}).pipe (
-        map(jsonResult => {
+    return this.requestWithProxy("POST", EasyParaScrapper.SEARCH_ONLINE_URL,
+      ProxyEngine.CORSPROXY_IO,
+    {body:postContent, responseType:"json", observe:"body"})
+      .then(jsonResult => {
           if( typeof jsonResult == "string")
             jsonResult = JSON.parse(jsonResult);
 
@@ -48,21 +47,20 @@ export class EasyParaScrapper extends AbstractOnlineShopScrapper {
                 newProduct.productDescription=aResult.short_description??aResult.description;
                 newProduct.productId=aResult.ean_code?.toString();
                 if (newProduct.productId==null) {
-                  console.warn("Product "+newProduct.productName+" searched by "+name+" for Shop "+this.getOnlineShopName()+" has no ean_code, getting objectId instead");
+                  console.warn("Product "+newProduct.productName+" searched by "+nameOrId+" for Shop "+this.getOnlineShopName()+" has no ean_code, getting objectId instead");
                   newProduct.productId=aResult.objectID;
                 }
                 newProduct.productUrl=aResult.url;
                 newProduct.productImageUrl=aResult.image_url;
 
-                this.checkScrappedProduct(name, newProduct);
+                this.checkScrappedProduct(nameOrId, newProduct);
                 ret.push(newProduct);
               }
             }
           }
 
           return ret;
-        })
-    ));
+        });
   }
 
 }

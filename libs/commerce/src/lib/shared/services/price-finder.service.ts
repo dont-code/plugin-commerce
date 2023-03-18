@@ -69,7 +69,7 @@ export class PriceFinderService {
     if (scrapper==null)
       throw new Error ("Shop type "+shopName+" not found");
 
-    return scrapper.searchProductsForName(productName);
+    return scrapper.searchProductsForNameOrId(productName,false);
   }
 
   /**

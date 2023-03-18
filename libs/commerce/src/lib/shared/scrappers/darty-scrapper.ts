@@ -1,6 +1,5 @@
-import {AbstractOnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapper";
-import {firstValueFrom, map} from "rxjs";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {AbstractOnlineShopScrapper, ProxyEngine, ScrappedProduct} from "../online-shop-scrapper";
+import {HttpClient} from "@angular/common/http";
 
 export class DartyScrapper extends AbstractOnlineShopScrapper {
 
@@ -32,19 +31,17 @@ static readonly SEARCH_ONLINE_URL="https://www.darty.com/nav/recherche/QUERY_STR
 
   constructor(http: HttpClient) {
     super(http);
-    this.useCorsProxy=true;
   }
 
-  searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
+  override searchProductsForNameOrId(nameOrId: string, isId:boolean): Promise<Array<ScrappedProduct>> {
     let postContent=JSON.stringify(DartyScrapper.JSON_QUERY);
 
-    postContent = postContent.replace("QUERY_STRING", name);
-    postContent = postContent.replace("QUERY_STRING", name);  // QUERY_STRING appears twice
+    postContent = postContent.replace("QUERY_STRING", nameOrId);
+    postContent = postContent.replace("QUERY_STRING", nameOrId);  // QUERY_STRING appears twice
     postContent=JSON.parse(postContent);
-    return firstValueFrom(this.http.post(this.encodeUrlForCors(DartyScrapper.SEARCH_ONLINE_URL),
-    postContent
-    ,{headers: this.httpHeaders,responseType:"json", observe:"body"}).pipe (
-        map(jsonResult => {
+    return this.requestWithProxy("POST",DartyScrapper.SEARCH_ONLINE_URL
+      ,ProxyEngine.CORSPROXY_IO, {body: postContent,headers: this.httpHeaders,responseType:"json", observe:"body"})
+      .then(jsonResult => {
 
           if( typeof jsonResult == "string")
             jsonResult = JSON.parse(jsonResult);
@@ -70,15 +67,14 @@ static readonly SEARCH_ONLINE_URL="https://www.darty.com/nav/recherche/QUERY_STR
                 //  newProduct.productImageUrl="https://image.darty.com/"+aResult.rewriteUrl+"_n"+aResult.pictures[0].name;
                 //}
 
-                this.checkScrappedProduct(name, newProduct);
+                this.checkScrappedProduct(nameOrId, newProduct);
                 ret.push(newProduct);
               }
             }
           }
 
           return ret;
-        })
-    ));
+        });
   }
 
 /**  extractPrice (htmlResult:string, startPos:number, newProduct:ScrappedProduct): void {

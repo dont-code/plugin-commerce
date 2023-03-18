@@ -1,5 +1,5 @@
-import {AbstractOnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapper";
-import {firstValueFrom, map} from "rxjs";
+import {AbstractOnlineShopScrapper, ProxyEngine, ScrappedProduct} from "../online-shop-scrapper";
+import {map} from "rxjs";
 
 export class FnacScrapper extends AbstractOnlineShopScrapper {
 
@@ -18,9 +18,9 @@ export class FnacScrapper extends AbstractOnlineShopScrapper {
     return FnacScrapper.CORS_FNAC_PROXY_URL+(url.startsWith('/')?'':'/')+url;
   }*/
 
-  searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
+  override searchProductsForNameOrId(nameOrId: string, isId:boolean): Promise<Array<ScrappedProduct>> {
     // remove accents
-    const words=name.split(" ");
+    const words=nameOrId.split(" ");
     let encodedName = "";
     for (const word of words) {
       encodedName+=encodeURIComponent(word)+"+";
@@ -31,11 +31,10 @@ export class FnacScrapper extends AbstractOnlineShopScrapper {
     }
     const query = FnacScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", encodedName);
 
-    return firstValueFrom(this.http.get(this.encodeUrlForCors(query)
-    ,{headers:{Accept:'text/html'}, responseType:"text", observe:"response", withCredentials:true}).pipe (
-        map(response => {
+    return this.requestWithProxy("GET", query, ProxyEngine.DONT_CODE
+    ,{headers:{Accept:'text/html'}, responseType:"text", observe:"body", withCredentials:true})
+      .then(htmlResult=> {
 
-          const htmlResult=response.body||'';
           const ret= new Array<ScrappedProduct>();
           let startPos = htmlResult.indexOf(FnacScrapper.PRODUCT_START_STRING);
           let nextStartPos = htmlResult.indexOf(FnacScrapper.PRODUCT_START_STRING, startPos+1);
@@ -76,7 +75,7 @@ export class FnacScrapper extends AbstractOnlineShopScrapper {
             if( newProduct.productPrice==undefined) {
                newProduct.outOfStock=true;
             }
-            this.checkScrappedProduct(name, newProduct);
+            this.checkScrappedProduct(nameOrId, newProduct);
             ret.push(newProduct);
 
             startPos = htmlResult.indexOf(FnacScrapper.PRODUCT_START_STRING, startPos+1);
@@ -84,8 +83,7 @@ export class FnacScrapper extends AbstractOnlineShopScrapper {
           }
 
           return ret;
-        })
-    ));
+        });
   }
 
 
@@ -118,9 +116,9 @@ export class FnacScrapper extends AbstractOnlineShopScrapper {
     if (product.productUrl==null) {
       return super.updatePrice(product, true);
     }
-    return firstValueFrom(this.http.get(this.encodeUrlForCors(product.productUrl)
-      ,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"}).pipe (
-      map(htmlResult => {
+    return this.requestWithProxy("GET",product.productUrl, ProxyEngine.DONT_CODE,
+      {headers:{Accept:'text/html'}, responseType:"text", observe:"body"})
+      .then(htmlResult => {
         const newProduct:ScrappedProduct = {productId:product.productId,
           productName:product.productName};
 
@@ -134,8 +132,8 @@ export class FnacScrapper extends AbstractOnlineShopScrapper {
         product.productPrice=newProduct.productPrice;
         product.currencyCode=newProduct.currencyCode;
         return product;
-      }))
-    ).catch(error => {
+      })
+    .catch(error => {
       console.error("Error trying to access page for product "+product.productName, error);
       return super.updatePrice(product, true);
     });

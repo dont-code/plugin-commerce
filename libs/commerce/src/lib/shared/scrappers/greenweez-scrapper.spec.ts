@@ -4,7 +4,7 @@ import {HttpClientTestingModule, HttpTestingController} from "@angular/common/ht
 import {ShopHandlerComponent} from "../../preview/shop/shop-handler.component";
 import {HttpClient} from "@angular/common/http";
 import {GreenWeezScrapper} from "./greenweez-scrapper";
-import {expectOneSampleFile} from "./easy-para-scrapper.spec";
+import {expectOneSampleFile} from "../common-scrapper-test.spec";
 import {AbstractOnlineShopScrapper} from "../online-shop-scrapper";
 
 describe('GreenweezScrapper', () => {
@@ -28,7 +28,7 @@ describe('GreenweezScrapper', () => {
 
   it('should search', (done) => {
     expect(component).toBeTruthy();
-    component.searchProductsForName("Chardon Marie").then(value => {
+    component.searchProductsForNameOrId("Chardon Marie", false).then(value => {
       expect(value.length>0).toBeTruthy();
       done();
     }).catch(error => {

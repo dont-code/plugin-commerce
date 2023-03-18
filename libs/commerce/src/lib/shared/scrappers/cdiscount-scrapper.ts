@@ -1,4 +1,4 @@
-import {AbstractOnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapper";
+import {AbstractOnlineShopScrapper, ProxyEngine, ScrappedProduct} from "../online-shop-scrapper";
 import {firstValueFrom, map} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 
@@ -13,12 +13,11 @@ export class CDiscountScrapper extends AbstractOnlineShopScrapper {
 
   constructor(httpClient:HttpClient) {
     super(httpClient);
-    this.useCorsProxy=true;
   }
 
-  searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
+  override searchProductsForNameOrId(nameOrId: string, isId:boolean): Promise<Array<ScrappedProduct>> {
     // remove accents
-    const words=name.split(" ");
+    const words=nameOrId.split(" ");
     let encodedName = "";
     for (const word of words) {
       encodedName+=encodeURIComponent(word)+"+";
@@ -29,9 +28,8 @@ export class CDiscountScrapper extends AbstractOnlineShopScrapper {
     }
     const query = CDiscountScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", encodedName);
 
-    return firstValueFrom(this.http.get(this.encodeUrlForCors(query)
-    ,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"}).pipe (
-        map(htmlResult => {
+    return this.requestWithProxy("GET", query, ProxyEngine.CORSPROXY_IO,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"})
+      .then(htmlResult => {
 
           const ret= new Array<ScrappedProduct>();
           let startPos = htmlResult.indexOf(CDiscountScrapper.PRODUCT_START_STRING);
@@ -50,15 +48,14 @@ export class CDiscountScrapper extends AbstractOnlineShopScrapper {
             newProduct.productId=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
 
             this.extractPrice(htmlResult, startPos, newProduct);
-            this.checkScrappedProduct(name, newProduct);
+            this.checkScrappedProduct(nameOrId, newProduct);
             ret.push(newProduct);
 
             startPos = htmlResult.indexOf(CDiscountScrapper.PRODUCT_START_STRING, startPos+1);
           }
 
           return ret;
-        })
-    ));
+        });
   }
 
   extractPrice (htmlResult:string, startPos:number, newProduct:ScrappedProduct): void {

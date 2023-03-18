@@ -166,6 +166,9 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     this.productSelectionMode=false;
     delete this.value.idInShop;
     this.parsingError=null;
+    delete this.value.cost;
+    delete this.value.priceDate;
+    delete this.value.urlInShop;
     this.hydrateValueToForm();
   }
 

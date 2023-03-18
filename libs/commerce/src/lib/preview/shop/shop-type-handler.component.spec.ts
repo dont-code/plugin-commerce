@@ -1,6 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ShopHandlerComponent } from './shop-handler.component';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {PluginCommonModule} from "@dontcode/plugin-common";
 import {ShopTypeHandlerComponent} from "@dontcode/plugin-commerce";
 import {HttpClientTestingModule} from "@angular/common/http/testing";

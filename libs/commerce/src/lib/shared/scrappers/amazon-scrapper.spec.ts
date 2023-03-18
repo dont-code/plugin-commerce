@@ -3,7 +3,7 @@ import {PluginCommonModule} from "@dontcode/plugin-common";
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
 import {ShopHandlerComponent} from "../../preview/shop/shop-handler.component";
 import {HttpClient} from "@angular/common/http";
-import {expectOneSampleFile} from "./easy-para-scrapper.spec";
+import {expectOneSampleFile} from "../common-scrapper-test.spec";
 import {AmazonScrapper} from "./amazon-scrapper";
 import {AbstractOnlineShopScrapper} from "../online-shop-scrapper";
 
@@ -28,7 +28,7 @@ describe('AmazonScrapper', () => {
 
   it('should search', (done) => {
     expect(component).toBeTruthy();
-    component.searchProductsForName("Doro 8080 smartphone").then(value => {
+    component.searchProductsForNameOrId("Doro 8080 smartphone", false).then(value => {
       expect(value.length>0).toBeTruthy();
       expect(value[4].productName).toEqual("Doro 8080 Smartphone 4G Débloqué pour Seniors avec Écran de 5.7&quot;, Caméra de 16MP, Touche d'Assistance avec Géolocalisation...".substring(0,60));
       expect(value[4].productPrice).toEqual (232);

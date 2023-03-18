@@ -1,7 +1,6 @@
-import {AbstractOnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapper";
-import {firstValueFrom, map} from "rxjs";
+import {AbstractOnlineShopScrapper, ProxyEngine, ScrappedProduct} from "../online-shop-scrapper";
+import {map} from "rxjs";
 import {HttpClient} from "@angular/common/http";
-import {BoulangerScrapper} from "./boulanger-scrapper";
 
 export class GreenWeezScrapper extends AbstractOnlineShopScrapper {
 
@@ -26,22 +25,20 @@ export class GreenWeezScrapper extends AbstractOnlineShopScrapper {
 
   constructor(http: HttpClient) {
     super(http);
-    this.useCorsProxy=true;
   }
 
-  searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
+  override searchProductsForNameOrId(nameOrId: string, isId:boolean): Promise<Array<ScrappedProduct>> {
       // We copy the content
     let postContent=JSON.stringify(GreenWeezScrapper.JSON_QUERY);
 
       // 3 replacements to do
-    postContent = postContent.replace("QUERY_STRING", encodeURIComponent(name));
-    postContent = postContent.replace("QUERY_STRING", encodeURIComponent(name));
-    postContent = postContent.replace("QUERY_STRING", encodeURIComponent(name));
+    postContent = postContent.replace("QUERY_STRING", encodeURIComponent(nameOrId));
+    postContent = postContent.replace("QUERY_STRING", encodeURIComponent(nameOrId));
+    postContent = postContent.replace("QUERY_STRING", encodeURIComponent(nameOrId));
     postContent=JSON.parse(postContent);
-    return firstValueFrom(this.http.post(this.encodeUrlForCors(GreenWeezScrapper.SEARCH_ONLINE_URL),
-      postContent
-    ,{withCredentials:false, responseType:"json", observe:"body"}).pipe (
-        map(jsonResult => {
+    return this.requestWithProxy("POST",GreenWeezScrapper.SEARCH_ONLINE_URL, ProxyEngine.CORSPROXY_IO,
+    {body:postContent, responseType:"json", observe:"body"})
+      .then(jsonResult => {
           if( typeof jsonResult == "string")
             jsonResult = JSON.parse(jsonResult);
 
@@ -62,15 +59,14 @@ export class GreenWeezScrapper extends AbstractOnlineShopScrapper {
                 newProduct.productImageUrl=this.findImageUrl (aResult.shop_data.variant.images);
                 newProduct.marketPlace=aResult.flags.marketPlace===true;
 
-                this.checkScrappedProduct(name, newProduct);
+                this.checkScrappedProduct(nameOrId, newProduct);
                 ret.push(newProduct);
               }
             }
           }
 
           return ret;
-        })
-    ));
+        });
   }
 
   calculateProductUrl (shopData:any): string {

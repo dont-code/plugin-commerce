@@ -3,9 +3,7 @@ import {PluginCommonModule} from "@dontcode/plugin-common";
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
 import {ShopHandlerComponent} from "../../preview/shop/shop-handler.component";
 import {HttpClient} from "@angular/common/http";
-import {expectOneSampleFile} from "./easy-para-scrapper.spec";
-import {NewPharmaScrapper} from "./new-pharma-scrapper";
-import {WebEcologieScrapper} from "./web-ecologie-scrapper";
+import {expectOneSampleFile} from "../common-scrapper-test.spec";
 import {BoulangerScrapper} from "./boulanger-scrapper";
 import {AbstractOnlineShopScrapper} from "../online-shop-scrapper";
 
@@ -30,7 +28,7 @@ describe('BoulangerScrapper', () => {
 
   it('should search', (done) => {
     expect(component).toBeTruthy();
-    component.searchProductsForName("Doro 8080 smartphone").then(value => {
+    component.searchProductsForNameOrId("Doro 8080 smartphone", false).then(value => {
       expect(value.length>0).toBeTruthy();
       expect(value[0].productName).toEqual("Smartphone DORO 8100 Plus Graphite");
       expect(value[0].productPrice).toEqual (229);
