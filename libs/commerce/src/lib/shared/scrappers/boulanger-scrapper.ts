@@ -25,7 +25,7 @@ export class BoulangerScrapper extends AbstractOnlineShopScrapper {
       .then(htmlResult => {
         return this.analysePageResult(nameOrId, htmlResult);
       }).catch(reason => {
-        if (reason.code===0)  // Cors error due to a redirect
+        if ((reason.code==null) || (reason.statusText==='Unknown Error'))  // Cors error due to a redirect
         {
           return this.requestWithProxy("GET", query, ProxyEngine.WEBSCRAPING_IA, {observe: 'body', responseType: 'text'})
             .then(htmlResult => {
