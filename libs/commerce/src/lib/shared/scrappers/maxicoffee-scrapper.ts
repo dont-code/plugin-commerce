@@ -26,7 +26,7 @@ export class MaxicoffeeScrapper extends AbstractOnlineShopScrapper {
     "references": {"size": 32}
   };
 
-  override onlineShopName="EasyParapharmacie";
+  override onlineShopName="Maxicoffee";
 
 
   constructor(http: HttpClient) {
