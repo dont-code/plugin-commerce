@@ -37,7 +37,7 @@ export class MaxicoffeeScrapper extends AbstractOnlineShopScrapper {
       // We copy the content
     let postContent=JSON.stringify(MaxicoffeeScrapper.JSON_QUERY);
 
-    postContent = postContent.replace("QUERY_STRING", encodeURIComponent(nameOrId));
+    postContent = postContent.replace("QUERY_STRING", nameOrId);
     postContent=JSON.parse(postContent);
     return this.requestWithProxy("POST", MaxicoffeeScrapper.SEARCH_ONLINE_URL,
       ProxyEngine.CORSPROXY_IO,
