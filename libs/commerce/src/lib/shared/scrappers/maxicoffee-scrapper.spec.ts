@@ -45,7 +45,7 @@ describe('Maxicoffee', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("easypara/chardon-marie-search-result.json", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
+    expectOneSampleFile("maxicoffee/lugat-grains-search-result.json", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 });
 
