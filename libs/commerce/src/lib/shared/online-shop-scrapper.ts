@@ -1,5 +1,6 @@
 import {MoneyAmount} from "@dontcode/core";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpContext, HttpHeaders, HttpParams, HttpRequest} from "@angular/common/http";
+import {firstValueFrom} from "rxjs";
 
 
 /**
@@ -29,7 +30,7 @@ export interface OnlineShopScrapper {
    * @return empty array if no product matches the criteria, a rejected promise in case of any type of error getting the list
    * @param name
    */
-  searchProductsForName (name:string): Promise<Array<ScrappedProduct>>;
+  searchProductsForNameOrId (nameOrId:string, isId:boolean): Promise<Array<ScrappedProduct>>;
 
   /**
    * Retrieve the price of the given product.
@@ -43,11 +44,13 @@ export interface OnlineShopScrapper {
 export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
 
   public static readonly CORS_PROXY_URL='https://corsproxy.io/?';
+
+  public static readonly WEBSCRAPING_PROXY_URL='https://api.webscraping.ai/html';
+  public static readonly WEBSCRAPING_PROXY_API_KEY='f4fe0d0b-bfa9-49bd-a3f7-404be7bcad85';
+
   //public static readonly CORS_DONTCODE_PROXY_URL='http://localhost:3000/proxy/debug';
   public static readonly CORS_DONTCODE_PROXY_URL='https://shared.collin.best/proxy/debug';
   //public static readonly CORS_DONTCODE_PROXY_URL='https://yolo.test/proxy/debug';
-
-  protected useCorsProxy = false;
 
   protected onlineShopName="Unknown";
 
@@ -73,25 +76,101 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
     return this.onlineShopName;
   }
 
+  protected requestWithProxy<T extends {
+    body?: any;
+    headers?: HttpHeaders | {
+      [header: string]: string | string[];
+    };
+    context?: HttpContext;
+    reportProgress?: boolean;
+    observe: 'body';
+    params?: HttpParams | {
+      [param: string]: string | number | boolean | ReadonlyArray<string | number | boolean>;
+    };
+    responseType?: 'text' | 'json';
+    withCredentials?: boolean;
+  }> (method:string, url:string, engine:ProxyEngine, options: T): Promise<any>
+  {
+    return firstValueFrom(this.http.request(method,
+      this.encodeUrlForCors(url, engine),
+      this.updateOptionsForCors(method, url, engine, options))
+    );
+  }
 
   /**
    * Avoid Cors issue by running the url through a Cors manager proxy
    * @param url
    */
-  protected encodeUrlForCors(url:string, useCorsIoProxy?:boolean, useChromEngine?:boolean):string {
-    if( (useCorsIoProxy===true) || ( (useCorsIoProxy==null) && (this.useCorsProxy===true))) {
-      return AbstractOnlineShopScrapper.CORS_PROXY_URL+ encodeURIComponent(url);
-    } else {
-      let ret= AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL+'?url='+encodeURIComponent(url);
-      if (useChromEngine===true) {
-        ret = ret + '&engine=chrome';
-      }
-      return ret;
-      //return AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL+(url.startsWith('/')?'':'/')+url;
+  protected encodeUrlForCors(url:string, engine:ProxyEngine):string {
+    let ret = url;
+    switch (engine) {
+      case ProxyEngine.CORSPROXY_IO:
+        ret = AbstractOnlineShopScrapper.CORS_PROXY_URL + encodeURIComponent(url);
+        break;
+      case ProxyEngine.CHROME_ENGINE:
+      case ProxyEngine.DONT_CODE:
+        ret = AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL;
+        break;
+      case ProxyEngine.WEBSCRAPING_IA:
+        ret = AbstractOnlineShopScrapper.WEBSCRAPING_PROXY_URL
+        break;
     }
+    return ret;
   }
 
-  abstract searchProductsForName(name: string): Promise<Array<ScrappedProduct>>;
+  /**
+   * Adapts the http options for the proxy...
+   * @param url
+   * @param engine
+   * @param httpOptions
+   * @protected
+   */
+protected updateOptionsForCors<T extends {
+    body?: any;
+    headers?: HttpHeaders | {
+      [header: string]: string | string[];
+    };
+    context?: HttpContext;
+    reportProgress?: boolean;
+    observe: 'body';
+    params?: HttpParams | {
+      [param: string]: string | number | boolean | ReadonlyArray<string | number | boolean>;
+    };
+    responseType?: 'text' | 'json';
+    withCredentials?: boolean;
+  }> (method:string, url:string, engine:ProxyEngine, options: T): T
+  {
+    switch (engine) {
+      case ProxyEngine.CORSPROXY_IO:
+        options.withCredentials=false;
+        break;
+      case ProxyEngine.CHROME_ENGINE:
+      case ProxyEngine.DONT_CODE:
+        this.addToHttpParams (options, {
+          url: url
+          }
+        );
+        if (engine === ProxyEngine.CHROME_ENGINE) {
+          this.addToHttpParams(options, {
+            engine: 'chrome'
+            }
+          );
+        }
+      break;
+      case ProxyEngine.WEBSCRAPING_IA:
+        this.addToHttpParams (options, {
+          proxy:'datacenter',
+          js:false,
+          api_key:AbstractOnlineShopScrapper.WEBSCRAPING_PROXY_API_KEY,
+          url:url
+          }
+        );
+      break;
+    }
+    return options;
+  }
+
+  abstract searchProductsForNameOrId(nameOrId: string, isId:boolean): Promise<Array<ScrappedProduct>>;
 
   /**
    * By default we do a search with the productId and returns the price
@@ -108,7 +187,7 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
     if (productToFind==null) {
       return Promise.reject("You must define a product with a name or id ");
     } else {
-      return this.searchProductsForName(productToFind).then(listOfAllElements => {
+      return this.searchProductsForNameOrId(productToFind, !useProductName).then(listOfAllElements => {
         for (const product of listOfAllElements) {
           if (product.productId == prod.productId) {
             return product;
@@ -119,7 +198,7 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
       }).then (value => {
           // Let's try a seach with the name if possible
         if( (value == null)&&(!useProductName)&& (prod.productName!=null)) {
-          return this.searchProductsForName(prod.productName).then(listOfAllElements => {
+          return this.searchProductsForNameOrId(prod.productName, false).then(listOfAllElements => {
             for (const product of listOfAllElements) {
               if (product.productId == prod.productId) {
                 return product;
@@ -207,4 +286,29 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
       return result;
   }
 
+  protected addToHttpParams (options:{
+    params?: HttpParams | {
+      [param: string]: string | number | boolean | ReadonlyArray<string | number | boolean>;
+    };
+  }, toAdd: {
+    [param: string]: string | number | boolean | ReadonlyArray<string | number | boolean>;
+  }):void
+  {
+    if (options.params==null) {
+      options.params=toAdd;
+    } else {
+      if (options.params.appendAll!=null) {
+        options.params = (options.params as HttpParams).appendAll(toAdd);
+      } else {
+        options.params = {...options.params, ...toAdd};
+      }
+    }
+  }
+}
+
+export enum ProxyEngine {
+  CORSPROXY_IO= "CORSPROXY.IO",
+  WEBSCRAPING_IA="WEBSCRAPING.IA",
+  DONT_CODE="DONT-CODE.PROXY",
+  CHROME_ENGINE= "DONT-CODE.CHROME",
 }

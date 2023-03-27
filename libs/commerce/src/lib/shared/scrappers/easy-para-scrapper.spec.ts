@@ -1,4 +1,4 @@
-import {TestBed, tick} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
 import {EasyParaScrapper} from './easy-para-scrapper';
 import {PluginCommonModule} from "@dontcode/plugin-common";
@@ -6,8 +6,7 @@ import {HttpClientTestingModule, HttpTestingController, TestRequest} from "@angu
 import {ShopHandlerComponent} from "../../preview/shop/shop-handler.component";
 import {HttpClient} from "@angular/common/http";
 import {AbstractOnlineShopScrapper} from "../online-shop-scrapper";
-import * as fs from "fs";
-import * as Path from "path";
+import {expectOneSampleFile} from "../common-scrapper-test.spec";
 
 describe('EasyParaScrapper', () => {
   let component: EasyParaScrapper;
@@ -30,7 +29,7 @@ describe('EasyParaScrapper', () => {
 
   it('should search', (done) => {
     expect(component).toBeTruthy();
-    component.searchProductsForName("Chardon Marie").then(value => {
+    component.searchProductsForNameOrId("Chardon Marie", false).then(value => {
       expect(value.length>0).toBeTruthy();
       done();
     }).catch(error => {
@@ -50,62 +49,4 @@ describe('EasyParaScrapper', () => {
     expectOneSampleFile("easypara/chardon-marie-search-result.json", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 });
-
-export function expectOneSampleFile (sampleFileRelative:string, controller:HttpTestingController, matchProxyUrl=AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL): TestRequest {
-  const searchCall = controller.expectOne(req => {
-    if (req.url.startsWith(matchProxyUrl))
-      return true;
-    else
-      return false;
-  });
-  const responseRead=fs.readFileSync(Path.join(__dirname,"../../../../../../samples/",sampleFileRelative), {encoding:'utf-8'});
-  searchCall.flush(responseRead);
-  return searchCall;
-}
-
-export function waitForOneMatchSampleFile (sampleFileRelative:string, controller:HttpTestingController, done:jest.DoneCallback, matchProxyUrl=AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL):void {
-  setTimeout(() => {
-    const counter= 0;
-    __isMatchRecursive(sampleFileRelative, controller, done, counter, matchProxyUrl);
-  }, 100);
-}
-
-function __isMatchRecursive (sampleFileRelative:string, controller:HttpTestingController, done:jest.DoneCallback, counter:number, matchProxyUrl=AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL):void {
-    const searchCall = controller.match(req => {
-      if (req.url.startsWith(matchProxyUrl))
-        return true;
-      else
-        return false;
-    });
-    if (searchCall!=null && searchCall.length>0) {
-      if (searchCall.length==1) {
-        const responseRead=fs.readFileSync(Path.join(__dirname,"../../../../../../samples/",sampleFileRelative), {encoding:'utf-8'});
-        searchCall[0].flush(responseRead);
-        return;
-      } else throw new Error("Multiple requests occured for sample file "+sampleFileRelative);
-    }
-
-    counter++;
-    // Wait 5 s max
-    if (counter<50) {
-      setTimeout (()=> __isMatchRecursive(sampleFileRelative, controller, done, counter), 100);
-    } else {
-      done("No query created");
-    }
-
-}
-
-export function expectMultipleSampleFile (sampleFileRelative:string, controller:HttpTestingController, matchProxyUrl=AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL): number {
-  const searchCalls = controller.match(req => {
-    if (req.url.startsWith(matchProxyUrl))
-      return true;
-    else
-      return false;
-  });
-  const responseRead=fs.readFileSync(Path.join(__dirname,"../../../../../../samples/",sampleFileRelative), {encoding:'utf-8'});
-  for (const searchCall of searchCalls) {
-    searchCall.flush(responseRead);
-  }
-  return searchCalls.length;
-}
 

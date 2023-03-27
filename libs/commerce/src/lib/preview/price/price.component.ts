@@ -87,7 +87,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
       testProduct.productPrice=12;
       this.selectedProduct(testProduct);*/
       if ((this.value.nameInShop!=null) && (this.value.shop!=null)) {
-        // We have to let the use select the product
+        // The user defined the product name, let's find the matching ones and let the user select only one of them
         this.priceFinder.searchProducts(this.value.nameInShop, this.value.shop).then(value => {
           if( value!=null) {
             this.listOfSelectableProducts = value;
@@ -102,6 +102,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
         });
       }
     } else if (this.value.shop!=null) {
+      // We know the product id and the shop, let's update the price directly
       this.priceFinder.findPrice(this.value, this.value.shop, this.parentPosition??"").then (newPrice => {
         if (newPrice!=null) {
           this.value.inError=false;
@@ -117,6 +118,10 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     }
   }
 
+  /**
+   * The user has selected one product amongst the list found with its keyword
+   * @param product
+   */
   selectedProduct(product: ScrappedProduct|null) {
     this.productSelectionMode=false;
     if( product!=null) {
@@ -161,6 +166,9 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     this.productSelectionMode=false;
     delete this.value.idInShop;
     this.parsingError=null;
+    delete this.value.cost;
+    delete this.value.priceDate;
+    delete this.value.urlInShop;
     this.hydrateValueToForm();
   }
 

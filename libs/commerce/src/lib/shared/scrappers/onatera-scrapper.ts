@@ -1,5 +1,5 @@
-import {AbstractOnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapper";
-import {firstValueFrom, map} from "rxjs";
+import {AbstractOnlineShopScrapper, ProxyEngine, ScrappedProduct} from "../online-shop-scrapper";
+import {map} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 
 export class OnateraScrapper extends AbstractOnlineShopScrapper {
@@ -35,21 +35,19 @@ export class OnateraScrapper extends AbstractOnlineShopScrapper {
 
   constructor(http: HttpClient) {
     super(http);
-    this.useCorsProxy=true;
   }
 
-  searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
+  override searchProductsForNameOrId(nameOrId: string, isId:boolean): Promise<Array<ScrappedProduct>> {
       // We copy the content
     let postContent=JSON.stringify(OnateraScrapper.JSON_QUERY);
 
       // And add the query
-    postContent=postContent.replace (/QUERY_STRING/g, encodeURIComponent(name));
+    postContent=postContent.replace (/QUERY_STRING/g, encodeURIComponent(nameOrId));
 
     postContent=JSON.parse(postContent);
-    return firstValueFrom(this.http.post(this.encodeUrlForCors(OnateraScrapper.SEARCH_ONLINE_URL),
-      postContent
-    ,{withCredentials:false, responseType:"json", observe:"body"}).pipe (
-        map(jsonResult => {
+    return this.requestWithProxy("POST", OnateraScrapper.SEARCH_ONLINE_URL, ProxyEngine.CORSPROXY_IO
+    ,{body:postContent, responseType:"json", observe:"body"})
+      .then(jsonResult => {
           if( typeof jsonResult == "string")
             jsonResult = JSON.parse(jsonResult);
 
@@ -75,7 +73,7 @@ export class OnateraScrapper extends AbstractOnlineShopScrapper {
                         newProduct.productUrl=OnateraScrapper.BASE_URL+variant.url;
                         newProduct.productImageUrl=OnateraScrapper.IMAGE_BASE_URL+variant.picture_path;
 
-                        this.checkScrappedProduct(name, newProduct);
+                        this.checkScrappedProduct(nameOrId, newProduct);
                         ret.push(newProduct);
                       }
                     }
@@ -86,8 +84,7 @@ export class OnateraScrapper extends AbstractOnlineShopScrapper {
           }
 
           return ret;
-        })
-    ));
+        });
   }
 
 }

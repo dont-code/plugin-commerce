@@ -1,7 +1,5 @@
-import {AbstractOnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapper";
-import {firstValueFrom, map} from "rxjs";
-import {MoneyAmount} from "@dontcode/core";
-import {PriceFinderService} from "../services/price-finder.service";
+import {AbstractOnlineShopScrapper, ProxyEngine, ScrappedProduct} from "../online-shop-scrapper";
+import {map} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 
 export class WebEcologieScrapper extends AbstractOnlineShopScrapper {
@@ -14,15 +12,14 @@ export class WebEcologieScrapper extends AbstractOnlineShopScrapper {
 
   constructor(http: HttpClient) {
     super(http);
-    this.useCorsProxy=true;
   }
 
-  searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
-    const query = WebEcologieScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", encodeURIComponent(name));
+  override searchProductsForNameOrId(nameOrId: string, isId:boolean): Promise<Array<ScrappedProduct>> {
+    const query = WebEcologieScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", encodeURIComponent(nameOrId));
 
-    return firstValueFrom(this.http.get(this.encodeUrlForCors(query)
-    ,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"}).pipe (
-        map(htmlResult => {
+    return this.requestWithProxy("GET", query, ProxyEngine.CORSPROXY_IO
+    ,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"})
+      .then(htmlResult => {
 
           const ret= new Array<ScrappedProduct>();
           let startPos = htmlResult.indexOf(WebEcologieScrapper.PRODUCT_START_STRING);
@@ -40,15 +37,14 @@ export class WebEcologieScrapper extends AbstractOnlineShopScrapper {
             newProduct.productId=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
 
             this.extractPrice(htmlResult, startPos, newProduct);
-            this.checkScrappedProduct(name, newProduct);
+            this.checkScrappedProduct(nameOrId, newProduct);
             ret.push(newProduct);
 
             startPos = htmlResult.indexOf(WebEcologieScrapper.PRODUCT_START_STRING, startPos+1);
           }
 
           return ret;
-        })
-    ));
+        });
   }
 
   extractPrice (htmlResult:string, startPos:number, newProduct:ScrappedProduct): void {
@@ -73,9 +69,9 @@ export class WebEcologieScrapper extends AbstractOnlineShopScrapper {
     if (product.productUrl==null) {
       return super.updatePrice(product, true);  // If the product url is not found, let's try with the product name
     }
-    return firstValueFrom(this.http.get(this.encodeUrlForCors(product.productUrl)
-      ,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"}).pipe (
-      map(htmlResult => {
+    return this.requestWithProxy("GET", product.productUrl,ProxyEngine.CORSPROXY_IO
+      ,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"})
+      .then(htmlResult => {
         const newProduct:ScrappedProduct = {productId:product.productId,
           productName:product.productName};
           this.extractPrice(htmlResult, 0, newProduct);
@@ -83,8 +79,7 @@ export class WebEcologieScrapper extends AbstractOnlineShopScrapper {
           product.productPrice=newProduct.productPrice;
           product.currencyCode=newProduct.currencyCode;
           return product;
-      }))
-    ).catch(error => {
+      }).catch(error => {
       console.error("Error trying to access page for product "+product.productName, error);
       return super.updatePrice(product, true);
     });

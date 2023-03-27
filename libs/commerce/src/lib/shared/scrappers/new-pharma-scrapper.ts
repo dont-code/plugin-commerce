@@ -1,8 +1,6 @@
-import {AbstractOnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapper";
-import {firstValueFrom, map} from "rxjs";
-import {MoneyAmount} from "@dontcode/core";
-import {PriceFinderService} from "../services/price-finder.service";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {AbstractOnlineShopScrapper, ProxyEngine, ScrappedProduct} from "../online-shop-scrapper";
+import {map} from "rxjs";
+import {HttpClient} from "@angular/common/http";
 
 export class NewPharmaScrapper extends AbstractOnlineShopScrapper {
 
@@ -13,16 +11,15 @@ export class NewPharmaScrapper extends AbstractOnlineShopScrapper {
 
   constructor(httpClient: HttpClient) {
     super(httpClient);
-    this.useCorsProxy=true;
   }
 
-  searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
-    const query = NewPharmaScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", encodeURIComponent(name));
+  override searchProductsForNameOrId(nameOrId: string, isId:boolean): Promise<Array<ScrappedProduct>> {
+    const query = NewPharmaScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", encodeURIComponent(nameOrId));
     const headers = this.standardHeaders ();
 
-    return firstValueFrom(this.http.get(this.encodeUrlForCors(query)
-    ,{headers, withCredentials:false, responseType:"text", observe:"body"}).pipe (
-        map(htmlResult => {
+    return this.requestWithProxy("GET", query, ProxyEngine.CORSPROXY_IO,
+    {headers, withCredentials:false, responseType:"text", observe:"body"})
+      .then(htmlResult => {
 
           const ret= new Array<ScrappedProduct>();
           let startPos = htmlResult.indexOf(NewPharmaScrapper.PRODUCT_START_STRING);
@@ -40,15 +37,14 @@ export class NewPharmaScrapper extends AbstractOnlineShopScrapper {
             newProduct.productImageUrl=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
 
             this.extractPrice(htmlResult, startPos, newProduct);
-            this.checkScrappedProduct(name, newProduct);
+            this.checkScrappedProduct(nameOrId, newProduct);
             ret.push(newProduct);
 
             startPos = htmlResult.indexOf(NewPharmaScrapper.PRODUCT_START_STRING, startPos+1);
           }
 
           return ret;
-        })
-    ));
+        });
   }
 
   extractPrice (htmlResult:string, startPos:number, newProduct:ScrappedProduct): void {
@@ -73,9 +69,9 @@ export class NewPharmaScrapper extends AbstractOnlineShopScrapper {
     if (product.productUrl==null) {
       return super.updatePrice(product, true);
     }
-    return firstValueFrom(this.http.get(this.encodeUrlForCors(product.productUrl)
-      ,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"}).pipe (
-      map(htmlResult => {
+    return this.requestWithProxy("GET",product.productUrl, ProxyEngine.CORSPROXY_IO,
+      {headers:{Accept:'text/html'}, responseType:"text", observe:"body"})
+      .then(htmlResult => {
         const newProduct:ScrappedProduct = {productId:product.productId,
           productName:product.productName};
           this.extractPrice(htmlResult, 0, newProduct);
@@ -83,8 +79,8 @@ export class NewPharmaScrapper extends AbstractOnlineShopScrapper {
           product.productPrice=newProduct.productPrice;
           product.currencyCode=newProduct.currencyCode;
           return product;
-      }))
-    ).catch(error => {
+      })
+    .catch(error => {
       console.error("Error trying to access page for product "+product.productName, error);
       return super.updatePrice(product, true);
     });

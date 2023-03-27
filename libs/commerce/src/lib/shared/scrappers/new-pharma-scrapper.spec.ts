@@ -3,7 +3,7 @@ import {PluginCommonModule} from "@dontcode/plugin-common";
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
 import {ShopHandlerComponent} from "../../preview/shop/shop-handler.component";
 import {HttpClient} from "@angular/common/http";
-import {expectOneSampleFile} from "./easy-para-scrapper.spec";
+import {expectOneSampleFile} from "../common-scrapper-test.spec";
 import {NewPharmaScrapper} from "./new-pharma-scrapper";
 import {AbstractOnlineShopScrapper} from "../online-shop-scrapper";
 
@@ -28,7 +28,7 @@ describe('NewPharmaScrapper', () => {
 
   it('should search', (done) => {
     expect(component).toBeTruthy();
-    component.searchProductsForName("Chardon Marie").then(value => {
+    component.searchProductsForNameOrId("Chardon Marie", false).then(value => {
       expect(value.length>0).toBeTruthy();
       done();
     }).catch(error => {

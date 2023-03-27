@@ -4,7 +4,7 @@ import {PriceFinderService} from './price-finder.service';
 import {HttpClient} from "@angular/common/http";
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
 import {PluginCommonModule} from "@dontcode/plugin-common";
-import {waitForOneMatchSampleFile} from "../scrappers/easy-para-scrapper.spec";
+import {waitForOneMatchSampleFile} from "../common-scrapper-test.spec";
 import {EasyParaScrapper} from "../scrappers/easy-para-scrapper";
 import {PriceModel} from "../price-model";
 import {AbstractOnlineShopScrapper} from "../online-shop-scrapper";

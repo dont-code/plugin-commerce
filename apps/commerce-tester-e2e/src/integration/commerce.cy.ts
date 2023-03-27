@@ -1,12 +1,12 @@
 import {
   checkValueOfInputWithName,
-  clickAutoComplete, getButtonWithName, getButtonWithText,
-  getContentArea, getDivWithId,
+  clickAutoComplete,
+  getButtonWithName, getButtonWithText, getDivWithId,
   getDropdownListItemWithName,
   getDropdownWithName,
   getInputWithName, getListRowWithText,
   getSendButton,
-  getSubMenuWithText, getValueOfInputWithName,
+  getSubMenuWithText,
   selectPopupChoiceWithText,
 } from '../support/app.po';
 
@@ -89,13 +89,13 @@ describe('Commerce test', () => {
 
         getButtonWithName("new").click();
         getInputWithName('Name').type("Product 1");
-/*        getInputWithName('Price-name').type("Product 1 Name");
+        getInputWithName('nameInShop').type("Product 1 Name");
         getDropdownWithName('shop').click('right');
         getDropdownListItemWithName('Shop 2').click();
         getButtonWithName('FetchPrice').click();
         cy.wait('@LoadPrice');
 
-        getDivWithId('Price-select').find('Button').first().click();
+        getButtonWithText('Select').first().click();
         checkValueOfInputWithName('cost', Intl.NumberFormat(navigator.language).format(10.99));
 
         getDropdownWithName('currencyCode').click('right');
@@ -103,7 +103,7 @@ describe('Commerce test', () => {
 
         getButtonWithName("save").click();
 
-        getListRowWithText(FormatUtils.generateMoney(10.99, "GBP") + ' (Shop 2)');*/
+        getListRowWithText(FormatUtils.generateMoney(10.99, "GBP"));
       });
 
     });

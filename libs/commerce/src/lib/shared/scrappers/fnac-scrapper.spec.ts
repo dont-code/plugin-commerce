@@ -3,7 +3,7 @@ import {PluginCommonModule} from "@dontcode/plugin-common";
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
 import {ShopHandlerComponent} from "../../preview/shop/shop-handler.component";
 import {HttpClient} from "@angular/common/http";
-import {expectOneSampleFile} from "./easy-para-scrapper.spec";
+import {expectOneSampleFile} from "../common-scrapper-test.spec";
 import {FnacScrapper} from "./fnac-scrapper";
 
 describe('FnacScrapper', () => {
@@ -27,7 +27,7 @@ describe('FnacScrapper', () => {
 
   it('should search', (done) => {
     expect(component).toBeTruthy();
-    component.searchProductsForName("Doro 8080 smartphone").then(value => {
+    component.searchProductsForNameOrId("Doro 8080 smartphone", false).then(value => {
       expect(value.length>0).toBeTruthy();
       expect(value[0].productName).toEqual("DORO 8080 - 4G smartphone / Mémoire interne 32 Go - microSD slot - 5.7&quot; - 1440 x 720 pixels - rear camera 16 MP - blanc");
       expect(value[0].productPrice).toEqual (289.88);

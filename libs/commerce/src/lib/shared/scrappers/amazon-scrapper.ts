@@ -1,5 +1,5 @@
-import {AbstractOnlineShopScrapper, ScrappedProduct} from "../online-shop-scrapper";
-import {firstValueFrom, map} from "rxjs";
+import {AbstractOnlineShopScrapper, ProxyEngine, ScrappedProduct} from "../online-shop-scrapper";
+import {map} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 
 export class AmazonScrapper extends AbstractOnlineShopScrapper {
@@ -14,16 +14,14 @@ export class AmazonScrapper extends AbstractOnlineShopScrapper {
 
   constructor(http: HttpClient) {
     super(http);
-    this.useCorsProxy=true;
   }
 
-  searchProductsForName(name: string): Promise<Array<ScrappedProduct>> {
+  override searchProductsForNameOrId(nameOrId: string, isId:boolean): Promise<Array<ScrappedProduct>> {
     // remove accents
-    const query = AmazonScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", encodeURIComponent(name));
+    const query = AmazonScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", encodeURIComponent(nameOrId));
 
-    return firstValueFrom(this.http.get(this.encodeUrlForCors(query)
-    ,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"}).pipe (
-        map(htmlResult => {
+    return this.requestWithProxy("GET", query, ProxyEngine.CORSPROXY_IO,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"})
+      .then (htmlResult => {
 
           const ret= new Array<ScrappedProduct>();
           let startPos = htmlResult.indexOf(AmazonScrapper.PRODUCT_START_STRING);
@@ -50,24 +48,23 @@ export class AmazonScrapper extends AbstractOnlineShopScrapper {
             newProduct.productImageUrl=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
             itemPos = htmlResult.indexOf('a-text-normal">', middlePos)+15;
             newProduct.productDescription=htmlResult.substring(itemPos, htmlResult.indexOf('<', itemPos+1));
-            if( newProduct.productDescription?.length>60) {
+            if( (newProduct.productDescription!=null) && (newProduct.productDescription?.length>60)) {
               newProduct.productName=newProduct.productDescription.substring(0,60);
             } else {
-              newProduct.productName=newProduct.productDescription;
+              newProduct.productName=newProduct.productDescription||null;
             }
             itemPos = htmlResult.indexOf('data-asin="', startPos)+11;
             newProduct.productId=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
 
             this.extractPrice(htmlResult, middlePos, newProduct);
-            this.checkScrappedProduct(name, newProduct);
+            this.checkScrappedProduct(nameOrId, newProduct);
             ret.push(newProduct);
 
             startPos = htmlResult.indexOf(AmazonScrapper.PRODUCT_START_STRING, startPos+1);
           }
 
           return ret;
-        })
-    ));
+        });
   }
 
   extractPrice (htmlResult:string, startPos:number, newProduct:ScrappedProduct): void {
