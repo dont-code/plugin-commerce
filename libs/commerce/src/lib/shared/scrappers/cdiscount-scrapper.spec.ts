@@ -30,9 +30,9 @@ describe('CDiscountScrapper', () => {
     expect(component).toBeTruthy();
     component.searchProductsForNameOrId("Doro 8080 smartphone", false).then(value => {
       expect(value.length>0).toBeTruthy();
-      expect(value[0].productName).toEqual("SMARTPHONE DORO - Smartphone 8050 PLUS");
-      expect(value[0].productPrice).toEqual (210.64);
-      expect(value[0].productId).toEqual("DOR7322460078355");
+      expect(value[0].productName).toEqual("Doro 8050 Grey");
+      expect(value[0].productPrice).toEqual (177.87);
+      expect(value[0].productId).toEqual("DOR7322460078430");
       done();
     }).catch(error => {
       done (error);
@@ -46,13 +46,13 @@ describe('CDiscountScrapper', () => {
       productId:"DOR7322460078355",
       productName:"Smartphone DORO 8100 Plus Graphite"
     }).then(value => {
-      expect(value?.productPrice).toEqual(210.64);
+      expect(value?.productPrice).toEqual(189.99);
       expect(value?.currencyCode).toEqual("EUR");
       done();
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("cdiscount/doro-8080-smartphone-search.html", httpTestingController, AbstractOnlineShopScrapper.CORS_PROXY_URL);
+    expectOneSampleFile("cdiscount/doro-8080-smartphone-product.html", httpTestingController, AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 
 });
