@@ -4,7 +4,7 @@ import {HttpClient} from "@angular/common/http";
 
 export class AmazonScrapper extends AbstractOnlineShopScrapper {
 
-  static readonly SEARCH_ONLINE_URL="https://www.amazon.fr/s?k=QUERY_STRING";
+  static readonly SEARCH_ONLINE_URL="https://www.amazon.fr/s?__mk_fr_FR=C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=3LGPN65O63PFB&i=aps&k=QUERY_STRING&ref=nb_sb_noss_1&url=search-alias=aps";
   protected static readonly PRODUCT_START_STRING='<div data-asin="';
 
   protected static readonly BASE_URL='https://www.amazon.fr'
@@ -21,16 +21,20 @@ export class AmazonScrapper extends AbstractOnlineShopScrapper {
     const query = AmazonScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", encodeURIComponent(nameOrId));
 
     return this.requestWithProxy("GET", query, ProxyEngine.CORSPROXY_IO,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"})
-      .then (htmlResult => {
+      .then (completeHtml => {
 
           const ret= new Array<ScrappedProduct>();
-          let startPos = htmlResult.indexOf(AmazonScrapper.PRODUCT_START_STRING);
+          let startPos = completeHtml.indexOf(AmazonScrapper.PRODUCT_START_STRING);
           while (startPos>=0) {
+            const endPos=completeHtml.indexOf(AmazonScrapper.PRODUCT_START_STRING, startPos+1);
+              // Just extract the product bits
+            const htmlResult=completeHtml.substring(startPos, endPos);
+
             const newProduct = new ScrappedProduct();
-            const middlePos = htmlResult.indexOf('data-component-type="s-product-image"', startPos);
-            let itemPos = htmlResult.indexOf('data-asin="', startPos)+11;
-            if( htmlResult.charAt(itemPos)=='"') {
-              startPos = htmlResult.indexOf(AmazonScrapper.PRODUCT_START_STRING, startPos+1);
+            const middlePos = htmlResult.indexOf('data-component-type="s-product-image"');
+            let itemPos = htmlResult.indexOf('data-asin="')+11;
+            if( (htmlResult.charAt(itemPos)=='"') || (middlePos==-1)) {
+              startPos = completeHtml.indexOf(AmazonScrapper.PRODUCT_START_STRING, startPos+1);
               continue; // Ignore the non products
             }
             newProduct.productId=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
@@ -53,7 +57,7 @@ export class AmazonScrapper extends AbstractOnlineShopScrapper {
             } else {
               newProduct.productName=newProduct.productDescription||null;
             }
-            itemPos = htmlResult.indexOf('data-asin="', startPos)+11;
+            itemPos = htmlResult.indexOf('data-asin="')+11;
             newProduct.productId=htmlResult.substring(itemPos, htmlResult.indexOf('"', itemPos+1));
 
             this.extractPrice(htmlResult, middlePos, newProduct);
