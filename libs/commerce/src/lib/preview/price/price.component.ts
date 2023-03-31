@@ -8,10 +8,14 @@ import {
   TemplateList
 } from '@dontcode/plugin-common';
 import {FormControl} from "@angular/forms";
-import { PriceFinderService} from "../../shared/services/price-finder.service";
+import {PriceFinderService} from "../../shared/services/price-finder.service";
 import {AbstractOnlineShopScrapper, ScrappedProduct} from "../../shared/online-shop-scrapper";
 import {PriceModel} from "../../shared/price-model";
 
+/**
+ * Displays and refresh a price of a product in a shop.
+ * When the price is new, it tries to fill the name of the shop and the product name
+ */
 @Component({
   selector: 'dontcode-commerce-price',
   templateUrl: './price.component.html',
@@ -206,4 +210,5 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     }
     return ret;
   }
+
 }
