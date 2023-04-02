@@ -137,7 +137,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     this.productSelectionMode=false;
     if( product!=null) {
       this.value.idInShop=product.productId;
-      this.value.nameInShop=product.productName??undefined;
+//      this.value.nameInShop=product.productName??undefined;
       this.hydrateValueToForm();
       this.setSubFieldValue("cost", AbstractOnlineShopScrapper.toMoneyAmount(product));
       this.setSubFieldValue('priceDate', new Date());
@@ -175,7 +175,6 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
 
   clearProduct ():void {
     this.productSelectionMode=false;
-    delete this.value.idInShop;
     this.parsingError=null;
     delete this.value.cost;
     this.setSubFieldValue('cost', undefined);
@@ -183,12 +182,13 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     this.setSubFieldValue('priceDate', undefined);
     delete this.value.urlInShop;
     this.setSubFieldValue('urlInShop', undefined);
+    delete this.value.idInShop;
+    (this.form.get("idInShop") as FormControl)?.setValue(null, {emitEvent:false});
   }
 
   productNameChanged(event: Event) {
   //    const inputEvent = event as InputEvent;
-    this.productSelectionMode=false;
-    this.parsingError=null;
+    this.clearProduct();
     // Eventually set default product name
     this.enableProductNameLookup();
   }
