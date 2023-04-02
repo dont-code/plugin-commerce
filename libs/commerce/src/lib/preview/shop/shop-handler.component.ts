@@ -20,4 +20,24 @@ export class ShopHandlerComponent extends AbstractReferenceComponent {
     this.setTargetEntitiesWithName(CommercePlugin.SHOP_ENTITY_NAME, 'Shop');
   }
 
+  override setValue(val: any) {
+    if( val == null) {
+      // No value set, let's try to guess one
+      const form=this.getForm();
+      const parentForm=form?.parent;
+      if( (parentForm != null) && (!Array.isArray(parentForm.controls))) {
+          // The parent is a FormGroup and not a FormArray
+        for (const controlKey in parentForm.controls) {
+
+          if( parentForm.controls[controlKey]===form) {
+            // The name of the price is this one
+            val=controlKey;
+          }
+        }
+      }
+
+    }
+    super.setValue(val);
+  }
+
 }
