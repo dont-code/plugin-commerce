@@ -11,10 +11,11 @@ import {FormControl} from "@angular/forms";
 import {PriceFinderService} from "../../shared/services/price-finder.service";
 import {AbstractOnlineShopScrapper, ScrappedProduct} from "../../shared/online-shop-scrapper";
 import {PriceModel} from "../../shared/price-model";
+import {DontCodeModelManager} from "@dontcode/core";
 
 /**
  * Displays and refresh a price of a product in a shop.
- * When the price is new, it tries to fill the name of the shop and the product name
+ * When the price is new, it tries to fill the name with the shop and the product name
  */
 @Component({
   selector: 'dontcode-commerce-price',
@@ -33,7 +34,9 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
 
   parsingError:{message?:string, url?:string, status?:number, content?:string}|null=null;
 
-  productSelectionMode=false;
+  productSelectionMode= false;
+  productNameLinked = false;
+
   listOfSelectableProducts = new Array<ScrappedProduct>();
 
   constructor(loader: ComponentLoaderService,protected priceFinder:PriceFinderService,
@@ -57,12 +60,16 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
   override setValue(val: any) {
     super.setValue(val);
     if( val!=null) {
-      this.priceFinder.updatePriceIfPossible(val, this.parentPosition??'').then(newPrice => {
+      this.priceFinder.updatePriceIfPossible(val, this.parentPosition??'').then(() => {
         this.parsingError=null;
-      }).catch(reason => {
+      }).catch(() => {
         val.inError=true;
       });
     }
+
+    // Eventually set default product name
+    this.enableProductNameLookup();
+
   }
 
   override createAndRegisterFormControls (): void {
@@ -171,15 +178,52 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     delete this.value.idInShop;
     this.parsingError=null;
     delete this.value.cost;
+    this.setSubFieldValue('cost', undefined);
     delete this.value.priceDate;
+    this.setSubFieldValue('priceDate', undefined);
     delete this.value.urlInShop;
-    this.hydrateValueToForm();
+    this.setSubFieldValue('urlInShop', undefined);
   }
 
   productNameChanged(event: Event) {
-    const inputEvent = event as InputEvent;
+  //    const inputEvent = event as InputEvent;
     this.productSelectionMode=false;
     this.parsingError=null;
+    // Eventually set default product name
+    this.enableProductNameLookup();
+  }
+
+  /**
+   * In case the product name is not defined, just try to pick-it up from parent form
+   * In this case listen to all changes of parent form
+   */
+  enableProductNameLookup () {
+    // In case the name in shop is not defined, then try to pick-up a name from the parent form
+    if( (this.value?.nameInShop == null) && (this.parentForm!=null)) {
+      if (!this.productNameLinked) {
+      const parentNameControl = this.guessProductParentComponent ();
+      if( parentNameControl!=null) {
+        this.productNameLinked=true;
+        this.subscriptions.add(parentNameControl.valueChanges.subscribe(newValue => {
+          const nameInShopControl = this.form.get('nameInShop') as FormControl<string|null>;
+          if ((nameInShopControl.value==null) || (nameInShopControl.value=='') || (newValue.startsWith(nameInShopControl.value))) {
+            this.value.nameInShop=newValue;
+            nameInShopControl.setValue(newValue, {emitEvent:false});
+            }
+          }));
+        }
+      }
+    }
+
+  }
+
+  guessProductParentComponent (): FormControl|null {
+    if (this.parentForm!=null) {
+      const nameProp = DontCodeModelManager.guessNamePropertyOfObject(this.parentForm.controls);
+      if (nameProp!=null)
+        return this.parentForm.controls[nameProp] as FormControl;
+    }
+    return null;
   }
 
   protected translateToError(reason: any): any {
