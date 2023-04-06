@@ -189,8 +189,6 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
   productNameChanged(event: Event) {
   //    const inputEvent = event as InputEvent;
     this.clearProduct();
-    // Eventually set default product name
-    this.enableProductNameLookup();
   }
 
   /**
@@ -207,8 +205,9 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
         this.subscriptions.add(parentNameControl.valueChanges.subscribe(newValue => {
           const nameInShopControl = this.form.get('nameInShop') as FormControl<string|null>;
           if ((nameInShopControl.value==null) || (nameInShopControl.value=='') || (newValue.startsWith(nameInShopControl.value))) {
+            if( this.value == null) this.value={};
             this.value.nameInShop=newValue;
-            nameInShopControl.setValue(newValue, {emitEvent:false});
+            nameInShopControl.setValue(newValue, {emitEvent:false, emitModelToViewChange:true});
             }
           }));
         }

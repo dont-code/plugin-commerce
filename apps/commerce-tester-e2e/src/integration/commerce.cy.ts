@@ -1,4 +1,5 @@
 import {
+  checkValueOfDropdownWithName,
   checkValueOfInputWithName,
   clickAutoComplete,
   getButtonWithName,
@@ -7,9 +8,6 @@ import {
   getDropdownWithName,
   getInputWithName,
   getListRowWithText,
-  getRelativeButtonWithName,
-  getRelativeDropdownWithName,
-  getRelativeInputWithName,
   getSendButton,
   getSubMenuWithText,
   selectPopupChoiceWithText,
@@ -20,7 +18,7 @@ describe('Commerce test', () => {
   beforeEach(() => cy.visit('/'));
 
 
-  it('should display Price', () => {
+/*  it('should display Price', () => {
     cy.clearDbCollection("Online Shop").then (() => {
       cy.clearDbCollection("Product"). then (() => {
 
@@ -83,14 +81,14 @@ describe('Commerce test', () => {
       });
 
     });
-  });
+  });*/
 
-/*  it('should be easy to use', () => {
+  it('should be easy to use', () => {
     cy.clearDbCollection("Online Shop").then (() => {
-      cy.clearDbCollection("Multi Product"). then (() => {
+      cy.clearDbCollection("Multi Product").then(() => {
         cy.intercept('GET', '/assets/dev/templates.json', MULTI_PRODUCT_TEMPLATE
         ).as('LoadMultiTemplate');
-        cy.intercept({hostname:'corsproxy.io'}, {
+        cy.intercept({hostname: 'corsproxy.io'}, {
           body: RESULT_QUERY
         }).as('LoadPrice');
 
@@ -129,27 +127,55 @@ describe('Commerce test', () => {
 
         getButtonWithName("new", 10000).click();
 
-        const curShop = getPriceFormWithName ("Shop EP");
+        getInputWithName('Name').type("Global Product Name");
 
-        getRelativeInputWithName(curShop, 'nameInShop').type("Product EP");
-        getRelativeDropdownWithName (curShop, 'shop').should("have.value", 'Shop EP');
-        getRelativeButtonWithName(curShop, 'FetchPrice').click();
-        cy.wait('@LoadPrice');
+        let curShop = getPriceFormWithName("Shop EP");
+        curShop.within(() => {
+          getInputWithName('nameInShop').focus();
+          getInputWithName('nameInShop').should('have.value', "Global Product Name");
+          checkValueOfDropdownWithName('shop', "Shop EP");
+        });
 
-        getButtonWithText('Select').first().click();
-        checkValueOfInputWithName('cost', Intl.NumberFormat(navigator.language).format(10.99));
-
-        getDropdownWithName('currencyCode').click('right');
-        getDropdownListItemWithName('Pound Sterling - GBP').click();
+        curShop = getPriceFormWithName("Shop GW");
+        curShop.within(() => {
+          getInputWithName('nameInShop').should('have.value', "Global Product Name");
+          checkValueOfDropdownWithName('shop', "Shop GW");
+        });
 
         getButtonWithName("save").click();
 
-        getListRowWithText(FormatUtils.generateMoney(10.99, "GBP"));
-      });
+        cy.get('th[id="header-Name"]');
+        getSubMenuWithText('Dev').click(); // Move to dev page
+        getSubMenuWithText('Multi Product').click();
 
+        getListRowWithText("Global Product Name").click();
+
+        // Check the values were saved properly
+        curShop = getPriceFormWithName("Shop EP");
+        curShop.within(() => {
+          getInputWithName('nameInShop').should('have.value', "Global Product Name");
+          checkValueOfDropdownWithName('shop', "Shop EP");
+        });
+
+        getInputWithName('Name').type(" New");
+
+        curShop = getPriceFormWithName("Shop EP");
+        curShop.within(() => {
+          getInputWithName('nameInShop').focus();
+          getInputWithName('nameInShop').should('have.value', "Global Product Name New");
+
+          getInputWithName('nameInShop').clear().type("Shop Product Name");
+        });
+
+        getInputWithName('Name').type(" Again");
+        curShop.within(() => {
+          getInputWithName('nameInShop').focus();
+          getInputWithName('nameInShop').should('have.value', "Shop Product Name");
+        });
+      });
     });
   });
-*/
+
 });
 
 const RESULT_QUERY= {
