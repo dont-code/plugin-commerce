@@ -21,6 +21,16 @@ export class ShopHandlerComponent extends AbstractReferenceComponent {
   }
 
   override setValue(val: any) {
+/*    const cyLogger=(window as any).Cypress.cy.log;
+    console.log(cyLogger);
+    if (typeof cyLogger === 'function') {
+      try {
+        cyLogger.call("erferfre");
+      } catch (err) {
+        //console.log("err");
+      }
+    }*/
+   // (window as any).Cypress.cy.log("TestERFE");
     if( val == null) {
       // No value set, let's try to guess one
       const form=this.getForm();
@@ -31,7 +41,9 @@ export class ShopHandlerComponent extends AbstractReferenceComponent {
 
           if( parentForm.controls[controlKey]===form) {
             // The name of the price is this one
+//            throw new Error ("Error");
             val=controlKey;
+            break;
           }
         }
       }
