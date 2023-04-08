@@ -1,7 +1,7 @@
 <ng-template #inlineView>{{this.value}}</ng-template>
 <ng-template #fullEditView>
   <ng-container *ngIf="form" [formGroup]="form!">
-    <p-dropdown [options]="options" [formControlName]="name" [filter]="true" [showClear]="true" (onChange)="valueChanged ($event)" placeholder="Select a shop">
+    <p-dropdown [options]="options" [formControlName]="name" [filter]="true" [showClear]="true" (onChange)="valueChanged ($event)" placeholder="Select a shop" [lazy]="true">
       <ng-template pTemplate="selectedItem">
         <div *ngIf="this.value">
           {{this.value}}
