@@ -35,6 +35,8 @@ jobs:
           npm install -g nx
           npm install --force
           npm install @dontcode/core@next @dontcode/plugin-common@next @dontcode/sandbox@next @dontcode/plugin-basic@next @dontcode/plugin-fields@next
+          npm explain @dontcode/core
+          npm explain @dontcode/plugin-common
       - name: Build
         run: |
           nx run commerce:build:production
