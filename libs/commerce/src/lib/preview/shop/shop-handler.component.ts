@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Optional} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, Optional} from '@angular/core';
 import {AbstractReferenceComponent} from '@dontcode/plugin-common';
 import {DontCodeModelManager, DontCodeStoreManager} from "@dontcode/core";
 import {CommercePlugin} from "../../declaration/commerce-plugin";
@@ -12,10 +12,13 @@ import {CommercePlugin} from "../../declaration/commerce-plugin";
   templateUrl: './shop-handler.component.html',
   styleUrls: ['./shop-handler.component.scss']
 })
-export class ShopHandlerComponent extends AbstractReferenceComponent {
+export class ShopHandlerComponent extends AbstractReferenceComponent implements OnInit {
 
   constructor(@Optional() modelMgr:DontCodeModelManager, @Optional() storeMgr:DontCodeStoreManager) {
     super (modelMgr, storeMgr);
+  }
+
+  ngOnInit () {
     // Manages the list of Shops
     this.setTargetEntitiesWithName(CommercePlugin.SHOP_ENTITY_NAME, 'Shop');
   }
