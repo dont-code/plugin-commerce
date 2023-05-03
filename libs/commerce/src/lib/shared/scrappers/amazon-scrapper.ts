@@ -1,10 +1,10 @@
 import {AbstractOnlineShopScrapper, ProxyEngine, ScrappedProduct} from "../online-shop-scrapper";
-import {map} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 
 export class AmazonScrapper extends AbstractOnlineShopScrapper {
 
-  static readonly SEARCH_ONLINE_URL="https://www.amazon.fr/s?__mk_fr_FR=C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=3LGPN65O63PFB&i=aps&k=QUERY_STRING&ref=nb_sb_noss_1&url=search-alias=aps";
+  //static readonly SEARCH_ONLINE_URL="https://www.amazon.fr/s?__mk_fr_FR=C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=1KL4W8UW3UJH4&i=aps&field-keywords=QUERY_STRING&ref=nb_sb_noss_2&url=search-alias=aps";
+  static readonly SEARCH_ONLINE_URL = "https://www.amazon.fr/s?k=QUERY_STRING&i=aps&ref=nb_sb_ss_recent_1_0_recent&crid=3K99XBXMP48FX&sprefix=%2Caps%2C118";
   protected static readonly PRODUCT_START_STRING='<div data-asin="';
 
   protected static readonly BASE_URL='https://www.amazon.fr'
