@@ -1,3 +1,23 @@
+
+https://www.amazon.fr/s?k=haier+h2f220wf&i=aps&ref=nb_sb_ss_recent_1_0_recent&crid=3K99XBXMP48FX&sprefix=%2Caps%2C118
+{
+	"GET": {
+		"scheme": "https",
+		"host": "www.amazon.fr",
+		"filename": "/s",
+		"query": {
+			"k": "haier h2f220wf",
+			"i": "aps",
+			"ref": "nb_sb_ss_recent_1_0_recent",
+			"crid": "3K99XBXMP48FX",
+			"sprefix": ",aps,118"
+		},
+		"remote": {
+			"Adresse": "18.164.49.201:443"
+		}
+	}
+}
+
 Search: https://www.amazon.fr/s?k=chardon%20marie
 {
 	"GET": {
