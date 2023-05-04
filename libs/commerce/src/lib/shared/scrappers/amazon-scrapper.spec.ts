@@ -37,7 +37,7 @@ describe('AmazonScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("amazon/doro-8080-smartphone-search.html", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
+    expectOneSampleFile("amazon/doro-8080-smartphone-search.html", httpTestingController,AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL);
   });
 
   it('should get price', (done) => {
@@ -52,7 +52,7 @@ describe('AmazonScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("amazon/doro-8080-smartphone-search.html", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
+    expectOneSampleFile("amazon/doro-8080-smartphone-search.html", httpTestingController,AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL);
   });
 
 });

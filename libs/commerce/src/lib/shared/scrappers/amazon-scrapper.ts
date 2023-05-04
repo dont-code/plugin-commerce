@@ -20,7 +20,22 @@ export class AmazonScrapper extends AbstractOnlineShopScrapper {
     // remove accents
     const query = AmazonScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", encodeURIComponent(nameOrId));
 
-    return this.requestWithProxy("GET", query, ProxyEngine.CORSPROXY_IO,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"})
+    return this.requestWithProxy("GET", query, ProxyEngine.DONT_CODE,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"})
+      .catch(reason => {
+        console.error('Error getting amazon price with DontCode Proxy', reason);
+        if ((reason.status!=null) && (reason.status>=500)) {
+          return this.requestWithProxy("GET", query, ProxyEngine.CORSPROXY_IO,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"});
+        } else {
+          return Promise.reject(reason);
+        }
+      }).catch (reason => {
+        console.error('Error getting amazon price with CorsProxyIO', reason);
+        if ((reason.status!=null) && (reason.status>=500)) {
+          return this.requestWithProxy("GET", query, ProxyEngine.WEBSCRAPING_IA,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"});
+        } else {
+          return Promise.reject(reason);
+        }
+      })
       .then (completeHtml => {
 
           const ret= new Array<ScrappedProduct>();
