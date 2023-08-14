@@ -69,8 +69,8 @@ export class NewPharmaScrapper extends AbstractOnlineShopScrapper {
     if (product.productUrl==null) {
       return super.updatePrice(product, true);
     }
-    return this.requestWithProxy("GET",product.productUrl, ProxyEngine.CORSPROXY_IO,
-      {headers:{Accept:'text/html'}, responseType:"text", observe:"body"})
+    return this.requestWithProxy("GET",product.productUrl, ProxyEngine.CHROME_ENGINE,
+      {headers:{Accept:'text/html'}, withCredentials:false, responseType:"text", observe:"body"})
       .then(htmlResult => {
         const newProduct:ScrappedProduct = {productId:product.productId,
           productName:product.productName};

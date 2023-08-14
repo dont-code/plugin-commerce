@@ -34,7 +34,7 @@ describe('NewPharmaScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("new-pharma/chardon-marie-search.html", httpTestingController, AbstractOnlineShopScrapper.CORS_PROXY_URL);
+    expectOneSampleFile("new-pharma/chardon-marie-search.html", httpTestingController, AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL);
   });
 
   it('should get price', (done) => {
@@ -50,7 +50,7 @@ describe('NewPharmaScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("new-pharma/chardon-marie-product.html", httpTestingController, AbstractOnlineShopScrapper.CORS_PROXY_URL);
+    expectOneSampleFile("new-pharma/chardon-marie-product.html", httpTestingController, AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL);
   });
 
   it('should get price event without product url', (done) => {
@@ -65,7 +65,7 @@ describe('NewPharmaScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("new-pharma/chardon-marie-search.html", httpTestingController, AbstractOnlineShopScrapper.CORS_PROXY_URL);
+    expectOneSampleFile("new-pharma/chardon-marie-search.html", httpTestingController, AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL);
   });
 });
 
