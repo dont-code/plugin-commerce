@@ -12,7 +12,7 @@ import {
   getSubMenuWithText,
   selectPopupChoiceWithText,
 } from '../support/app.po';
-import {getPriceFormWithName} from "../support/commerce.po";
+import {getPriceFormWithName, getTableHeader} from "../support/commerce.po";
 
 describe('Commerce test', () => {
   beforeEach(() => cy.visit('/'));
@@ -105,7 +105,9 @@ describe('Commerce test', () => {
         getSendButton().click();
 
         getSubMenuWithText('Online Shop').click();
-        getButtonWithName("new").click({timeout:10000});
+        getTableHeader('Shop').should('contain.text', "Shop");
+
+        getButtonWithName("new").click();
         getInputWithName('Shop').type("Shop GW");
         getDropdownWithName('Type').click("right");
         getDropdownListItemWithName('GreenWeez').click();
@@ -113,20 +115,23 @@ describe('Commerce test', () => {
         cy.get('th[id="header-Shop"]');
 
         getSubMenuWithText('Online Shop').click();  // Click again as it seems sometimes the new button is not working.
-        getButtonWithName("new").click({timeout:10000});
+        getTableHeader('Shop').should('contain.text', "Shop");
+
+        getButtonWithName("new").click();
         getInputWithName('Shop').type("Shop EP");
         getDropdownWithName('Type').click("right");
         getDropdownListItemWithName('EasyParapharmacie').click();
         getButtonWithName("save").click();
-
         cy.get('th[id="header-Shop"]');
+
         getSubMenuWithText('Dev').click(); // Move to dev page
         getSubMenuWithText('Online Shop').click();
         cy.get('th[id="header-Shop"]');
+
         getSubMenuWithText('Multi Product').click();
+        getTableHeader('Name').should('contain.text', "Name");
 
-        getButtonWithName("new").click({timeout:10000});
-
+        getButtonWithName("new").click();
         getInputWithName('Name').type("Global Product Name");
 
         let curShop = getPriceFormWithName("Shop EP");
@@ -143,8 +148,8 @@ describe('Commerce test', () => {
         });
 
         getButtonWithName("save").click();
-
         cy.get('th[id="header-Name"]');
+
         getSubMenuWithText('Dev').click(); // Move to dev page
         getSubMenuWithText('Multi Product').click();
 
