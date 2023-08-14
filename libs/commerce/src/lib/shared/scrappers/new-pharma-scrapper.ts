@@ -17,7 +17,7 @@ export class NewPharmaScrapper extends AbstractOnlineShopScrapper {
     const query = NewPharmaScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", encodeURIComponent(nameOrId));
     const headers = this.standardHeaders ();
 
-    return this.requestWithProxy("GET", query, ProxyEngine.CORSPROXY_IO,
+    return this.requestWithProxy("GET", query, ProxyEngine.CHROME_ENGINE,
     {headers, withCredentials:false, responseType:"text", observe:"body"})
       .then(htmlResult => {
 
