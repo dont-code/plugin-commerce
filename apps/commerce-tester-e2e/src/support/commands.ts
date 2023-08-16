@@ -39,7 +39,7 @@ Cypress.Commands.add('clearDbCollection', (collection:string) => {
   }).then((version:number) => {
     if (version!==-1) {
       // We need to create the collection, so force the upgrade....
-      const upgraderequest = window.indexedDB.open('Preview-UI', version+1);
+      const upgraderequest = window.indexedDB.open('Commerce Plugin Tester', version+1);
 
       console.log("Upgrade Request created");
       upgraderequest.addEventListener('upgradeneeded', ( event) => {

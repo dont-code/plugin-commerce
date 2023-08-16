@@ -1,9 +1,7 @@
 import {
-  checkValueOfDropdownWithName,
-  checkValueOfInputWithName,
+  checkValueOfDropdownWithName, checkValueOfInputWithName,
   clickAutoComplete,
-  getButtonWithName,
-  getButtonWithText,
+  getButtonWithName, getButtonWithText,
   getDropdownListItemWithName,
   getDropdownWithName,
   getInputWithName,
@@ -18,7 +16,7 @@ describe('Commerce test', () => {
   beforeEach(() => cy.visit('/'));
 
 
-/*  it('should display Price', () => {
+  it('should display Price', () => {
     cy.clearDbCollection("Online Shop").then (() => {
       cy.clearDbCollection("Product"). then (() => {
 
@@ -33,7 +31,7 @@ describe('Commerce test', () => {
         cy.wait('@LoadTemplate');
 
         clickAutoComplete('template');
-        selectPopupChoiceWithText('Online Shop');
+        selectPopupChoiceWithText('Online Shops');
         getSendButton().click();
 
         clickAutoComplete('template');
@@ -41,6 +39,8 @@ describe('Commerce test', () => {
         getSendButton().click();
 
         getSubMenuWithText('Online Shop').click();
+        cy.get('th[id="header-Shop"]');
+        getButtonWithName("new").should('be.enabled');
         getButtonWithName("new").click();
         getInputWithName('Shop').type("Shop 1");
         getDropdownWithName('Type').click("right");
@@ -49,6 +49,7 @@ describe('Commerce test', () => {
         cy.get('th[id="header-Shop"]');
 
         getSubMenuWithText('Online Shop').click();  // Click again as it seems sometimes the new button is not working.
+        getButtonWithName("new").should('be.enabled');
         getButtonWithName("new").click();
         getInputWithName('Shop').type("Shop 2");
         getDropdownWithName('Type').click("right");
@@ -61,6 +62,7 @@ describe('Commerce test', () => {
         cy.get('th[id="header-Shop"]');
         getSubMenuWithText('Product').click();
 
+        getButtonWithName("new").should('be.enabled');
         getButtonWithName("new").click();
         getInputWithName('Name').type("Product 1");
         getInputWithName('nameInShop').type("Product 1 Name");
@@ -81,16 +83,14 @@ describe('Commerce test', () => {
       });
 
     });
-  });*/
+  });
 
   it('should be easy to use', () => {
     cy.clearDbCollection("Online Shop").then (() => {
       cy.clearDbCollection("Multi Product").then(() => {
+          // Loads a specific template
         cy.intercept('GET', '/assets/dev/templates.json', MULTI_PRODUCT_TEMPLATE
         ).as('LoadMultiTemplate');
-        cy.intercept({hostname: 'corsproxy.io'}, {
-          body: RESULT_QUERY
-        }).as('LoadPrice');
 
         getSubMenuWithText('Dev').click(); // Move to dev page
 
@@ -107,30 +107,29 @@ describe('Commerce test', () => {
         getSubMenuWithText('Online Shop').click();
         getTableHeader('Shop').should('contain.text', "Shop");
 
+        getButtonWithName("new").should('be.enabled');
         getButtonWithName("new").click();
         getInputWithName('Shop').type("Shop GW");
         getDropdownWithName('Type').click("right");
         getDropdownListItemWithName('GreenWeez').click();
         getButtonWithName("save").click();
-        cy.get('th[id="header-Shop"]');
+        getListRowWithText("Shop GW");
 
         getSubMenuWithText('Online Shop').click();  // Click again as it seems sometimes the new button is not working.
         getTableHeader('Shop').should('contain.text', "Shop");
 
+        getButtonWithName("new").should('be.enabled');
         getButtonWithName("new").click();
         getInputWithName('Shop').type("Shop EP");
         getDropdownWithName('Type').click("right");
         getDropdownListItemWithName('EasyParapharmacie').click();
         getButtonWithName("save").click();
-        cy.get('th[id="header-Shop"]');
-
-        getSubMenuWithText('Dev').click(); // Move to dev page
-        getSubMenuWithText('Online Shop').click();
-        cy.get('th[id="header-Shop"]');
+        getListRowWithText("Shop EP");
 
         getSubMenuWithText('Multi Product').click();
         getTableHeader('Name').should('contain.text', "Name");
 
+        getButtonWithName("new").should('be.enabled');
         getButtonWithName("new").click();
         getInputWithName('Name').type("Global Product Name");
 
