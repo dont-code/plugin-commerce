@@ -96,8 +96,8 @@ export class PriceFinderService {
     // We're looking for a Price that points to the shopType given in parameter
     let priceField = null;
     let productPrice: PriceModel | null = null;
-    if (model?.fields) {
-      for (const field of model.fields) {
+    if (model?.fields!=null) {
+      for (const field of Object.values(model.fields)) {
         if (field.type === "Price") {
           // We found one, is it the correct one ?
           priceField = field;
@@ -210,8 +210,8 @@ export class PriceFinderService {
       operator:DontCodeStoreCriteriaOperator.EQUALS
     })).then((loaded) => {
       if (loaded?.length!=1) return shopName;
-      if( loaded[0].Type!=null)
-        return loaded[0].Type;
+      if( (loaded[0] as any).Type!=null)
+        return (loaded[0] as any).Type;
       else
         return shopName;
     });

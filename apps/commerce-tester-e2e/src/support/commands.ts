@@ -12,44 +12,57 @@
 declare namespace Cypress {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Chainable<Subject> {
-    clearDbCollection (collection:string): Promise<void>;
+    clearDbCollections (dbName:string,...collections:string[]): Promise<void>;
+    forceDeleteIndexedDbStorage (dbName:string, win:any): void;
   }
 }
 //
-Cypress.Commands.add('clearDbCollection', (collection:string) => {
 
-  return new Promise<number>((resolve, reject) => {
-    console.log("Checking DB Version");
-    const checkversionrequest = window.indexedDB.open('Commerce Plugin Tester');
-
-    checkversionrequest.addEventListener('success', (evt) =>{
-      console.log("In Check Version");
-      const db:IDBDatabase = (evt.target as any).result;
-      if (!db.objectStoreNames.contains( collection )) {
-        console.log("Need to upgrade");
-        const version = db.version;
-        db.close();
-        resolve (version);
-      }else {
-        const txn = db.transaction(collection, 'readwrite');
-        txn.objectStore(collection).clear();
-        resolve (-1);
-      }
-    });
-  }).then((version:number) => {
-    if (version!==-1) {
-      // We need to create the collection, so force the upgrade....
-      const upgraderequest = window.indexedDB.open('Preview-UI', version+1);
-
-      console.log("Upgrade Request created");
-      upgraderequest.addEventListener('upgradeneeded', ( event) => {
-        console.log("upgrading");
-        const db2:IDBDatabase = (event.target as any).result;
-        db2.createObjectStore( collection,{keyPath:'_id', autoIncrement:true} );
-        console.log("upgraded");
-
+Cypress.Commands.add('forceDeleteIndexedDbStorage', (dbName:string, win:any) => {
+  console.log("Test: Deleting DB "+dbName);
+  return new Promise<void>((resolve, reject)=>  {
+    if ((win as any)._indexedDbStorageServiceForceDelete != null) {
+      console.log("Test: DB Delete Call");
+      (win as any)._indexedDbStorageServiceForceDelete(dbName).then(() => {
+        console.log("Test: DB Deleted");
+        resolve();
+      }).catch ( (reason:any) => {
+        reject(reason);
       });
+    } else {
+      reject("Test: No Delete function in global window");
     }
-  })
+  });
+});
+
+Cypress.Commands.add('clearDbCollections', (dbName:string, ...collections:string[]) => {
+
+  return new Promise<void>((resolve, reject) => {
+    console.log("Test: Cleaning DB");
+    const checkversionrequest = window.indexedDB.open(dbName);
+
+    checkversionrequest.onsuccess = (evt) =>{
+      console.debug("Test: Opening IndexedDB");
+      const db:IDBDatabase = (evt.target as any).result;
+
+      for (const collection of collections) {
+        if (db.objectStoreNames.contains( collection )) {
+          //console.debug("Test: Clearing collection "+collection);
+          const txn = db.transaction(collection, 'readwrite');
+          txn.objectStore(collection).clear();
+          txn.commit();
+          console.debug("Test: Collection cleared "+collection);
+        }
+      }
+      db.close();
+      console.debug("Test: Closed IndexedDB");
+      resolve ();
+    };
+
+    checkversionrequest.onerror = (evt) =>{
+      reject("Test: Cannot open Database "+dbName+" because of "+evt.target);
+    }
+    resolve();
+  });
 
 });

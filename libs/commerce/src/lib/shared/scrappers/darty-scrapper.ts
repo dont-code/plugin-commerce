@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 
 export class DartyScrapper extends AbstractOnlineShopScrapper {
 
-  static readonly SEARCH_ONLINE_URL="https://z0ypi1plpq-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia+for+JavaScript+%284.5.1%29%3B+Browser\n";//"https://www.darty.com/nav/recherche/QUERY_STRING.html"
+  static readonly SEARCH_ONLINE_URL="https://z0ypi1plpq-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia+for+JavaScript+%284.17.0%29%3B+Browser";
 /**
 static readonly SEARCH_ONLINE_URL="https://www.darty.com/nav/recherche/QUERY_STRING.html"
   protected static readonly PRODUCT_START_STRING="<div class=\"product_detail";
