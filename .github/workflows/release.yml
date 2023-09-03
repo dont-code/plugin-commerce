@@ -11,7 +11,7 @@ on:
         required: false
         type: string
       next:
-        description: Is it a next release ?
+        description: Is it a dev / next release ?
         required: true
         type: boolean
       deploy:
