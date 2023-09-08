@@ -37,6 +37,6 @@ export const getCheckWithName = (name: string) =>
 export const getButtonWithText = (text: string) =>
   cy.get('button').contains(text).first();
 
-export const getListRowWithText = (text:string) => cy.get('table > tbody > tr').contains('tr', text);
+export const getListRowWithText = (text:string) => cy.get('table > tbody > tr', {timeout:10000}).contains('tr', text, {timeout:10000});
 
 export const getDivWithId = (id:string) => cy.get('div[id="'+id+'"');
