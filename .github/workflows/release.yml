@@ -68,8 +68,8 @@ jobs:
           npm version $PACKAGE_VERSION
       - name: Install ${{env.stage}}
         run: |
+          npm ci
           npm install @dontcode/core@${{env.stage}} @dontcode/plugin-common@${{env.stage}} @dontcode/sandbox@${{env.stage}} @dontcode/plugin-basic@${{env.stage}} @dontcode/plugin-fields@${{env.stage}}
-          npm install
       - name: Build
         run: |
           nx run commerce:build:production
