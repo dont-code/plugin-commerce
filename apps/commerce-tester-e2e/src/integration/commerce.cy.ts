@@ -18,7 +18,7 @@ describe('Commerce test', () => {
 
   it('should display Price', () => {
       cy.intercept('GET', '/assets/dev/templates.json').as('LoadTemplate');
-      cy.intercept({hostname:'corsproxy.io'}, {
+      cy.intercept({hostname:'shared.collin.best'}, {
         body: RESULT_QUERY
 
       }).as('LoadPrice');
