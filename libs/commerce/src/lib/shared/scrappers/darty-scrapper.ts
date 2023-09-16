@@ -40,7 +40,7 @@ static readonly SEARCH_ONLINE_URL="https://www.darty.com/nav/recherche/QUERY_STR
     postContent = postContent.replace("QUERY_STRING", nameOrId);  // QUERY_STRING appears twice
     postContent=JSON.parse(postContent);
     return this.requestWithProxy("POST",DartyScrapper.SEARCH_ONLINE_URL
-      ,ProxyEngine.CORSPROXY_IO, {body: postContent,headers: this.httpHeaders,responseType:"json", observe:"body"})
+      ,ProxyEngine.DONT_CODE, {body: postContent,headers: this.httpHeaders,responseType:"json", observe:"body"})
       .then(jsonResult => {
 
           if( typeof jsonResult == "string")

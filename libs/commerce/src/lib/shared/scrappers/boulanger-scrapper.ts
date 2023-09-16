@@ -21,7 +21,7 @@ export class BoulangerScrapper extends AbstractOnlineShopScrapper {
     const query = BoulangerScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", nameOrId);
 
     // Let's first try with the free CorsProxy, and only if it doesn't work then we'll use the non-free Webscraping
-    return this.requestWithProxy("GET", query, ProxyEngine.CORSPROXY_IO, {observe: 'body', responseType: 'text'})
+    return this.requestWithProxy("GET", query, ProxyEngine.DONT_CODE, {observe: 'body', responseType: 'text'})
       .then(htmlResult => {
         return this.analysePageResult(nameOrId, htmlResult);
       }).catch(reason => {

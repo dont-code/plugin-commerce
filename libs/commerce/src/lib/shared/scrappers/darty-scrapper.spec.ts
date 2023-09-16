@@ -37,7 +37,7 @@ describe('DartyScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("darty/doro-8080-smartphone-search.json", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
+    expectOneSampleFile("darty/doro-8080-smartphone-search.json", httpTestingController,AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL);
   });
 
   it('should get price', (done) => {
@@ -53,7 +53,7 @@ describe('DartyScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("darty/doro-8080-smartphone-search.json", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
+    expectOneSampleFile("darty/doro-8080-smartphone-search.json", httpTestingController,AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL);
   });
 
 });
