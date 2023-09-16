@@ -8,6 +8,7 @@ module.exports = defineConfig({
   "videosFolder": "../../dist/cypress/apps/commerce-tester-e2e/videos",
   "screenshotsFolder": "../../dist/cypress/apps/commerce-tester-e2e/screenshots",
   "chromeWebSecurity": false,
+  "defaultCommandTimeout": 20000,
   e2e: {
     setupNodeEvents(on, config) {},
     specPattern: './src/integration/**/*.cy.{js,jsx,ts,tsx}',

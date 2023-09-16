@@ -34,7 +34,7 @@ describe('Maxicoffee', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("maxicoffee/lugat-grains-search-result.json", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
+    expectOneSampleFile("maxicoffee/lugat-grains-search-result.json", httpTestingController,AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL);
   });
 
   it('should get price', (done) => {
@@ -45,7 +45,7 @@ describe('Maxicoffee', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("maxicoffee/lugat-grains-search-result.json", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
+    expectOneSampleFile("maxicoffee/lugat-grains-search-result.json", httpTestingController,AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL);
   });
 });
 

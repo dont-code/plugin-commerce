@@ -34,7 +34,7 @@ describe('WebEcologieScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("webecologie/chardon-marie-search.html", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
+    expectOneSampleFile("webecologie/chardon-marie-search.html", httpTestingController,AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL);
   });
 
   it('should get price', (done) => {
@@ -50,7 +50,7 @@ describe('WebEcologieScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("webecologie/chardon-marie-product.html", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
+    expectOneSampleFile("webecologie/chardon-marie-product.html", httpTestingController,AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL);
   });
 
   it('should get price even with no product url', (done) => {
@@ -65,7 +65,7 @@ describe('WebEcologieScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("webecologie/chardon-marie-search.html", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
+    expectOneSampleFile("webecologie/chardon-marie-search.html", httpTestingController,AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL);
   });
 });
 

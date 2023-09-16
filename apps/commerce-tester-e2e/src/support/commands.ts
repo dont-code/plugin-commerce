@@ -13,25 +13,27 @@ declare namespace Cypress {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Chainable<Subject> {
     clearDbCollections (dbName:string,...collections:string[]): Promise<void>;
-    forceDeleteIndexedDbStorage (dbName:string, win:any): void;
+    forceDeleteIndexedDbStorage (dbName:string): Cypress.Chainable<any>;
   }
 }
 //
 
-Cypress.Commands.add('forceDeleteIndexedDbStorage', (dbName:string, win:any) => {
+Cypress.Commands.add('forceDeleteIndexedDbStorage', (dbName:string) => {
   console.log("Test: Deleting DB "+dbName);
-  return new Promise<void>((resolve, reject)=>  {
-    if ((win as any)._indexedDbStorageServiceForceDelete != null) {
-      console.log("Test: DB Delete Call");
-      (win as any)._indexedDbStorageServiceForceDelete(dbName).then(() => {
-        console.log("Test: DB Deleted");
-        resolve();
-      }).catch ( (reason:any) => {
-        reject(reason);
-      });
-    } else {
-      reject("Test: No Delete function in global window");
-    }
+  return cy.window().then ( (win) => {
+    return cy.wrap (new Promise<void>((resolve, reject)=>  {
+      if ((win as any)._indexedDbStorageServiceForceDelete != null) {
+        console.log("Test: DB Delete Call");
+        (win as any)._indexedDbStorageServiceForceDelete(dbName).then(() => {
+          console.log("Test: DB Deleted");
+          resolve();
+        }).catch ( (reason:any) => {
+          reject(reason);
+        });
+      } else {
+        reject("Test: No Delete function in global window");
+      }
+    }));
   });
 });
 

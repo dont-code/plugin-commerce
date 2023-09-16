@@ -14,13 +14,11 @@ import {getPriceFormWithName, getTableHeader} from "../support/commerce.po";
 
 describe('Commerce test', () => {
   beforeEach(() => cy.visit('/'));
-  afterEach(() => cy.window().then (win =>cy.forceDeleteIndexedDbStorage("Commerce Plugin Tester", win)));
+  beforeEach(() => cy.forceDeleteIndexedDbStorage("Commerce Plugin Tester"));
 
   it('should display Price', () => {
-    cy.clearDbCollections("Commerce Plugin Tester", "Online Shop", "Product").then (() => {
-
       cy.intercept('GET', '/assets/dev/templates.json').as('LoadTemplate');
-      cy.intercept({hostname:'corsproxy.io'}, {
+      cy.intercept({hostname:'shared.collin.best'}, {
         body: RESULT_QUERY
 
       }).as('LoadPrice');
@@ -45,7 +43,7 @@ describe('Commerce test', () => {
       getDropdownWithName('Type').click("right");
       getDropdownListItemWithName('GreenWeez').click();
       getButtonWithName("save").click();
-      cy.get('th[id="header-Shop"]');
+      cy.get('th[id="header-Shop"]').should('be.visible');
 
       getSubMenuWithText('Online Shop').click();  // Click again as it seems sometimes the new button is not working.
       getButtonWithName("new").should('be.enabled');
@@ -55,7 +53,7 @@ describe('Commerce test', () => {
       getDropdownListItemWithName('EasyParapharmacie').click();
       getButtonWithName("save").click();
 
-      cy.get('th[id="header-Shop"]');
+      cy.get('th[id="header-Shop"]').should('be.visible');
       getSubMenuWithText('Dev').click(); // Move to dev page
       getSubMenuWithText('Online Shop').click();
       cy.get('th[id="header-Shop"]');
@@ -77,14 +75,12 @@ describe('Commerce test', () => {
       getDropdownListItemWithName('Pound Sterling - GBP').click();
 
       getButtonWithName("save").click();
+      cy.get('th[id="header-Name"]').should('be.visible');
 
       getListRowWithText(FormatUtils.generateMoney(10.99, "GBP"));
-
-    });
   });
 
   it('should be easy to use', () => {
-    cy.clearDbCollections('Commerce Plugin Tester',"Online Shop", "Multi Product").then( () => {
         // Loads a specific template
       cy.intercept('GET', '/assets/dev/templates.json', MULTI_PRODUCT_TEMPLATE
       ).as('LoadMultiTemplate');
@@ -173,10 +169,7 @@ describe('Commerce test', () => {
         getInputWithName('nameInShop').focus();
         getInputWithName('nameInShop').should('have.value', "Shop Product Name");
       });
-    }, (error) => {
-      throw new Error (error);
     });
-  });
 
 });
 

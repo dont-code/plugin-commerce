@@ -4,14 +4,10 @@ import {HttpClient} from "@angular/common/http";
 
 export class EasyParaScrapper extends AbstractOnlineShopScrapper {
 
-  static readonly SEARCH_ONLINE_URL="https://jhu6zvksfy-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(3.35.1)%3B%20Browser%3B%20instantsearch.js%20(4.15.0)%3B%20Magento2%20integration%20(3.6.0)%3B%20JS%20Helper%20(3.4.4)&x-algolia-application-id=JHU6ZVKSFY&x-algolia-api-key=ODk4Y2JiMjAyYWIxNjI1NGJmYmQzNDQyYjBkMGViMDE4N2ZmYmMwZTUwYWFjNTJhNTlkMDBlNWFmYzAxZmJiYXRhZ0ZpbHRlcnM9"
+  static readonly SEARCH_ONLINE_URL="https://jhu6zvksfy-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia+for+JavaScript+%283.35.1%29%3B+Browser%3B+Magento2+integration+%283.6.0%29%3B+autocomplete.js+0.38.0&x-algolia-application-id=JHU6ZVKSFY&x-algolia-api-key=YTYyYzkyNzgyZDliZTZlMDk1OGE1MDQwNjRkYWY1ZmY4ZTE5OWZhYmU4ZGUyNTM2NDFjNmU4YjllNWMwNmJmNXRhZ0ZpbHRlcnM9\n"
 
-  protected static JSON_QUERY= {
-    "requests": [{
-      "indexName": "prod_magento2_fr_products",
-      "params": "highlightPreTag=__ais-highlight__&highlightPostTag=__%2Fais-highlight__&ruleContexts=%5B%22magento_filters%22%5D&hitsPerPage=24&query=QUERY_STRING&page=0&maxValuesPerFacet=20&facets=%5B%22filter_age_baby%22%2C%22filter_baby_teats_shape%22%2C%22filter_feminine_care%22%2C%22filter_foot%22%2C%22filter_gynaecology%22%2C%22filter_hair_color%22%2C%22filter_hair_needs%22%2C%22filter_hair_type%22%2C%22filter_level_of_spf%22%2C%22filter_mosquito_repellents%22%2C%22filter_part_of_body%22%2C%22filter_product_size%22%2C%22filter_texture%22%2C%22filter_type_of_hygiene%22%2C%22filter_type_of_milk%22%2C%22filter_type_of_shaving%22%2C%22filter_type_of_toothbrushes%22%2C%22filter_type_of_toothpastes%22%2C%22filter_veterinary%22%2C%22filter_wash%22%2C%22price.EUR.default%22%2C%22filter_virtual_category%22%2C%22manufacturer%22%2C%22product_rating%22%2C%22categories.level0%22%5D&tagFilters=&numericFilters=%5B%22visibility_search%3D1%22%5D"
-    }]
-  };
+  protected static JSON_QUERY=
+    {"requests":[{"indexName":"prod_magento2_fr_products","params":"query=QUERY_STRING&hitsPerPage=6&analyticsTags=autocomplete&clickAnalytics=true&facets=%5B%22categories.level0%22%5D&numericFilters=visibility_search%3D1&ruleContexts=%5B%22magento_filters%22%2C%22%22%5D"},{"indexName":"prod_magento2_fr_section_manufacturer","params":"query=chardon%20marie&hitsPerPage=6&analyticsTags=autocomplete&clickAnalytics=true"},{"indexName":"prod_magento2_fr_categories","params":"query=chardon%20marie&hitsPerPage=4&analyticsTags=autocomplete&clickAnalytics=true&numericFilters=include_in_menu%3D1"}]}
 
   override onlineShopName="EasyParapharmacie";
 
@@ -27,7 +23,7 @@ export class EasyParaScrapper extends AbstractOnlineShopScrapper {
     postContent = postContent.replace("QUERY_STRING", encodeURIComponent(nameOrId));
     postContent=JSON.parse(postContent);
     return this.requestWithProxy("POST", EasyParaScrapper.SEARCH_ONLINE_URL,
-      ProxyEngine.CORSPROXY_IO,
+      ProxyEngine.DONT_CODE,
     {body:postContent, responseType:"json", observe:"body"})
       .then(jsonResult => {
           if( typeof jsonResult == "string")
