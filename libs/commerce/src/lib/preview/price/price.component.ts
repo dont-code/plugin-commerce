@@ -176,13 +176,17 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
   clearProduct ():void {
     this.productSelectionMode=false;
     this.parsingError=null;
-    delete this.value.cost;
+    if( this.value)
+      delete this.value.cost;
     this.setSubFieldValue('cost', undefined);
-    delete this.value.priceDate;
+    if( this.value)
+      delete this.value.priceDate;
     this.setSubFieldValue('priceDate', undefined);
-    delete this.value.urlInShop;
+    if( this.value)
+      delete this.value.urlInShop;
     this.setSubFieldValue('urlInShop', undefined);
-    delete this.value.idInShop;
+    if( this.value)
+      delete this.value.idInShop;
     (this.form.get("idInShop") as FormControl)?.setValue(null, {emitEvent:false});
   }
 
