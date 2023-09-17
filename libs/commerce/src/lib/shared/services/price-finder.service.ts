@@ -141,7 +141,7 @@ export class PriceFinderService {
           }
           return null;
         }).catch(reason => {
-          console.error("Cannot update price for " + productPrice?.nameInShop + " because of " + reason.toString());
+          console.error("Cannot update price for " + productPrice?.nameInShop + " because of ", reason);
           throw reason;
         });
       } else {
