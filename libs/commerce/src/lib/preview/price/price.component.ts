@@ -59,13 +59,13 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
 
   override setValue(val: any) {
     super.setValue(val);
-    if( val!=null) {
+    /*if( val!=null) {
       this.priceFinder.updatePriceIfPossible(val, this.parentPosition??'').then(() => {
         this.parsingError=null;
       }).catch(() => {
         val.inError=true;
       });
-    }
+    }*/
 
     // Eventually set default product name
     this.enableProductNameLookup();

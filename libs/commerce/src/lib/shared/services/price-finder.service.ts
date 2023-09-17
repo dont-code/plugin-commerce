@@ -179,7 +179,7 @@ export class PriceFinderService {
   }
 
   async updatePriceIfPossible(val: PriceModel, position:string):Promise<PriceModel|null> {
-    if( (val.idInShop!=null)&& (val.shop!=null)) {
+    /*if( (val.idInShop!=null)&& (val.shop!=null)) {
       if( typeof val.lastCheckDate === 'string') {
         val.lastCheckDate= new Date(val.lastCheckDate);
       }
@@ -194,8 +194,9 @@ export class PriceFinderService {
           newPrice.priceDate=new Date();
         return newPrice;
       }
-    }
+    }*/
     return null;
+
   }
 
   private getShopTypeNameOf(shopName: string):Promise<string> {
