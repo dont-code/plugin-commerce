@@ -11,7 +11,7 @@ import {FormControl} from "@angular/forms";
 import {PriceFinderService} from "../../shared/services/price-finder.service";
 import {AbstractOnlineShopScrapper, ScrappedProduct} from "../../shared/online-shop-scrapper";
 import {PriceModel} from "../../shared/price-model";
-import {DontCodeModelManager} from "@dontcode/core";
+import {Action, ActionHandler, ActionType, DontCodeModelManager} from "@dontcode/core";
 
 /**
  * Displays and refresh a price of a product in a shop.
@@ -22,31 +22,31 @@ import {DontCodeModelManager} from "@dontcode/core";
   templateUrl: './price.component.html',
   styleUrls: ['./price.component.scss']
 })
-export class PriceComponent extends AbstractDynamicLoaderComponent {
+export class PriceComponent extends AbstractDynamicLoaderComponent implements ActionHandler {
 
-  @ViewChild('inlineView', { static: true })
+  @ViewChild('inlineView', {static: true})
   private inlineView!: TemplateRef<any>;
 
-  @ViewChild('fullEditView', { static: true })
+  @ViewChild('fullEditView', {static: true})
   private fullEditView!: TemplateRef<any>;
 
   override value: PriceModel;
 
-  parsingError:{message?:string, url?:string, status?:number, content?:string}|null=null;
+  parsingError: { message?: string, url?: string, status?: number, content?: string } | null = null;
 
-  productSelectionMode= false;
+  productSelectionMode = false;
   productNameLinked = false;
 
   listOfSelectableProducts = new Array<ScrappedProduct>();
 
-  constructor(loader: ComponentLoaderService,protected priceFinder:PriceFinderService,
+  constructor(loader: ComponentLoaderService, protected priceFinder: PriceFinderService,
               injector: Injector, ref: ChangeDetectorRef) {
-    super (loader, injector, ref);
-    this.defineSubField ('cost', 'Other currency');
-    this.defineSubField ('priceDate', 'Date & Time');
-    this.defineSubField ('shop', 'Shop');
-    this.defineSubField ('urlInShop', 'Website (url)');
-    this.value={};
+    super(loader, injector, ref);
+    this.defineSubField('cost', 'Other currency');
+    this.defineSubField('priceDate', 'Date & Time');
+    this.defineSubField('shop', 'Shop');
+    this.defineSubField('urlInShop', 'Website (url)');
+    this.value = {};
   }
 
   providesTemplates(key?: string): TemplateList {
@@ -86,7 +86,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
     return true;
   }
 
-  updatePrice() {
+  async updatePrice(): Promise<void> {
     this.parsingError=null;
     if( this.value==null) return;
 
@@ -99,7 +99,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
       this.selectedProduct(testProduct);*/
       if ((this.value.nameInShop!=null) && (this.value.shop!=null)) {
         // The user defined the product name, let's find the matching ones and let the user select only one of them
-        this.priceFinder.searchProducts(this.value.nameInShop, this.value.shop).then(value => {
+        await this.priceFinder.searchProducts(this.value.nameInShop, this.value.shop).then(value => {
           if( value!=null) {
             this.listOfSelectableProducts = value;
             this.productSelectionMode=true;
@@ -114,7 +114,7 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
       }
     } else if (this.value.shop!=null) {
       // We know the product id and the shop, let's update the price directly
-      this.priceFinder.findPrice(this.value, this.value.shop, this.parentPosition??"").then (newPrice => {
+      await this.priceFinder.findPrice(this.value, this.value.shop, this.parentPosition??"").then (newPrice => {
         if (newPrice!=null) {
           this.value.inError=false;
           this.setSubFieldValue('cost', newPrice.cost);
@@ -256,6 +256,12 @@ export class PriceComponent extends AbstractDynamicLoaderComponent {
       ret.message=reason.toString();
     }
     return ret;
+  }
+
+  async performAction(action: Action): Promise<void> {
+    if (action.actionType==ActionType.EXTRACT) {
+      await this.updatePrice();
+    }
   }
 
 }
