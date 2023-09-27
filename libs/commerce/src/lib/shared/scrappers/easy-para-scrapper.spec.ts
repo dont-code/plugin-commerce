@@ -35,7 +35,7 @@ describe('EasyParaScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("easypara/chardon-marie-search-result.json", httpTestingController,AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL);
+    expectOneSampleFile("easypara/chardon-marie-search-result.json", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 
   it('should get price', (done) => {
@@ -46,7 +46,7 @@ describe('EasyParaScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("easypara/chardon-marie-search-result.json", httpTestingController,AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL);
+    expectOneSampleFile("easypara/chardon-marie-search-result.json", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 });
 

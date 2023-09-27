@@ -45,7 +45,7 @@ export class OnateraScrapper extends AbstractOnlineShopScrapper {
     postContent=postContent.replace (/QUERY_STRING/g, encodeURIComponent(nameOrId));
 
     postContent=JSON.parse(postContent);
-    return this.requestWithProxy("POST", OnateraScrapper.SEARCH_ONLINE_URL, ProxyEngine.DONT_CODE
+    return this.requestWithProxy("POST", OnateraScrapper.SEARCH_ONLINE_URL, ProxyEngine.CORSPROXY_IO
     ,{body:postContent, responseType:"json", observe:"body"})
       .then(jsonResult => {
           if( typeof jsonResult == "string")

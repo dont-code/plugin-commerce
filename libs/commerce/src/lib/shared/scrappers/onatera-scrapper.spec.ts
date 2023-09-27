@@ -37,7 +37,7 @@ describe('OnateraScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("onatera/chardon-marie-search-result.json", httpTestingController,AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL);
+    expectOneSampleFile("onatera/chardon-marie-search-result.json", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 
   it('should get price', (done) => {
@@ -48,7 +48,7 @@ describe('OnateraScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("onatera/chardon-marie-search-result.json", httpTestingController,AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL);
+    expectOneSampleFile("onatera/chardon-marie-search-result.json", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_URL);
   });
 });
 
