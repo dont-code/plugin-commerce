@@ -136,12 +136,15 @@ export class PriceFinderService {
           if ((updated != null) && (productPrice != null)) {
             productPrice.cost = AbstractOnlineShopScrapper.toMoneyAmount(updated);
             productPrice.outOfStock = updated.outOfStock;
+            productPrice.priceDate=new Date();
             productPrice.inError = false;
             return productPrice;
           }
           return null;
         }).catch(reason => {
           console.error("Cannot update price for " + productPrice?.nameInShop + " because of ", reason);
+          if (productPrice!=null)
+            productPrice.inError=true;
           throw reason;
         });
       } else {
@@ -179,7 +182,7 @@ export class PriceFinderService {
   }
 
   async updatePriceIfPossible(val: PriceModel, position:string):Promise<PriceModel|null> {
-    /*if( (val.idInShop!=null)&& (val.shop!=null)) {
+    if( (val.idInShop!=null)&& (val.shop!=null)) {
       if( typeof val.lastCheckDate === 'string') {
         val.lastCheckDate= new Date(val.lastCheckDate);
       }
@@ -194,7 +197,7 @@ export class PriceFinderService {
           newPrice.priceDate=new Date();
         return newPrice;
       }
-    }*/
+    }
     return null;
 
   }

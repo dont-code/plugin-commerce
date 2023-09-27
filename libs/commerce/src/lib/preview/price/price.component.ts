@@ -260,7 +260,18 @@ export class PriceComponent extends AbstractDynamicLoaderComponent implements Ac
 
   async performAction(action: Action): Promise<void> {
     if (action.actionType==ActionType.EXTRACT) {
-      await this.updatePrice();
+      await this.priceFinder.updatePriceIfPossible(this.value, this.parentPosition??'').then (newPrice => {
+        if (newPrice!=null) {
+          this.value.inError=false;
+          this.setSubFieldValue('cost', newPrice.cost);
+          this.setSubFieldValue('priceDate', new Date());
+        }
+      }).catch ((reason) => {
+        this.value.inError=true;
+        this.parsingError=this.translateToError(reason);
+        this.ref.markForCheck();
+        this.ref.detectChanges();
+      });
     }
   }
 
