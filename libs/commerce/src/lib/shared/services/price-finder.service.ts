@@ -136,12 +136,15 @@ export class PriceFinderService {
           if ((updated != null) && (productPrice != null)) {
             productPrice.cost = AbstractOnlineShopScrapper.toMoneyAmount(updated);
             productPrice.outOfStock = updated.outOfStock;
+            productPrice.priceDate=new Date();
             productPrice.inError = false;
             return productPrice;
           }
           return null;
         }).catch(reason => {
-          console.error("Cannot update price for " + productPrice?.nameInShop + " because of " + reason.toString());
+          console.error("Cannot update price for " + productPrice?.nameInShop + " because of ", reason);
+          if (productPrice!=null)
+            productPrice.inError=true;
           throw reason;
         });
       } else {
@@ -196,6 +199,7 @@ export class PriceFinderService {
       }
     }
     return null;
+
   }
 
   private getShopTypeNameOf(shopName: string):Promise<string> {

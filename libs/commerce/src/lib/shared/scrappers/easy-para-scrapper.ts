@@ -23,7 +23,7 @@ export class EasyParaScrapper extends AbstractOnlineShopScrapper {
     postContent = postContent.replace("QUERY_STRING", encodeURIComponent(nameOrId));
     postContent=JSON.parse(postContent);
     return this.requestWithProxy("POST", EasyParaScrapper.SEARCH_ONLINE_URL,
-      ProxyEngine.DONT_CODE,
+      ProxyEngine.CORSPROXY_IO,
     {body:postContent, responseType:"json", observe:"body"})
       .then(jsonResult => {
           if( typeof jsonResult == "string")

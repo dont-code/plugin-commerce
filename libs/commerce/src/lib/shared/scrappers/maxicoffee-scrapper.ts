@@ -40,7 +40,7 @@ export class MaxicoffeeScrapper extends AbstractOnlineShopScrapper {
     postContent = postContent.replace("QUERY_STRING", nameOrId);
     postContent=JSON.parse(postContent);
     return this.requestWithProxy("POST", MaxicoffeeScrapper.SEARCH_ONLINE_URL,
-      ProxyEngine.DONT_CODE,
+      ProxyEngine.CORSPROXY_IO,
     {body:postContent, responseType:"json", observe:"body"})
       .then(jsonResult => {
           if( typeof jsonResult == "string")
