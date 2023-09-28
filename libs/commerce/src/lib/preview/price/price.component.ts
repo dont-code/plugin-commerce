@@ -24,6 +24,9 @@ import {Action, ActionHandler, ActionType, DontCodeModelManager} from "@dontcode
 })
 export class PriceComponent extends AbstractDynamicLoaderComponent implements ActionHandler {
 
+  static readonly baseUpdatePriceIcons='pi pi-refresh';
+  updatePriceIcon = PriceComponent.baseUpdatePriceIcons;
+
   @ViewChild('inlineView', {static: true})
   private inlineView!: TemplateRef<any>;
 
@@ -90,42 +93,50 @@ export class PriceComponent extends AbstractDynamicLoaderComponent implements Ac
     this.parsingError=null;
     if( this.value==null) return;
 
-    if( this.value.idInShop==null) {
-/*      const testProduct = new ScrappedProduct();
-      testProduct.productName="Test Product";
-      testProduct.productId="TEST-PRODUCT";
-      testProduct.currencyCode="EUR";
-      testProduct.productPrice=12;
-      this.selectedProduct(testProduct);*/
-      if ((this.value.nameInShop!=null) && (this.value.shop!=null)) {
-        // The user defined the product name, let's find the matching ones and let the user select only one of them
-        await this.priceFinder.searchProducts(this.value.nameInShop, this.value.shop).then(value => {
-          if( value!=null) {
-            this.listOfSelectableProducts = value;
-            this.productSelectionMode=true;
+    try {
+      if( this.value.idInShop==null) {
+        this.updatePriceIcon = PriceComponent.baseUpdatePriceIcons+ ' pi-spin'
+  /*      const testProduct = new ScrappedProduct();
+        testProduct.productName="Test Product";
+        testProduct.productId="TEST-PRODUCT";
+        testProduct.currencyCode="EUR";
+        testProduct.productPrice=12;
+        this.selectedProduct(testProduct);*/
+        if ((this.value.nameInShop!=null) && (this.value.shop!=null)) {
+          // The user defined the product name, let's find the matching ones and let the user select only one of them
+          await this.priceFinder.searchProducts(this.value.nameInShop, this.value.shop).then(value => {
+            if( value!=null) {
+              this.listOfSelectableProducts = value;
+              this.productSelectionMode=true;
+              this.ref.markForCheck();
+              this.ref.detectChanges();
+            }
+          }).catch(reason => {
+            this.parsingError=this.translateToError(reason);
             this.ref.markForCheck();
             this.ref.detectChanges();
+          });
+        }
+      } else if (this.value.shop!=null) {
+        // We know the product id and the shop, let's update the price directly
+        await this.priceFinder.findPrice(this.value, this.value.shop, this.parentPosition??"").then (newPrice => {
+          if (newPrice!=null) {
+            this.value.inError=false;
+            this.setSubFieldValue('cost', newPrice.cost);
+            this.setSubFieldValue('priceDate', new Date());
           }
-        }).catch(reason => {
+        }).catch ((reason) => {
+          this.value.inError=true;
           this.parsingError=this.translateToError(reason);
           this.ref.markForCheck();
           this.ref.detectChanges();
         });
       }
-    } else if (this.value.shop!=null) {
-      // We know the product id and the shop, let's update the price directly
-      await this.priceFinder.findPrice(this.value, this.value.shop, this.parentPosition??"").then (newPrice => {
-        if (newPrice!=null) {
-          this.value.inError=false;
-          this.setSubFieldValue('cost', newPrice.cost);
-          this.setSubFieldValue('priceDate', new Date());
-        }
-      }).catch ((reason) => {
-        this.value.inError=true;
-        this.parsingError=this.translateToError(reason);
-        this.ref.markForCheck();
-        this.ref.detectChanges();
-      });
+    } finally {
+      this.updatePriceIcon=PriceComponent.baseUpdatePriceIcons;
+      this.ref.markForCheck();
+      this.ref.detectChanges();
+
     }
   }
 
@@ -176,8 +187,10 @@ export class PriceComponent extends AbstractDynamicLoaderComponent implements Ac
   clearProduct ():void {
     this.productSelectionMode=false;
     this.parsingError=null;
-    if( this.value)
+    if( this.value){
+      delete this.value.inError;
       delete this.value.cost;
+    }
     this.setSubFieldValue('cost', undefined);
     if( this.value)
       delete this.value.priceDate;
