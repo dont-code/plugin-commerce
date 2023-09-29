@@ -14,13 +14,20 @@ import {CommercePlugin} from "../../declaration/commerce-plugin";
 })
 export class ShopHandlerComponent extends AbstractReferenceComponent implements OnInit {
 
-  constructor(@Optional() modelMgr:DontCodeModelManager, @Optional() storeMgr:DontCodeStoreManager) {
+  constructor(@Optional() modelMgr:DontCodeModelManager, @Optional() storeMgr:DontCodeStoreManager, protected ref:ChangeDetectorRef) {
     super (modelMgr, storeMgr);
   }
 
   ngOnInit () {
     // Manages the list of Shops
-    this.setTargetEntitiesWithName(CommercePlugin.SHOP_ENTITY_NAME, 'Shop');
+    this.setTargetEntitiesWithName(CommercePlugin.SHOP_ENTITY_NAME, 'Shop').then(value => {
+      if (value) {
+        this.ref.markForCheck();
+        this.ref.detectChanges();
+      }
+    }).catch (reason => {
+      console.error ("Cannot set list of shops", reason);
+    });
   }
 
   override setValue(val: any) {
