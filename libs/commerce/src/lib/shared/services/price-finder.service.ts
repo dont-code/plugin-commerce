@@ -204,7 +204,7 @@ export class PriceFinderService {
 
   private getShopTypeNameOf(shopName: string):Promise<string> {
     const query="$.creation.entities[?(@.name=='"+CommercePlugin.SHOP_ENTITY_NAME+"')]";
-    const targetEntitiesPos = this.modelMgr.queryModelToSingle(query).pointer;
+    const targetEntitiesPos = this.modelMgr.queryModelToSingle(query)?.pointer;
 
     if (targetEntitiesPos==null)  return Promise.resolve(shopName);
 

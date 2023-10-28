@@ -53,3 +53,5 @@ export * from './preview/price/price.component';
 export * from './preview/shop/shop-handler.component';
 export * from './preview/shop/shop-type-handler.component';
 export * from './preview/price/price-compare.component';
+export * from './shared/price-model';
+export * from './shared/services/price-finder.service';
