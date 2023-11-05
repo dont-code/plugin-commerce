@@ -37,7 +37,7 @@ describe('CDiscountScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("cdiscount/doro-8080-smartphone-search.html", httpTestingController, AbstractOnlineShopScrapper.CORS_PROXY_URL);
+    expectOneSampleFile("cdiscount/doro-8080-smartphone-search.html", httpTestingController, AbstractOnlineShopScrapper.CORS_PROXY_ORG_URL);
   });
 
   it('should get price', (done) => {
@@ -52,7 +52,7 @@ describe('CDiscountScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("cdiscount/doro-8080-smartphone-product.html", httpTestingController, AbstractOnlineShopScrapper.CORS_PROXY_URL);
+    expectOneSampleFile("cdiscount/doro-8080-smartphone-product.html", httpTestingController, AbstractOnlineShopScrapper.CORS_PROXY_ORG_URL);
   });
 
 });
