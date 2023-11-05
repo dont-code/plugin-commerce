@@ -44,6 +44,7 @@ export interface OnlineShopScrapper {
 export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
 
   public static readonly CORS_PROXY_URL='https://corsproxy.io/?';
+  public static readonly CORS_PROXY_ORG_URL='https://corsproxy.org/?';
 
   public static readonly WEBSCRAPING_PROXY_URL='https://api.webscraping.ai/html';
   public static readonly WEBSCRAPING_PROXY_API_KEY='f4fe0d0b-bfa9-49bd-a3f7-404be7bcad85';
@@ -83,7 +84,7 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
     };
     context?: HttpContext;
     reportProgress?: boolean;
-    observe: 'body';
+    observe: 'body'|'response';
     params?: HttpParams | {
       [param: string]: string | number | boolean | ReadonlyArray<string | number | boolean>;
     };
@@ -99,13 +100,16 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
 
   /**
    * Avoid Cors issue by running the url through a Cors manager proxy
-   * @param url
+   * @param url the non uri encoded url to reach. Urlencoding will be done by the function
    */
   protected encodeUrlForCors(url:string, engine:ProxyEngine):string {
     let ret = url;
     switch (engine) {
       case ProxyEngine.CORSPROXY_IO:
         ret = AbstractOnlineShopScrapper.CORS_PROXY_URL + encodeURIComponent(url);
+        break;
+      case ProxyEngine.CORSPROXY_ORG:
+        ret = AbstractOnlineShopScrapper.CORS_PROXY_ORG_URL + encodeURIComponent(url);
         break;
       case ProxyEngine.CHROME_ENGINE:
       case ProxyEngine.DONT_CODE:
@@ -132,7 +136,7 @@ protected updateOptionsForCors<T extends {
     };
     context?: HttpContext;
     reportProgress?: boolean;
-    observe: 'body';
+    observe: 'body'|'response';
     params?: HttpParams | {
       [param: string]: string | number | boolean | ReadonlyArray<string | number | boolean>;
     };
@@ -144,10 +148,13 @@ protected updateOptionsForCors<T extends {
       case ProxyEngine.CORSPROXY_IO:
         options.withCredentials=false;
         break;
+      case ProxyEngine.CORSPROXY_ORG:
+        options.withCredentials=false;
+        break;
       case ProxyEngine.CHROME_ENGINE:
       case ProxyEngine.DONT_CODE:
         this.addToHttpParams (options, {
-          url: url
+          url: encodeURIComponent(url)
           }
         );
         if (engine === ProxyEngine.CHROME_ENGINE) {
@@ -174,7 +181,8 @@ protected updateOptionsForCors<T extends {
 
   /**
    * By default we do a search with the productId and returns the price
-   * @param productId
+   * @param prod
+   * @param useProductName
    */
   updatePrice(prod: ScrappedProduct, useProductName?:boolean): Promise<ScrappedProduct|null> {
     let productToFind = prod.productId;
@@ -308,6 +316,7 @@ protected updateOptionsForCors<T extends {
 
 export enum ProxyEngine {
   CORSPROXY_IO= "CORSPROXY.IO",
+  CORSPROXY_ORG= "CORSPROXY.ORG",
   WEBSCRAPING_IA="WEBSCRAPING.IA",
   DONT_CODE="DONT-CODE.PROXY",
   CHROME_ENGINE= "DONT-CODE.CHROME",

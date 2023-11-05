@@ -43,12 +43,14 @@ export class TestScrapperComponent {
           this.priceError = 'No Price found';
         }
         this.ref.markForCheck();
+        this.ref.detectChanges();
       }
     } catch (reason) {
       this.priceError = (reason as any).message??reason as any;
-      this.displayPrice = true;
+      this.displayPrice = false;
       this.price = {inError: true};
       this.ref.markForCheck();
+      this.ref.detectChanges();
     }
   }
   displayableError (): string {
