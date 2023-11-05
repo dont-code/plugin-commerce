@@ -55,3 +55,5 @@ export * from './preview/shop/shop-type-handler.component';
 export * from './preview/price/price-compare.component';
 export * from './shared/price-model';
 export * from './shared/services/price-finder.service';
+export * from './shared/online-shop-scrapper';
+export * from './shared/dynamic-proxy-scrapper';

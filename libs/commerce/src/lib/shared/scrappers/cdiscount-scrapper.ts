@@ -17,7 +17,7 @@ export class CDiscountScrapper extends AbstractOnlineShopScrapper {
 
   override searchProductsForNameOrId(nameOrId: string, isId:boolean): Promise<Array<ScrappedProduct>> {
     // remove accents
-    const words=nameOrId.split(" ");
+/*    const words=nameOrId.split(" ");
     let encodedName = "";
     for (const word of words) {
       encodedName+=encodeURIComponent(word)+"+";
@@ -25,10 +25,10 @@ export class CDiscountScrapper extends AbstractOnlineShopScrapper {
     if( words.length>=1) {
       // Remove the last +
       encodedName=encodedName.substring(0, encodedName.length-1);
-    }
-    const query = CDiscountScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", encodedName);
+    }*/
+    const query = CDiscountScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", encodeURIComponent(nameOrId));
 
-    return this.requestWithProxy("GET", query, ProxyEngine.CORSPROXY_IO,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"})
+    return this.requestWithProxy("GET", query, ProxyEngine.CORSPROXY_ORG,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"})
       .then(htmlResult => {
 
           const ret= new Array<ScrappedProduct>();

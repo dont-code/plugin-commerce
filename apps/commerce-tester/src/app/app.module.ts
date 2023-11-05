@@ -24,6 +24,8 @@ import { TestScrapperComponent } from './routes/test-scrappers/test-scrapper.com
 import {InputTextareaModule} from "primeng/inputtextarea";
 import {FieldsModule} from "@dontcode/plugin-fields";
 import {InputNumberModule} from "primeng/inputnumber";
+import {CheckboxModule} from "primeng/checkbox";
+import {RadioButtonModule} from "primeng/radiobutton";
 
 const appRoutes: Routes = [
   { path: 'testUrl', component: TestUrlComponent },
@@ -79,6 +81,8 @@ export class CustomMenu implements MenuUpdater {
     InputTextareaModule,
     ReactiveFormsModule,
     InputNumberModule,
+    CheckboxModule,
+    RadioButtonModule,
   ],
   providers: [
     {
