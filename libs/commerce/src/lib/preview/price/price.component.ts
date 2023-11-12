@@ -288,4 +288,17 @@ export class PriceComponent extends AbstractDynamicLoaderComponent implements Ac
     }
   }
 
+  isInError (): boolean {
+    return this.parsingError!=null;
+  }
+
+  errorMessage (): string {
+    if (this.parsingError==null) return '';
+    else {
+      let ret= (this.parsingError.status)?this.parsingError.status+':':'';
+      ret = ret+this.parsingError.message;
+      return ret;
+    }
+  }
+
 }
