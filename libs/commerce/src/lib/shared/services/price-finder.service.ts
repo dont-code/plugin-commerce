@@ -28,7 +28,7 @@ import {MaxicoffeeScrapper} from "../scrappers/maxicoffee-scrapper";
 })
 export class PriceFinderService {
 
-  private static DONT_UPDATE_UNTIL_DELAY_MS = 1000*60*60*1; // Don't update price until 1h has passed since the last one
+  private static DONT_UPDATE_UNTIL_DELAY_MS = 1000*60*10; // Don't update price until 10mn has passed since the last one
   protected listOfScrappers = new Map<string, OnlineShopScrapper> ();
   protected shopTypeNames = new Array<string>();
 
