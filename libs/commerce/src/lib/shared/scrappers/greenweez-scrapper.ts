@@ -36,7 +36,7 @@ export class GreenWeezScrapper extends AbstractOnlineShopScrapper {
     postContent = postContent.replace("QUERY_STRING", encodeURIComponent(nameOrId));
     postContent = postContent.replace("QUERY_STRING", encodeURIComponent(nameOrId));
     postContent=JSON.parse(postContent);
-    return this.requestWithProxy("POST",GreenWeezScrapper.SEARCH_ONLINE_URL, ProxyEngine.CORSPROXY_IO,
+    return this.requestWithProxy("POST",GreenWeezScrapper.SEARCH_ONLINE_URL, ProxyEngine.CORSPROXY_ORG,
     {body:postContent, responseType:"json", observe:"body"})
       .then(jsonResult => {
           if( typeof jsonResult == "string")
