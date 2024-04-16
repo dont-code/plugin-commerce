@@ -1,59 +1,69 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Commerce Main
+name: Commerce Build
 
 on:
   workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch name to re-build ?
+        required: true
+        type: string
 
   push:
-    branches: [ main ]
+  pull_request:
 
 
 jobs:
   build:
+    env:
+      branch: ${{ inputs.branch || github.ref_name }}
+      stage: ${{ inputs.branch == 'main' && 'latest' || github.ref_name == 'main' && 'latest' || 'next' }}
 
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        browser: [chromium, chrome, firefox]
+        browser: [chromium, chrome]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: 'main'
+          ref: ${{ env.branch }}
           token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
-      - name: Use Node.js 18
-        uses: actions/setup-node@v3
+      - name: Use Node.js version 18
+        uses: actions/setup-node@v4
         with:
           node-version: '18.x'
           cache: 'npm'
       - name: Install
         run: |
           npm install -g nx
-          npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest @dontcode/plugin-basic@latest @dontcode/plugin-fields@latest
-          npm install
+          npm install --force
+          npm install @dontcode/core@${{env.stage}} @dontcode/plugin-common@${{env.stage}} @dontcode/sandbox@${{env.stage}} @dontcode/plugin-basic@${{env.stage}} @dontcode/plugin-fields@${{env.stage}}
+          npm explain @dontcode/core
+          npm explain @dontcode/plugin-common
       - name: Build
         run: |
           nx run commerce:build:production
-      - name: Tests
+      - name: Unit Tests
         run: |
           nx run commerce:test
           nx run commerce-tester:test
       - name: E2E Tests on ${{matrix.browser}}
         run: |
           nx run commerce-tester-e2e:e2e --browser ${{matrix.browser}}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         # Test run screenshots only on failure
         if: failure()
         with:
-          name: cypress-screenshots
+          name: cypress-${{matrix.browser}}-screenshots
           path: dist/cypress/apps/commerce-tester-e2e/screenshots
         # Test run video was always captured, so this action uses "always()" condition
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: cypress-videos
+          name: cypress-${{matrix.browser}}-videos
           path: dist/cypress/apps/commerce-tester-e2e/videos
