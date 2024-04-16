@@ -1,7 +1,5 @@
 import {ChangeDetectorRef, Component, Input} from '@angular/core';
 import {PriceFinderService, PriceModel} from "@dontcode/plugin-commerce";
-import {FormControl} from "@angular/forms";
-import {MoneyAmount} from "@dontcode/core";
 
 @Component({
   selector: 'dontcode-test-scrapper',
@@ -15,6 +13,7 @@ export class TestScrapperComponent {
   price:PriceModel={};
   displayPrice=false;
   priceError:any=null;
+  url:string|null = null;
 
   constructor(protected priceFinder:PriceFinderService, protected ref:ChangeDetectorRef) {
   }
@@ -45,8 +44,10 @@ export class TestScrapperComponent {
         this.ref.markForCheck();
         this.ref.detectChanges();
       }
-    } catch (reason) {
-      this.priceError = (reason as any).message??reason as any;
+    } catch (reson) {
+      const reason = reson as any;
+      this.url=reason.url??null;
+      this.priceError = reason.message??reason.error?.message??reason.error?.statusText??reason;
       this.displayPrice = false;
       this.price = {inError: true};
       this.ref.markForCheck();
