@@ -34,7 +34,7 @@ describe('GreenweezScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("greenweez/chardon-marie-search-result.json", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_ORG_URL);
+    expectOneSampleFile("greenweez/chardon-marie-search-result.json", httpTestingController,AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL);
   });
 
   it('should get price', (done) => {
@@ -45,7 +45,7 @@ describe('GreenweezScrapper', () => {
     }).catch(error => {
       done (error);
     });
-    expectOneSampleFile("greenweez/chardon-marie-search-result.json", httpTestingController,AbstractOnlineShopScrapper.CORS_PROXY_ORG_URL);
+    expectOneSampleFile("greenweez/chardon-marie-search-result.json", httpTestingController,AbstractOnlineShopScrapper.CORS_DONTCODE_PROXY_URL);
   });
 });
 
