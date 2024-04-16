@@ -1,5 +1,5 @@
 import {MoneyAmount} from "@dontcode/core";
-import {HttpClient, HttpContext, HttpHeaders, HttpParams, HttpRequest} from "@angular/common/http";
+import {HttpClient, HttpContext, HttpHeaders, HttpParams} from "@angular/common/http";
 import {firstValueFrom} from "rxjs";
 
 
@@ -95,7 +95,13 @@ export abstract class AbstractOnlineShopScrapper implements OnlineShopScrapper {
     return firstValueFrom(this.http.request(method,
       this.encodeUrlForCors(url, engine),
       this.updateOptionsForCors(method, url, engine, options))
-    );
+    ).catch ( (reason) => {
+      return Promise.reject ({
+        url: url,
+        engine: engine,
+        error: reason
+      })
+    });
   }
 
   /**
@@ -245,13 +251,13 @@ protected updateOptionsForCors<T extends {
    */
   checkScrappedProduct (productSearch:string, product:ScrappedProduct): void {
     if ((product.productId==null)||(product.productId.length==0)) {
-      throw new Error ("Incorrect productId scrapped by shop "+this.getOnlineShopName()+" for product search"+productSearch);
+      throw new Error ("No Product Id scrapped by shop "+this.getOnlineShopName()+" for product search "+productSearch);
     }
     if ((product.productName==null)||(product.productName.length==0)) {
-      throw new Error ("Incorrect productName scrapped by shop "+this.getOnlineShopName()+" for product search"+productSearch);
+      throw new Error ("No Product Name scrapped by shop "+this.getOnlineShopName()+" for product search "+productSearch);
     }
     if (((product.productPrice==null)||(isNaN(product.productPrice))) && (product.outOfStock!=true)) {
-      throw new Error ("Incorrect productPrice scrapped by shop "+this.getOnlineShopName()+" for product search"+productSearch);
+      throw new Error ("Incorrect Product Price "+product.productPrice+" scrapped by shop "+this.getOnlineShopName()+" for product search "+productSearch);
     }
   }
 
