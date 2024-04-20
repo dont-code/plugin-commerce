@@ -17,7 +17,7 @@ export class WebEcologieScrapper extends AbstractOnlineShopScrapper {
   override searchProductsForNameOrId(nameOrId: string, isId:boolean): Promise<Array<ScrappedProduct>> {
     const query = WebEcologieScrapper.SEARCH_ONLINE_URL.replace("QUERY_STRING", encodeURIComponent(nameOrId));
 
-    return this.requestWithProxy("GET", query, ProxyEngine.CORSPROXY_ORG
+    return this.requestWithProxy("GET", query, ProxyEngine.DONT_CODE
     ,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"})
       .then(htmlResult => {
 
@@ -69,7 +69,7 @@ export class WebEcologieScrapper extends AbstractOnlineShopScrapper {
     if (product.productUrl==null) {
       return super.updatePrice(product, true);  // If the product url is not found, let's try with the product name
     }
-    return this.requestWithProxy("GET", product.productUrl,ProxyEngine.CORSPROXY_ORG
+    return this.requestWithProxy("GET", product.productUrl,ProxyEngine.DONT_CODE
       ,{headers:{Accept:'text/html'}, responseType:"text", observe:"body"})
       .then(htmlResult => {
         const newProduct:ScrappedProduct = {productId:product.productId,

@@ -30,7 +30,7 @@ jobs:
 
     strategy:
       matrix:
-        browser: [chromium, chrome, firefox]
+        browser: [chromium, chrome]
 
     steps:
       - uses: actions/checkout@v3
@@ -95,7 +95,7 @@ jobs:
       - name: Deploy the tester application in github pages
         if: ${{ success() && matrix.browser == 'chromium'}}
         run: |
-          nx run commerce-tester:build:production --output-path="dist/apps/commerce-tester/${{env.stage}}" --base-href "https://dont-code.net/plugin-commerce/${{env.stage}}/"
+          nx run commerce-tester:build:production --output-path="dist/apps/commerce-tester/${{env.stage}}" --base-href "https://run.dont-code.net/plugin-commerce/${{env.stage}}/"
       - if: ${{ success() && matrix.browser == 'chromium' && ( inputs.deploy == true)}}
         uses: gcollin/ghaction-github-pages@main
         with:

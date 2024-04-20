@@ -106,6 +106,9 @@ describe('Commerce test', () => {
       getDropdownWithName('Type').click("right");
       getDropdownListItemWithName('GreenWeez').click();
       getButtonWithName("save").click();
+      getButtonWithName ('save').should('be.enabled');
+
+      cy.get('th[id="header-Shop"]').should('be.visible');
       getListRowWithText("Shop GW");
 
       getSubMenuWithText('Online Shop').click();  // Click again as it seems sometimes the new button is not working.
@@ -117,6 +120,9 @@ describe('Commerce test', () => {
       getDropdownWithName('Type').click("right");
       getDropdownListItemWithName('EasyParapharmacie').click();
       getButtonWithName("save").click();
+      getButtonWithName ('save').should('be.enabled');
+
+      cy.get('th[id="header-Shop"]').should('be.visible');
       getListRowWithText("Shop EP");
 
       getSubMenuWithText('Multi Product').click();
@@ -140,7 +146,9 @@ describe('Commerce test', () => {
       });
 
       getButtonWithName("save").click();
-      cy.get('th[id="header-Name"]');
+      getButtonWithName ('save').should('be.enabled');
+
+      cy.get('th[id="header-Name"]').should('be.visible');
 
       getSubMenuWithText('Dev').click(); // Move to dev page
       getSubMenuWithText('Multi Product').click();

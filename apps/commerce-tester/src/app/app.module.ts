@@ -8,12 +8,12 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { RouterModule, Routes } from '@angular/router';
-import { MenuUpdater, SANDBOX_MENUS, SandboxModule } from '@dontcode/sandbox';
+import { SandboxModule } from '@dontcode/sandbox';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
 import { CommerceModule } from '@dontcode/plugin-commerce';
-import { PluginCommonModule } from '@dontcode/plugin-common';
+import { MenuUpdater, SANDBOX_MENUS, PluginCommonModule } from '@dontcode/plugin-common';
 import { TestUrlComponent } from './routes/test-url/test-url.component';
 import { MenuItem } from 'primeng/api';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
