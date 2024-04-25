@@ -46,7 +46,7 @@
       <div class="field col-12 md:col-6">Product url:
           <ng-container *ngTemplateOutlet="subFieldFullEditTemplate('urlInShop')"></ng-container>
       </div>
-      <ng-container *ngIf="isInError">
+      <ng-container *ngIf="isInError ()">
         <p-messages severity="error">
           <ng-template pTemplate>Error : {{errorMessage()}}
             <a *ngIf="parsingError?.url" [href]="parsingError?.url" target="_blank">Try in the browser</a>
