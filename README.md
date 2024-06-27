@@ -1,5 +1,8 @@
 ![image](https://dont-code.net/assets/logo-shadow-squared.png)
-## What is it for ?
+## Important !
+This repository is now deprecated. All developments for Dont-code are now happening in the [Monorepo repository](https://github.com/dont-code/monorepo)
+
+## What was it for ?
 
 This project allows developers to quickstart their development of a Plugin for the  [Dont-code](https://dont-code.net) no-code / low-code platform.
 It provides example for two kinds of plugins:
